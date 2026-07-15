@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+  }
+  ::selection {
+    background: #0e6b4f;
+    color: #fff;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-pine text-white shadow-card hover:-translate-y-0.5 hover:bg-pine-dark hover:shadow-lift;
+  }
+  .btn-secondary {
+    @apply btn border border-ink/15 bg-white text-ink hover:border-pine hover:text-pine;
+  }
+  .btn-ghost {
+    @apply btn px-4 py-2 text-pine hover:bg-pine-light;
+  }
+  .card {
+    @apply rounded-2xl border border-sand bg-white shadow-card;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+  .input {
+    @apply w-full rounded-xl border border-sand bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-pine focus:outline-none focus:ring-2 focus:ring-pine/20;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-pine;
+  }
+  .section-title {
+    @apply font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl;
+  }
+}
+
+/* Subtle paper-grain texture for hero areas */
+.texture-dots {
+  background-image: radial-gradient(rgba(14, 107, 79, 0.1) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* ------------------------------------------------------------------
+   Mobile-only refinements (≤639px). Desktop rendering is untouched —
+   every rule here is scoped to small screens.
+   ------------------------------------------------------------------ */
+@media (max-width: 639px) {
+  /* Faster taps, no double-tap zoom delay on interactive elements */
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+
+  /* Comfortable 44px touch targets for all pill/regular buttons */
+  .btn {
+    min-height: 44px;
+  }
+
+  /* 16px inputs stop iOS Safari from auto-zooming on focus,
+     and 44px height meets the touch-target minimum */
+  .input {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  /* Respect notch / rounded-corner safe areas in landscape */
+  .container-x {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* In-page anchors (e.g. #book) land below the sticky header */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+}
