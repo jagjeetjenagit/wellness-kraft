@@ -1,4 +1,8 @@
+<!-- Placeholder favicon: brand-colored circle with the old leaf glyph.
+     TODO(client assets): replace with the icon-only Wellness Kraft mark
+     (meditating figure + leaves) once the client provides it — see
+     client-feedback/Logo-Usage-Brief.pdf. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="16" fill="#0E6B4F"/>
-  <path d="M16 25c-4.5-3.5-6.8-7-5.5-11.5 3.6.45 6.3 1.8 7.6 4.5M16 25c.9-4.5 3.6-8 7.2-9.9-.9 5.4-3.15 8.5-7.2 9.9Z" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="16" cy="16" r="16" fill="#334720"/>
+  <path d="M16 25c-4.5-3.5-6.8-7-5.5-11.5 3.6.45 6.3 1.8 7.6 4.5M16 25c.9-4.5 3.6-8 7.2-9.9-.9 5.4-3.15 8.5-7.2 9.9Z" stroke="#FEFAEF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>

@@ -1,13 +1,14 @@
 import Link from "next/link";
+import Logo from "./Logo";
 
 export default function Footer() {
   return (
     <footer className="mt-14 bg-pine-deep text-white sm:mt-20">
       <div className="container-x grid gap-8 py-10 sm:grid-cols-2 sm:gap-10 sm:py-14 lg:grid-cols-4">
         <div>
-          <p className="font-display text-2xl font-semibold">
-            Wellness<span className="text-gold"> Kraft</span>
-          </p>
+          {/* Full stacked lockup on a cream block (JPEG has no transparency;
+              the dark footer needs the reversed cream logo once provided). */}
+          <Logo variant="stacked" className="w-36" />
           <p className="mt-3 text-sm leading-relaxed text-white/70">
             Verified experts. Medically-tested wellness products. Honest
             guidance for everyday health.

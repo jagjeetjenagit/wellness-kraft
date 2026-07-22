@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import AuthButtons from "./AuthButtons";
+import Logo from "./Logo";
 import { useCart } from "./cart/CartProvider";
 
 const NAV = [
@@ -21,22 +22,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-sand bg-paper/90 backdrop-blur">
       <div className="container-x flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" aria-label="Wellness Kraft home">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-pine text-white">
-            {/* leaf mark */}
-            <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-              <path
-                d="M12 21C7 17 4.5 13 6 8c4 .5 7 2 8.5 5M12 21c1-5 4-9 8-11-1 6-3.5 9.5-8 11Z"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-          <span className="font-display text-xl font-semibold tracking-tight">
-            Wellness<span className="text-pine"> Kraft</span>
-          </span>
+        <Link href="/" className="flex items-center" aria-label="Wellness Kraft home">
+          {/* Horizontal lockup on desktop, icon-only on mobile (per Logo-Usage-Brief) */}
+          <Logo variant="horizontal" className="hidden sm:flex" />
+          <Logo variant="icon" className="h-10 w-10 sm:hidden" />
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Main">
