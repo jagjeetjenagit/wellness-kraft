@@ -34,7 +34,7 @@ export default function ContactForm() {
       <div className="card p-8 text-center">
         <span className="text-3xl" aria-hidden="true">✅</span>
         <h2 className="mt-3 font-display text-xl font-semibold">Message sent!</h2>
-        <p className="mt-2 text-sm text-sage">
+        <p className="mt-2 text-sm text-charcoal/75">
           Thanks, {form.name.split(" ")[0]}. We usually reply within one working day.
         </p>
       </div>

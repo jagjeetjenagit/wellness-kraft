@@ -22,7 +22,7 @@ export default function ExpertCard({ expert }: { expert: ExpertT }) {
           <div className="mt-2">
             <Stars rating={expert.rating} count={expert.reviewCount} />
           </div>
-          <p className="mt-3 line-clamp-2 text-sm text-sage">{expert.bio}</p>
+          <p className="mt-3 line-clamp-2 text-sm text-charcoal/75">{expert.bio}</p>
           <span className="btn-primary mt-5 w-full">Book a Consultation</span>
         </div>
       </Link>

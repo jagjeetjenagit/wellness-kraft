@@ -182,7 +182,7 @@ export default function AdminExpertsPage() {
               <label className="label">Products this expert recommends (shown on their profile)</label>
               <div className="grid gap-2 rounded-xl border border-sage/30 bg-cream p-4 sm:grid-cols-2">
                 {productOptions.map((p) => (
-                  <label key={p.id} className="flex items-center gap-2 text-sm text-sage">
+                  <label key={p.id} className="flex items-center gap-2 text-sm text-charcoal/75">
                     <input
                       type="checkbox"
                       className="h-4 w-4 accent-olive"

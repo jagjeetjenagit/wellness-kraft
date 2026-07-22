@@ -98,11 +98,12 @@ export default function HomePage() {
         <div className="container-x relative py-14 sm:py-28">
           <div className="max-w-3xl">
             <p className="eyebrow animate-rise-1">Consultations · Natural Products · Lifestyle Plans</p>
-            {/* Wide tracking echoes the "WELLNESS KRAFT" wordmark */}
-            <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.15] tracking-wide text-olive sm:text-6xl">
+            {/* Wordmark-style wide tracking lives in the uppercase eyebrow;
+                the serif headline itself stays tight for readability */}
+            <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.12] tracking-tight text-olive sm:text-6xl">
               Real experts. Natural solutions. Lasting lifestyle change.
             </h1>
-            <p className="mt-6 max-w-2xl animate-rise-3 text-lg leading-relaxed text-sage">
+            <p className="mt-6 max-w-2xl animate-rise-3 text-lg leading-relaxed text-charcoal/75">
               We help you fix the root cause of your fitness, nutrition, and
               lifestyle problems — through expert consultation, natural and
               harmless products, and guidance that actually sticks.
@@ -127,7 +128,7 @@ export default function HomePage() {
         <div className="container-x py-12 sm:py-20">
           <p className="eyebrow">Why we&apos;re different</p>
           <h2 className="section-title mt-2">Guidance first. Products second.</h2>
-          <p className="mt-4 max-w-3xl leading-relaxed text-sage">
+          <p className="mt-4 max-w-3xl leading-relaxed text-charcoal/75">
             Most wellness brands sell you a bottle and hope for the best. We
             start with a real conversation — understanding your body, your
             habits, and what&apos;s actually causing the problem. Every
@@ -141,7 +142,7 @@ export default function HomePage() {
                   {p.icon}
                 </span>
                 <h3 className="mt-4 font-display text-xl font-semibold text-charcoal">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-sage">{p.text}</p>
+                <p className="mt-2 text-sm leading-relaxed text-charcoal/75">{p.text}</p>
               </div>
             ))}
           </div>
@@ -181,7 +182,7 @@ export default function HomePage() {
               <div key={s.n} className="relative">
                 <span className="font-display text-6xl font-semibold text-olive/20">{s.n}</span>
                 <h3 className="mt-2 font-display text-xl font-semibold text-charcoal">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-sage">{s.text}</p>
+                <p className="mt-2 text-sm leading-relaxed text-charcoal/75">{s.text}</p>
               </div>
             ))}
           </div>

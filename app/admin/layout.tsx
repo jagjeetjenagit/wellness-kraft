@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <h1 className="mt-3 font-display text-2xl font-semibold">
             This area is for the site owner
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-sage">
+          <p className="mt-3 text-sm leading-relaxed text-charcoal/75">
             Sign in with an admin account to manage experts, products, orders
             and bookings. Admins are set in the <code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">.env</code>{" "}
             file (<code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">ADMIN_EMAILS</code> /{" "}

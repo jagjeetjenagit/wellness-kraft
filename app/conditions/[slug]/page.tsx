@@ -39,13 +39,13 @@ export default function ConditionPage({ params }: Props) {
         {/* TODO(client): replace this placeholder with condition-specific
             copy — what the consultation covers, typical guidance, and
             lifestyle support offered. Support/guidance language only. */}
-        <p className="mt-6 text-lg leading-relaxed text-sage">
+        <p className="mt-6 text-lg leading-relaxed text-charcoal/75">
           Our experts guide people through {condition.name.toLowerCase()} with
           personalised lifestyle plans — diet, movement, and natural product
           support built around your daily life. It starts with a real
           conversation about what&apos;s going on with you.
         </p>
-        <p className="mt-4 leading-relaxed text-sage">
+        <p className="mt-4 leading-relaxed text-charcoal/75">
           Consultations are led by registered Ayurvedic doctors. Our guidance
           supports your general wellness alongside — never instead of — the
           advice of your treating physician.
@@ -56,7 +56,7 @@ export default function ConditionPage({ params }: Props) {
         <h2 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
           Talk it through with an expert
         </h2>
-        <p className="mx-auto mt-2 max-w-lg text-sage">
+        <p className="mx-auto mt-2 max-w-lg text-charcoal/75">
           One conversation is enough to understand what your plan should look
           like.
         </p>

@@ -22,7 +22,7 @@ export default async function ExpertsPage() {
         <h1 className="section-title mt-2">
           Verified professionals, ready when you are
         </h1>
-        <p className="mt-3 max-w-2xl text-sage">
+        <p className="mt-3 max-w-2xl text-charcoal/75">
           Every expert on this page has had their credentials checked. Pick a
           specialty, read their story, and book a time directly on their
           calendar.

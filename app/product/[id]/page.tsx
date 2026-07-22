@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: Props) {
                 <p className="text-sm font-semibold text-olive">
                   💬 We recommend a consultation with this product
                 </p>
-                <p className="mt-1 text-sm text-sage">
+                <p className="mt-1 text-sm text-charcoal/75">
                   Dosage and suitability vary from person to person. A short
                   consultation makes sure this is right for you.{" "}
                   <Link href="/experts" className="font-semibold text-olive hover:underline">
@@ -79,7 +79,7 @@ export default async function ProductPage({ params }: Props) {
               </div>
             )}
 
-            <div className="mt-6 whitespace-pre-line leading-relaxed text-sage">
+            <div className="mt-6 whitespace-pre-line leading-relaxed text-charcoal/75">
               {product.description}
             </div>
 
@@ -87,7 +87,7 @@ export default async function ProductPage({ params }: Props) {
               <AddToCartButton product={product} />
             </div>
 
-            <ul className="mt-8 space-y-2 border-t border-sage/30 pt-6 text-sm text-sage">
+            <ul className="mt-8 space-y-2 border-t border-sage/30 pt-6 text-sm text-charcoal/75">
               <li>✓ Batch-tested for purity and heavy metals</li>
               <li>✓ Secure checkout — UPI, cards, netbanking</li>
               <li>✓ Ships across India in 3–7 working days</li>

@@ -62,7 +62,7 @@ export default async function ExpertProfilePage({ params }: Props) {
                 </p>
                 <ul className="mt-3 space-y-2">
                   {expert.credentials.map((c) => (
-                    <li key={c} className="flex items-start gap-2 text-sm text-sage">
+                    <li key={c} className="flex items-start gap-2 text-sm text-charcoal/75">
                       <span className="mt-0.5 text-olive" aria-hidden="true">✓</span>
                       {c}
                     </li>
@@ -77,7 +77,7 @@ export default async function ExpertProfilePage({ params }: Props) {
             <h2 className="font-display text-2xl font-semibold text-charcoal">
               About {expert.name.split(" ")[0] === "Dr." ? expert.name : expert.name.split(" ")[0]}
             </h2>
-            <p className="mt-4 whitespace-pre-line leading-relaxed text-sage">
+            <p className="mt-4 whitespace-pre-line leading-relaxed text-charcoal/75">
               {expert.bio}
             </p>
 
@@ -98,7 +98,7 @@ export default async function ExpertProfilePage({ params }: Props) {
           <section className="mt-16">
             <p className="eyebrow">Recommended by {expert.name}</p>
             <h2 className="section-title mt-2">Products this expert trusts</h2>
-            <p className="mt-2 max-w-2xl text-sm text-sage">
+            <p className="mt-2 max-w-2xl text-sm text-charcoal/75">
               These are the tested products {expert.name} most often recommends
               in consultations. Where a product is marked
               &ldquo;consult recommended&rdquo;, we suggest speaking to an expert first.

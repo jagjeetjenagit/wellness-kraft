@@ -21,7 +21,7 @@ export default async function ShopPage() {
       <div className="container-x py-12 sm:py-16">
         <p className="eyebrow">The store</p>
         <h1 className="section-title mt-2">Wellness products, tested properly</h1>
-        <p className="mt-3 max-w-2xl text-sage">
+        <p className="mt-3 max-w-2xl text-charcoal/75">
           Our own range — every batch tested for purity and labelled honestly.
           Products marked <span className="badge bg-olive text-white">Consult recommended</span>{" "}
           work best with expert guidance;{" "}

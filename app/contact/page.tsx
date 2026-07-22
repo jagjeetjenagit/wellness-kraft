@@ -15,7 +15,7 @@ export default function ContactPage() {
         <div>
           <p className="eyebrow">Contact</p>
           <h1 className="section-title mt-2">We&apos;re happy to help</h1>
-          <p className="mt-4 leading-relaxed text-sage">
+          <p className="mt-4 leading-relaxed text-charcoal/75">
             Questions about a consultation, an order, or which expert is right
             for you? Send us a message and a real person will reply — usually
             within one working day.

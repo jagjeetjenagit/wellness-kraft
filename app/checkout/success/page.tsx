@@ -54,7 +54,7 @@ export default async function OrderSuccessPage({
               </li>
             ))}
           </ul>
-          <p className="mt-4 border-t border-sage/30 pt-3 text-sm text-sage">
+          <p className="mt-4 border-t border-sage/30 pt-3 text-sm text-charcoal/75">
             Delivering to: {order.shipAddress1}, {order.shipCity} — {order.shipPincode}
           </p>
         </div>

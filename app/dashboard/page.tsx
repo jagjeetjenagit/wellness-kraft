@@ -27,7 +27,7 @@ export default async function DashboardPage() {
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
         <div className="card max-w-lg p-8 text-center">
           <h1 className="font-display text-2xl font-semibold">Dashboard needs login first</h1>
-          <p className="mt-3 text-sm text-sage">
+          <p className="mt-3 text-sm text-charcoal/75">
             Set up Clerk (README step 2) to enable customer accounts, then this
             page will show each customer their bookings and orders.
           </p>
@@ -94,7 +94,7 @@ export default async function DashboardPage() {
       <h1 className="section-title mt-2">
         Hello{user.firstName ? `, ${user.firstName}` : ""} 👋
       </h1>
-      <p className="mt-2 text-sm text-sage">
+      <p className="mt-2 text-sm text-charcoal/75">
         {email || phone} {admin && (
           <Link href="/admin" className="ml-2 font-semibold text-olive hover:underline">
             → Open admin area
@@ -108,7 +108,7 @@ export default async function DashboardPage() {
           <h2 className="font-display text-2xl font-semibold">My consultations</h2>
           {bookings.length === 0 ? (
             <div className="card mt-4 p-8 text-center">
-              <p className="text-sm text-sage">No consultations booked yet.</p>
+              <p className="text-sm text-charcoal/75">No consultations booked yet.</p>
               <Link href="/experts" className="btn-primary mt-4">Book your first consultation</Link>
             </div>
           ) : (
@@ -119,9 +119,9 @@ export default async function DashboardPage() {
                     <div>
                       <p className="font-semibold text-charcoal">{b.title}</p>
                       {b.expertName && (
-                        <p className="text-sm text-sage">with {b.expertName}</p>
+                        <p className="text-sm text-charcoal/75">with {b.expertName}</p>
                       )}
-                      <p className="mt-1 text-sm text-sage">{formatDateTime(b.startTime)}</p>
+                      <p className="mt-1 text-sm text-charcoal/75">{formatDateTime(b.startTime)}</p>
                     </div>
                     <span className={`badge ${statusColors[b.status] || "bg-soft-cream text-sage"}`}>
                       {b.status.toLowerCase()}
@@ -138,7 +138,7 @@ export default async function DashboardPage() {
           <h2 className="font-display text-2xl font-semibold">My orders</h2>
           {orders.length === 0 ? (
             <div className="card mt-4 p-8 text-center">
-              <p className="text-sm text-sage">No orders yet.</p>
+              <p className="text-sm text-charcoal/75">No orders yet.</p>
               <Link href="/shop" className="btn-secondary mt-4">Browse the shop</Link>
             </div>
           ) : (
@@ -150,7 +150,7 @@ export default async function DashboardPage() {
                       <p className="font-semibold text-charcoal">
                         Order {o.id.slice(-8).toUpperCase()}
                       </p>
-                      <p className="text-sm text-sage">
+                      <p className="text-sm text-charcoal/75">
                         {formatDate(o.createdAt)} · {o.items.length}{" "}
                         {o.items.length === 1 ? "item" : "items"} · {formatINR(o.total)}
                       </p>

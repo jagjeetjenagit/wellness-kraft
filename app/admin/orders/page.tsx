@@ -120,7 +120,7 @@ export default function AdminOrdersPage() {
                       #{o.id.slice(-8).toUpperCase()} · {formatDateTime(o.createdAt)}
                     </span>
                   </p>
-                  <p className="mt-1 text-sm text-sage">
+                  <p className="mt-1 text-sm text-charcoal/75">
                     {o.items.map((i) => `${i.name} × ${i.quantity}`).join(", ")}
                   </p>
                 </div>
