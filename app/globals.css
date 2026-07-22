@@ -24,6 +24,12 @@
   body {
     @apply bg-cream text-charcoal font-body antialiased;
   }
+  /* Headings use the serif display face to match the logo wordmark */
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
   ::selection {
     background: var(--deep-olive);
     color: var(--cream);

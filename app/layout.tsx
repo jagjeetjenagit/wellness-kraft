@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Albert_Sans } from "next/font/google";
+import { Playfair_Display, Albert_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -8,7 +8,8 @@ import Analytics from "@/components/Analytics";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { siteUrl } from "@/lib/config";
 
-const fraunces = Fraunces({
+// Serif headings echo the "WELLNESS KRAFT" wordmark (see Logo-Usage-Brief)
+const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
@@ -51,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
   const inner = (
-    <html lang="en" className={`${fraunces.variable} ${albertSans.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${albertSans.variable}`}>
       <body>
         <CartProvider>
           <Header />
