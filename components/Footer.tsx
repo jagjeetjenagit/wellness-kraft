@@ -3,7 +3,7 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer className="mt-14 bg-pine-deep text-white sm:mt-20">
+    <footer className="mt-14 bg-olive text-white sm:mt-20">
       <div className="container-x grid gap-8 py-10 sm:grid-cols-2 sm:gap-10 sm:py-14 lg:grid-cols-4">
         <div>
           {/* Full stacked lockup on a cream block (JPEG has no transparency;

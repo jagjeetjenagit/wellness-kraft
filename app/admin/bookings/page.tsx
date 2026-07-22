@@ -15,9 +15,9 @@ interface AdminBooking {
 }
 
 const badge: Record<string, string> = {
-  CONFIRMED: "bg-pine-light text-pine",
-  CANCELLED: "bg-clay-light text-clay",
-  COMPLETED: "bg-pine text-white",
+  CONFIRMED: "bg-soft-cream text-olive",
+  CANCELLED: "bg-alert/10 text-alert",
+  COMPLETED: "bg-olive text-white",
 };
 
 export default function AdminBookingsPage() {
@@ -42,28 +42,28 @@ export default function AdminBookingsPage() {
   return (
     <div>
       <h2 className="font-display text-2xl font-semibold">Bookings ({bookings.length})</h2>
-      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
+      <p className="mt-2 max-w-2xl text-sm text-sage">
         Bookings appear here automatically once the Cal.com webhook is connected
         (README, &ldquo;Cal.com&rdquo; section). You can always see every booking in your
         Cal.com dashboard too.
       </p>
 
       {error && (
-        <p className="mt-4 rounded-xl border border-clay/30 bg-clay-light p-3 text-sm font-semibold text-clay">
+        <p className="mt-4 rounded-xl border border-alert/30 bg-alert/10 p-3 text-sm font-semibold text-alert">
           {error}
         </p>
       )}
 
       {loading ? (
-        <p className="mt-8 text-ink-soft">Loading bookings…</p>
+        <p className="mt-8 text-sage">Loading bookings…</p>
       ) : bookings.length === 0 ? (
-        <div className="card mt-6 p-10 text-center text-ink-soft">
+        <div className="card mt-6 p-10 text-center text-sage">
           No bookings recorded yet.
         </div>
       ) : (
         <div className="card mt-6 overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">
-            <thead className="border-b border-sand text-xs uppercase tracking-wider text-ink-faint">
+            <thead className="border-b border-sage/30 text-xs uppercase tracking-wider text-sage/70">
               <tr>
                 <th className="p-4">When</th>
                 <th className="p-4">Consultation</th>
@@ -73,21 +73,21 @@ export default function AdminBookingsPage() {
             </thead>
             <tbody>
               {bookings.map((b) => (
-                <tr key={b.id} className="border-b border-sand/60 last:border-0">
-                  <td className="p-4 font-semibold text-ink">{formatDateTime(b.startTime)}</td>
+                <tr key={b.id} className="border-b border-sage/30/60 last:border-0">
+                  <td className="p-4 font-semibold text-charcoal">{formatDateTime(b.startTime)}</td>
                   <td className="p-4">
-                    <p className="text-ink">{b.title}</p>
-                    {b.expertName && <p className="text-xs text-ink-faint">with {b.expertName}</p>}
+                    <p className="text-charcoal">{b.title}</p>
+                    {b.expertName && <p className="text-xs text-sage/70">with {b.expertName}</p>}
                   </td>
-                  <td className="p-4 text-ink-soft">
+                  <td className="p-4 text-sage">
                     {b.attendeeName}
                     <br />
-                    <span className="text-xs text-ink-faint">
+                    <span className="text-xs text-sage/70">
                       {b.attendeeEmail || b.attendeePhone}
                     </span>
                   </td>
                   <td className="p-4">
-                    <span className={`badge ${badge[b.status] || "bg-cream text-ink-soft"}`}>
+                    <span className={`badge ${badge[b.status] || "bg-soft-cream text-sage"}`}>
                       {b.status.toLowerCase()}
                     </span>
                   </td>

@@ -29,7 +29,7 @@ export default function ProductGallery({
               key={img + i}
               onClick={() => setActive(i)}
               className={`h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-colors ${
-                i === active ? "border-pine" : "border-sand hover:border-pine/50"
+                i === active ? "border-olive" : "border-sage/30 hover:border-olive/50"
               }`}
               aria-label={`View image ${i + 1} of ${name}`}
             >

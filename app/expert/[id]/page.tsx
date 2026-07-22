@@ -37,7 +37,7 @@ export default async function ExpertProfilePage({ params }: Props) {
     <>
       <DemoBanner />
       <div className="container-x py-12 sm:py-16">
-        <Link href="/experts" className="text-sm font-semibold text-pine hover:underline">
+        <Link href="/experts" className="text-sm font-semibold text-olive hover:underline">
           ← All experts
         </Link>
 
@@ -47,23 +47,23 @@ export default async function ExpertProfilePage({ params }: Props) {
             <div className="card overflow-hidden">
               <ExpertPhoto name={expert.name} photo={expert.photo} className="h-72 w-full" />
               <div className="p-6">
-                <p className="text-xs font-bold uppercase tracking-wider text-pine">
+                <p className="text-xs font-bold uppercase tracking-wider text-olive">
                   {expert.specialty}
                 </p>
-                <h1 className="mt-1 font-display text-2xl font-semibold text-ink">
+                <h1 className="mt-1 font-display text-2xl font-semibold text-charcoal">
                   {expert.name}
                 </h1>
                 <div className="mt-3">
                   <Stars rating={expert.rating} count={expert.reviewCount} />
                 </div>
-                <hr className="my-5 border-sand" />
-                <p className="text-sm font-bold uppercase tracking-wider text-ink-faint">
+                <hr className="my-5 border-sage/30" />
+                <p className="text-sm font-bold uppercase tracking-wider text-sage/70">
                   Credentials
                 </p>
                 <ul className="mt-3 space-y-2">
                   {expert.credentials.map((c) => (
-                    <li key={c} className="flex items-start gap-2 text-sm text-ink-soft">
-                      <span className="mt-0.5 text-pine" aria-hidden="true">✓</span>
+                    <li key={c} className="flex items-start gap-2 text-sm text-sage">
+                      <span className="mt-0.5 text-olive" aria-hidden="true">✓</span>
                       {c}
                     </li>
                   ))}
@@ -74,16 +74,16 @@ export default async function ExpertProfilePage({ params }: Props) {
 
           {/* Bio + booking */}
           <div>
-            <h2 className="font-display text-2xl font-semibold text-ink">
+            <h2 className="font-display text-2xl font-semibold text-charcoal">
               About {expert.name.split(" ")[0] === "Dr." ? expert.name : expert.name.split(" ")[0]}
             </h2>
-            <p className="mt-4 whitespace-pre-line leading-relaxed text-ink-soft">
+            <p className="mt-4 whitespace-pre-line leading-relaxed text-sage">
               {expert.bio}
             </p>
 
             <div className="mt-10" id="book">
               <p className="eyebrow">Book a consultation</p>
-              <h2 className="mt-2 font-display text-2xl font-semibold text-ink">
+              <h2 className="mt-2 font-display text-2xl font-semibold text-charcoal">
                 Pick a time that works for you
               </h2>
               <div className="mt-5">
@@ -98,7 +98,7 @@ export default async function ExpertProfilePage({ params }: Props) {
           <section className="mt-16">
             <p className="eyebrow">Recommended by {expert.name}</p>
             <h2 className="section-title mt-2">Products this expert trusts</h2>
-            <p className="mt-2 max-w-2xl text-sm text-ink-soft">
+            <p className="mt-2 max-w-2xl text-sm text-sage">
               These are the tested products {expert.name} most often recommends
               in consultations. Where a product is marked
               &ldquo;consult recommended&rdquo;, we suggest speaking to an expert first.

@@ -21,11 +21,11 @@ export default async function ShopPage() {
       <div className="container-x py-12 sm:py-16">
         <p className="eyebrow">The store</p>
         <h1 className="section-title mt-2">Wellness products, tested properly</h1>
-        <p className="mt-3 max-w-2xl text-ink-soft">
+        <p className="mt-3 max-w-2xl text-sage">
           Our own range — every batch tested for purity and labelled honestly.
-          Products marked <span className="badge bg-pine text-white">Consult recommended</span>{" "}
+          Products marked <span className="badge bg-olive text-white">Consult recommended</span>{" "}
           work best with expert guidance;{" "}
-          <Link href="/experts" className="font-semibold text-pine hover:underline">
+          <Link href="/experts" className="font-semibold text-olive hover:underline">
             book a consultation
           </Link>{" "}
           if you&apos;re unsure.

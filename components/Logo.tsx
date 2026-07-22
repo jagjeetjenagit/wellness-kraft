@@ -39,7 +39,7 @@ export default function Logo({ variant = "horizontal", className = "" }: LogoPro
   if (variant === "stacked") {
     // Full lockup as shipped; p-3 ≈ the clear-space rule at footer size.
     return (
-      <span className={`inline-block rounded-xl bg-[#FEFAEF] p-3 ${className}`}>
+      <span className={`inline-block rounded-xl bg-cream p-3 ${className}`}>
         <Image
           src={LOGO_SRC}
           alt="Wellness Kraft"
@@ -55,7 +55,7 @@ export default function Logo({ variant = "horizontal", className = "" }: LogoPro
     return (
       <span
         aria-hidden="true"
-        className={`block rounded-md bg-[#FEFAEF] ${className}`}
+        className={`block rounded-md bg-cream ${className}`}
         style={iconCrop}
       />
     );
@@ -69,10 +69,10 @@ export default function Logo({ variant = "horizontal", className = "" }: LogoPro
     <span className={`items-center gap-2.5 ${className}`}>
       <span
         aria-hidden="true"
-        className="block h-9 w-9 shrink-0 rounded-md bg-[#FEFAEF]"
+        className="block h-9 w-9 shrink-0 rounded-md bg-cream"
         style={iconCrop}
       />
-      <span className="whitespace-nowrap font-display text-lg font-semibold uppercase tracking-[0.18em] text-[#334720]">
+      <span className="whitespace-nowrap font-display text-lg font-semibold uppercase tracking-[0.18em] text-olive">
         Wellness Kraft
       </span>
     </span>

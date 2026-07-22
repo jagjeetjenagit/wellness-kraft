@@ -116,7 +116,7 @@ export default function AdminProductsPage() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-xl border border-clay/30 bg-clay-light p-3 text-sm font-semibold text-clay">
+        <p className="mt-4 rounded-xl border border-alert/30 bg-alert/10 p-3 text-sm font-semibold text-alert">
           {error}
         </p>
       )}
@@ -159,7 +159,7 @@ export default function AdminProductsPage() {
               value={String(form.images)}
               onChange={(e) => setForm({ ...form, images: e.target.value })}
             />
-            <p className="mt-1 text-xs text-ink-faint">
+            <p className="mt-1 text-xs text-sage/70">
               Tip: upload photos free at postimages.org, then paste the &ldquo;Direct link&rdquo; here.
             </p>
           </div>
@@ -171,12 +171,12 @@ export default function AdminProductsPage() {
                 ["active", "Visible in the shop"],
               ] as const
             ).map(([key, label]) => (
-              <label key={key} className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+              <label key={key} className="flex items-center gap-2 text-sm font-semibold text-sage">
                 <input
                   type="checkbox"
                   checked={!!form[key]}
                   onChange={(e) => setForm({ ...form, [key]: e.target.checked })}
-                  className="h-4 w-4 accent-pine"
+                  className="h-4 w-4 accent-olive"
                 />
                 {label}
               </label>
@@ -194,11 +194,11 @@ export default function AdminProductsPage() {
       )}
 
       {loading ? (
-        <p className="mt-8 text-ink-soft">Loading products…</p>
+        <p className="mt-8 text-sage">Loading products…</p>
       ) : (
         <div className="card mt-6 overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="border-b border-sand text-xs uppercase tracking-wider text-ink-faint">
+            <thead className="border-b border-sage/30 text-xs uppercase tracking-wider text-sage/70">
               <tr>
                 <th className="p-4">Product</th>
                 <th className="p-4">Price</th>
@@ -210,34 +210,34 @@ export default function AdminProductsPage() {
             </thead>
             <tbody>
               {products.map((p) => (
-                <tr key={p.id} className="border-b border-sand/60 last:border-0">
+                <tr key={p.id} className="border-b border-sage/30/60 last:border-0">
                   <td className="p-4">
-                    <p className="font-semibold text-ink">{p.name}</p>
-                    <p className="text-xs text-ink-faint">SKU {p.sku}</p>
+                    <p className="font-semibold text-charcoal">{p.name}</p>
+                    <p className="text-xs text-sage/70">SKU {p.sku}</p>
                   </td>
                   <td className="p-4 font-semibold">{formatINR(p.price)}</td>
                   <td className="p-4">
                     {p.stock <= 0 ? (
-                      <span className="badge bg-clay text-white">Out of stock</span>
+                      <span className="badge bg-alert text-white">Out of stock</span>
                     ) : p.stock <= 5 ? (
-                      <span className="badge bg-clay-light text-clay">Low: {p.stock} left</span>
+                      <span className="badge bg-alert/10 text-alert">Low: {p.stock} left</span>
                     ) : (
-                      <span className="badge bg-pine-light text-pine">{p.stock} in stock</span>
+                      <span className="badge bg-soft-cream text-olive">{p.stock} in stock</span>
                     )}
                   </td>
-                  <td className="p-4 text-ink-soft">{p.category}</td>
+                  <td className="p-4 text-sage">{p.category}</td>
                   <td className="p-4">
                     {p.active ? (
-                      <span className="badge bg-pine-light text-pine">Live</span>
+                      <span className="badge bg-soft-cream text-olive">Live</span>
                     ) : (
-                      <span className="badge bg-cream text-ink-faint">Hidden</span>
+                      <span className="badge bg-soft-cream text-sage/70">Hidden</span>
                     )}
                   </td>
                   <td className="p-4 text-right">
-                    <button onClick={() => startEdit(p)} className="font-semibold text-pine hover:underline">
+                    <button onClick={() => startEdit(p)} className="font-semibold text-olive hover:underline">
                       Edit
                     </button>
-                    <button onClick={() => remove(p.id, p.name)} className="ml-4 font-semibold text-clay hover:underline">
+                    <button onClick={() => remove(p.id, p.name)} className="ml-4 font-semibold text-alert hover:underline">
                       Delete
                     </button>
                   </td>
@@ -245,7 +245,7 @@ export default function AdminProductsPage() {
               ))}
               {products.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-ink-soft">
+                  <td colSpan={6} className="p-8 text-center text-sage">
                     No products yet — click &ldquo;+ Add product&rdquo; to create your first one.
                   </td>
                 </tr>

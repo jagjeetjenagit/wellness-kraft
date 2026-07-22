@@ -24,9 +24,9 @@ interface AdminOrder {
 const STATUSES = ["PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"];
 
 const payBadge: Record<string, string> = {
-  PAID: "bg-pine-light text-pine",
-  PENDING: "bg-gold/15 text-gold",
-  FAILED: "bg-clay-light text-clay",
+  PAID: "bg-success/10 text-success",
+  PENDING: "bg-sage/15 text-sage",
+  FAILED: "bg-alert/10 text-alert",
 };
 
 export default function AdminOrdersPage() {
@@ -84,8 +84,8 @@ export default function AdminOrdersPage() {
               onClick={() => setFilter(s)}
               className={`rounded-full border px-4 py-2.5 text-xs font-semibold transition-colors sm:py-1.5 ${
                 filter === s
-                  ? "border-pine bg-pine text-white"
-                  : "border-sand bg-white text-ink-soft hover:border-pine hover:text-pine"
+                  ? "border-olive bg-olive text-white"
+                  : "border-sage/30 bg-white text-sage hover:border-olive hover:text-olive"
               }`}
             >
               {s === "ALL" ? "All" : s.charAt(0) + s.slice(1).toLowerCase()}
@@ -95,15 +95,15 @@ export default function AdminOrdersPage() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-xl border border-clay/30 bg-clay-light p-3 text-sm font-semibold text-clay">
+        <p className="mt-4 rounded-xl border border-alert/30 bg-alert/10 p-3 text-sm font-semibold text-alert">
           {error}
         </p>
       )}
 
       {loading ? (
-        <p className="mt-8 text-ink-soft">Loading orders…</p>
+        <p className="mt-8 text-sage">Loading orders…</p>
       ) : filtered.length === 0 ? (
-        <div className="card mt-6 p-10 text-center text-ink-soft">
+        <div className="card mt-6 p-10 text-center text-sage">
           {orders.length === 0
             ? "No orders yet. Once customers pay, orders appear here automatically."
             : "No orders with this status."}
@@ -114,27 +114,27 @@ export default function AdminOrdersPage() {
             <div key={o.id} className="card p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-ink">
+                  <p className="font-semibold text-charcoal">
                     {o.shipName}
-                    <span className="ml-2 text-xs font-normal text-ink-faint">
+                    <span className="ml-2 text-xs font-normal text-sage/70">
                       #{o.id.slice(-8).toUpperCase()} · {formatDateTime(o.createdAt)}
                     </span>
                   </p>
-                  <p className="mt-1 text-sm text-ink-soft">
+                  <p className="mt-1 text-sm text-sage">
                     {o.items.map((i) => `${i.name} × ${i.quantity}`).join(", ")}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`badge ${payBadge[o.paymentStatus] || "bg-cream text-ink-soft"}`}>
+                  <span className={`badge ${payBadge[o.paymentStatus] || "bg-soft-cream text-sage"}`}>
                     {o.paymentStatus.toLowerCase()}
                   </span>
                   <span className="font-bold">{formatINR(o.total)}</span>
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-sand pt-4">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-sage/30 pt-4">
                 <div className="flex items-center gap-2">
-                  <label htmlFor={`status-${o.id}`} className="text-xs font-bold uppercase tracking-wider text-ink-faint">
+                  <label htmlFor={`status-${o.id}`} className="text-xs font-bold uppercase tracking-wider text-sage/70">
                     Delivery status
                   </label>
                   <select
@@ -153,17 +153,17 @@ export default function AdminOrdersPage() {
                 </div>
                 <button
                   onClick={() => setExpanded(expanded === o.id ? null : o.id)}
-                  className="-m-2 p-2 text-sm font-semibold text-pine hover:underline sm:m-0 sm:p-0"
+                  className="-m-2 p-2 text-sm font-semibold text-olive hover:underline sm:m-0 sm:p-0"
                 >
                   {expanded === o.id ? "Hide details" : "Delivery address & details"}
                 </button>
               </div>
 
               {expanded === o.id && (
-                <div className="mt-4 grid gap-4 rounded-xl bg-paper p-4 text-sm sm:grid-cols-2">
+                <div className="mt-4 grid gap-4 rounded-xl bg-cream p-4 text-sm sm:grid-cols-2">
                   <div>
-                    <p className="font-bold uppercase tracking-wider text-ink-faint">Ship to</p>
-                    <p className="mt-1 text-ink-soft">
+                    <p className="font-bold uppercase tracking-wider text-sage/70">Ship to</p>
+                    <p className="mt-1 text-sage">
                       {o.shipName}
                       <br />
                       {o.shipAddress1}
@@ -173,8 +173,8 @@ export default function AdminOrdersPage() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-bold uppercase tracking-wider text-ink-faint">Contact & payment</p>
-                    <p className="mt-1 text-ink-soft">
+                    <p className="font-bold uppercase tracking-wider text-sage/70">Contact & payment</p>
+                    <p className="mt-1 text-sage">
                       {o.shipPhone}
                       <br />
                       {o.shipEmail}

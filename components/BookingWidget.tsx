@@ -19,7 +19,7 @@ export default function BookingWidget({
         <h3 className="font-display text-xl font-semibold">
           Online booking coming soon for {expertName}
         </h3>
-        <p className="mx-auto mt-2 max-w-md text-sm text-ink-soft">
+        <p className="mx-auto mt-2 max-w-md text-sm text-sage">
           This expert&apos;s calendar isn&apos;t connected yet. Send us a message and
           we&apos;ll arrange your consultation personally.
         </p>

@@ -17,13 +17,13 @@ export default function SignInPage() {
           <h1 className="mt-3 font-display text-2xl font-semibold">
             Login isn&apos;t switched on yet
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+          <p className="mt-3 text-sm leading-relaxed text-sage">
             To enable phone-OTP login, add your two Clerk keys to the{" "}
-            <code className="rounded bg-cream px-1.5 py-0.5 text-xs">.env</code> file —
+            <code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">.env</code> file —
             it takes about 5 minutes. Full walkthrough in the README,{" "}
             <strong>step&nbsp;&ldquo;2) Set up login (Clerk)&rdquo;</strong>.
           </p>
-          <p className="mt-3 text-sm text-ink-soft">
+          <p className="mt-3 text-sm text-sage">
             Everything else on the site works without it — browsing, cart and
             booking are all live.
           </p>

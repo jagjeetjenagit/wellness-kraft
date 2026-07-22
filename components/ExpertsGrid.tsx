@@ -34,8 +34,8 @@ export default function ExpertsGrid({ experts }: { experts: ExpertT[] }) {
               onClick={() => setSpecialty(s)}
               className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors sm:py-1.5 ${
                 specialty === s
-                  ? "border-pine bg-pine text-white"
-                  : "border-sand bg-white text-ink-soft hover:border-pine hover:text-pine"
+                  ? "border-olive bg-olive text-white"
+                  : "border-sage/30 bg-white text-sage hover:border-olive hover:text-olive"
               }`}
             >
               {s}
@@ -53,7 +53,7 @@ export default function ExpertsGrid({ experts }: { experts: ExpertT[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="card mt-8 p-12 text-center text-ink-soft">
+        <div className="card mt-8 p-12 text-center text-sage">
           No experts match that search. Try a different specialty.
         </div>
       ) : (

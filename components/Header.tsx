@@ -20,7 +20,7 @@ export default function Header() {
   const { count, ready } = useCart();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-sand bg-paper/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-sage/30 bg-cream/90 backdrop-blur">
       <div className="container-x flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center" aria-label="Wellness Kraft home">
           {/* Horizontal lockup on desktop, icon-only on mobile (per Logo-Usage-Brief) */}
@@ -33,8 +33,8 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm font-semibold transition-colors hover:text-pine ${
-                pathname === item.href ? "text-pine" : "text-ink-soft"
+              className={`text-sm font-semibold transition-colors hover:text-olive ${
+                pathname === item.href ? "text-olive" : "text-sage"
               }`}
             >
               {item.label}
@@ -46,7 +46,7 @@ export default function Header() {
           <AuthButtons />
           <Link
             href="/cart"
-            className="relative rounded-full p-2.5 text-ink-soft transition-colors hover:bg-pine-light hover:text-pine sm:p-2"
+            className="relative rounded-full p-2.5 text-sage transition-colors hover:bg-soft-cream hover:text-olive sm:p-2"
             aria-label={`Cart, ${ready ? count : 0} items`}
           >
             <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
@@ -61,7 +61,7 @@ export default function Header() {
               <circle cx="17.5" cy="20.5" r="1.2" fill="currentColor" />
             </svg>
             {ready && count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-clay px-1 text-[11px] font-bold text-white">
+              <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-olive px-1 text-[11px] font-bold text-cream">
                 {count}
               </span>
             )}
@@ -70,7 +70,7 @@ export default function Header() {
             Book a Consultation
           </Link>
           <button
-            className="rounded-lg p-2.5 text-ink-soft md:hidden"
+            className="rounded-lg p-2.5 text-sage md:hidden"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-label="Toggle menu"
@@ -87,14 +87,14 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav className="border-t border-sand bg-paper md:hidden" aria-label="Mobile">
+        <nav className="border-t border-sage/30 bg-cream md:hidden" aria-label="Mobile">
           <div className="container-x flex flex-col gap-1 py-4">
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-sm font-semibold text-ink-soft hover:bg-pine-light hover:text-pine"
+                className="rounded-lg px-3 py-3 text-sm font-semibold text-sage hover:bg-soft-cream hover:text-olive"
               >
                 {item.label}
               </Link>
@@ -102,14 +102,14 @@ export default function Header() {
             <Link
               href="/sign-in"
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-3 text-sm font-semibold text-ink-soft hover:bg-pine-light hover:text-pine"
+              className="rounded-lg px-3 py-3 text-sm font-semibold text-sage hover:bg-soft-cream hover:text-olive"
             >
               Sign in
             </Link>
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-3 text-sm font-semibold text-ink-soft hover:bg-pine-light hover:text-pine"
+              className="rounded-lg px-3 py-3 text-sm font-semibold text-sage hover:bg-soft-cream hover:text-olive"
             >
               My bookings &amp; orders
             </Link>

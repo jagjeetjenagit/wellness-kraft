@@ -21,8 +21,8 @@ export default function AdminNav() {
           href={l.href}
           className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors sm:py-1.5 ${
             pathname === l.href
-              ? "border-pine bg-pine text-white"
-              : "border-sand bg-white text-ink-soft hover:border-pine hover:text-pine"
+              ? "border-olive bg-olive text-white"
+              : "border-sage/30 bg-white text-sage hover:border-olive hover:text-olive"
           }`}
         >
           {l.label}

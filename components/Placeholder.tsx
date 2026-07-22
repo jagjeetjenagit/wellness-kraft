@@ -25,7 +25,7 @@ export function ExpertPhoto({
   }
   return (
     <div
-      className={`flex items-center justify-center bg-gradient-to-br from-pine to-pine-deep ${className}`}
+      className={`flex items-center justify-center bg-gradient-to-br from-olive to-olive ${className}`}
       role="img"
       aria-label={`Placeholder portrait for ${name}`}
     >
@@ -60,14 +60,14 @@ export function ProductImage({
   }
   return (
     <div
-      className={`flex items-center justify-center bg-gradient-to-br from-cream to-sand ${className}`}
+      className={`flex items-center justify-center bg-gradient-to-br from-soft-cream to-sage/30 ${className}`}
       role="img"
       aria-label={`Product image placeholder for ${name}`}
     >
       <svg
         viewBox="0 0 24 24"
         fill="none"
-        className={`text-pine/40 ${large ? "h-20 w-20" : "h-10 w-10"}`}
+        className={`text-olive/40 ${large ? "h-20 w-20" : "h-10 w-10"}`}
         aria-hidden="true"
       >
         <path

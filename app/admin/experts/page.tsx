@@ -132,7 +132,7 @@ export default function AdminExpertsPage() {
       </div>
 
       {error && (
-        <p className="mt-4 rounded-xl border border-clay/30 bg-clay-light p-3 text-sm font-semibold text-clay">
+        <p className="mt-4 rounded-xl border border-alert/30 bg-alert/10 p-3 text-sm font-semibold text-alert">
           {error}
         </p>
       )}
@@ -180,12 +180,12 @@ export default function AdminExpertsPage() {
           {productOptions.length > 0 && (
             <div className="sm:col-span-2">
               <label className="label">Products this expert recommends (shown on their profile)</label>
-              <div className="grid gap-2 rounded-xl border border-sand bg-paper p-4 sm:grid-cols-2">
+              <div className="grid gap-2 rounded-xl border border-sage/30 bg-cream p-4 sm:grid-cols-2">
                 {productOptions.map((p) => (
-                  <label key={p.id} className="flex items-center gap-2 text-sm text-ink-soft">
+                  <label key={p.id} className="flex items-center gap-2 text-sm text-sage">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 accent-pine"
+                      className="h-4 w-4 accent-olive"
                       checked={selectedProducts.includes(p.id)}
                       onChange={(e) =>
                         setSelectedProducts((prev) =>
@@ -207,12 +207,12 @@ export default function AdminExpertsPage() {
                 ["active", "Visible on the site"],
               ] as const
             ).map(([key, label]) => (
-              <label key={key} className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+              <label key={key} className="flex items-center gap-2 text-sm font-semibold text-sage">
                 <input
                   type="checkbox"
                   checked={!!form[key]}
                   onChange={(e) => setForm({ ...form, [key]: e.target.checked })}
-                  className="h-4 w-4 accent-pine"
+                  className="h-4 w-4 accent-olive"
                 />
                 {label}
               </label>
@@ -230,11 +230,11 @@ export default function AdminExpertsPage() {
       )}
 
       {loading ? (
-        <p className="mt-8 text-ink-soft">Loading experts…</p>
+        <p className="mt-8 text-sage">Loading experts…</p>
       ) : (
         <div className="card mt-6 overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">
-            <thead className="border-b border-sand text-xs uppercase tracking-wider text-ink-faint">
+            <thead className="border-b border-sage/30 text-xs uppercase tracking-wider text-sage/70">
               <tr>
                 <th className="p-4">Expert</th>
                 <th className="p-4">Booking link</th>
@@ -245,33 +245,33 @@ export default function AdminExpertsPage() {
             </thead>
             <tbody>
               {experts.map((ex) => (
-                <tr key={ex.id} className="border-b border-sand/60 last:border-0">
+                <tr key={ex.id} className="border-b border-sage/30/60 last:border-0">
                   <td className="p-4">
-                    <p className="font-semibold text-ink">{ex.name}</p>
-                    <p className="text-xs text-ink-faint">{ex.specialty}</p>
+                    <p className="font-semibold text-charcoal">{ex.name}</p>
+                    <p className="text-xs text-sage/70">{ex.specialty}</p>
                   </td>
                   <td className="p-4">
                     {ex.calLink ? (
-                      <span className="badge bg-pine-light text-pine">cal.com/{ex.calLink}</span>
+                      <span className="badge bg-soft-cream text-olive">cal.com/{ex.calLink}</span>
                     ) : (
-                      <span className="badge bg-clay-light text-clay">Not connected</span>
+                      <span className="badge bg-alert/10 text-alert">Not connected</span>
                     )}
                   </td>
-                  <td className="p-4 text-ink-soft">
+                  <td className="p-4 text-sage">
                     ★ {ex.rating.toFixed(1)} ({ex.reviewCount})
                   </td>
                   <td className="p-4">
                     {ex.active ? (
-                      <span className="badge bg-pine-light text-pine">Live</span>
+                      <span className="badge bg-soft-cream text-olive">Live</span>
                     ) : (
-                      <span className="badge bg-cream text-ink-faint">Hidden</span>
+                      <span className="badge bg-soft-cream text-sage/70">Hidden</span>
                     )}
                   </td>
                   <td className="p-4 text-right">
-                    <button onClick={() => startEdit(ex)} className="font-semibold text-pine hover:underline">
+                    <button onClick={() => startEdit(ex)} className="font-semibold text-olive hover:underline">
                       Edit
                     </button>
-                    <button onClick={() => remove(ex.id, ex.name)} className="ml-4 font-semibold text-clay hover:underline">
+                    <button onClick={() => remove(ex.id, ex.name)} className="ml-4 font-semibold text-alert hover:underline">
                       Delete
                     </button>
                   </td>
@@ -279,7 +279,7 @@ export default function AdminExpertsPage() {
               ))}
               {experts.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-ink-soft">
+                  <td colSpan={5} className="p-8 text-center text-sage">
                     No experts yet — click &ldquo;+ Add expert&rdquo; to create the first profile.
                   </td>
                 </tr>

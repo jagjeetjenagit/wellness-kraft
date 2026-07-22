@@ -68,11 +68,11 @@ export default async function AdminOverviewPage() {
             key={c.label}
             href={c.href}
             className={`card p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift ${
-              c.warn ? "border-clay/50" : c.highlight ? "border-pine/50" : ""
+              c.warn ? "border-alert/50" : c.highlight ? "border-olive/50" : ""
             }`}
           >
-            <p className="text-xs font-bold uppercase tracking-wider text-ink-faint">{c.label}</p>
-            <p className={`mt-2 font-display text-3xl font-semibold ${c.warn ? "text-clay" : "text-ink"}`}>
+            <p className="text-xs font-bold uppercase tracking-wider text-sage/70">{c.label}</p>
+            <p className={`mt-2 font-display text-3xl font-semibold ${c.warn ? "text-alert" : "text-charcoal"}`}>
               {c.value}
             </p>
           </Link>

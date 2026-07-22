@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: Props) {
     <>
       <DemoBanner />
       <div className="container-x py-12 sm:py-16">
-        <Link href="/shop" className="text-sm font-semibold text-pine hover:underline">
+        <Link href="/shop" className="text-sm font-semibold text-olive hover:underline">
           ← Back to shop
         </Link>
 
@@ -46,40 +46,40 @@ export default async function ProductPage({ params }: Props) {
           <ProductGallery name={product.name} images={product.images} />
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-ink-faint">
+            <p className="text-xs font-bold uppercase tracking-wider text-sage/70">
               {product.category} · SKU {product.sku}
             </p>
-            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl">
+            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-charcoal sm:text-4xl">
               {product.name}
             </h1>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <span className="text-3xl font-bold text-ink">{formatINR(product.price)}</span>
+              <span className="text-3xl font-bold text-charcoal">{formatINR(product.price)}</span>
               {out ? (
-                <span className="badge bg-ink/80 text-white">Out of stock</span>
+                <span className="badge bg-charcoal/80 text-white">Out of stock</span>
               ) : low ? (
-                <span className="badge bg-clay-light text-clay">Only {product.stock} left</span>
+                <span className="badge bg-alert/10 text-alert">Only {product.stock} left</span>
               ) : (
-                <span className="badge bg-pine-light text-pine">In stock</span>
+                <span className="badge bg-soft-cream text-olive">In stock</span>
               )}
             </div>
 
             {product.consultRecommended && (
-              <div className="mt-6 rounded-2xl border border-pine/25 bg-pine-mist p-4">
-                <p className="text-sm font-semibold text-pine-deep">
+              <div className="mt-6 rounded-2xl border border-olive/25 bg-soft-cream p-4">
+                <p className="text-sm font-semibold text-olive">
                   💬 We recommend a consultation with this product
                 </p>
-                <p className="mt-1 text-sm text-ink-soft">
+                <p className="mt-1 text-sm text-sage">
                   Dosage and suitability vary from person to person. A short
                   consultation makes sure this is right for you.{" "}
-                  <Link href="/experts" className="font-semibold text-pine hover:underline">
+                  <Link href="/experts" className="font-semibold text-olive hover:underline">
                     Book an expert →
                   </Link>
                 </p>
               </div>
             )}
 
-            <div className="mt-6 whitespace-pre-line leading-relaxed text-ink-soft">
+            <div className="mt-6 whitespace-pre-line leading-relaxed text-sage">
               {product.description}
             </div>
 
@@ -87,13 +87,13 @@ export default async function ProductPage({ params }: Props) {
               <AddToCartButton product={product} />
             </div>
 
-            <ul className="mt-8 space-y-2 border-t border-sand pt-6 text-sm text-ink-soft">
+            <ul className="mt-8 space-y-2 border-t border-sage/30 pt-6 text-sm text-sage">
               <li>✓ Batch-tested for purity and heavy metals</li>
               <li>✓ Secure checkout — UPI, cards, netbanking</li>
               <li>✓ Ships across India in 3–7 working days</li>
             </ul>
 
-            <p className="mt-8 text-xs leading-relaxed text-ink-faint">
+            <p className="mt-8 text-xs leading-relaxed text-sage/70">
               This product supports general wellness and is not intended to
               diagnose, treat, cure or prevent any disease. Consult a qualified
               professional before use if you are pregnant, nursing, or on

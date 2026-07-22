@@ -8,27 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Wellness Kraft palette — keep in sync with the CSS variables in
+      // app/globals.css and client-feedback/Website-Color-Palette.pdf.
       colors: {
-        paper: "#FAF7F1",
-        cream: "#F3EDE2",
-        sand: "#E7DFD0",
-        ink: {
-          DEFAULT: "#1B2823",
-          soft: "#43524B",
-          faint: "#6B7A72",
-        },
-        pine: {
-          DEFAULT: "#0E6B4F",
-          dark: "#0A523D",
-          deep: "#123B2F",
-          light: "#E4F1EA",
-          mist: "#F1F7F3",
-        },
-        clay: {
-          DEFAULT: "#C4633C",
-          light: "#F7E9E1",
-        },
-        gold: "#C79A3B",
+        olive: "#334720", // --deep-olive: logo, headings, primary buttons
+        cream: "#FEFAEF", // --cream: main background, matches logo
+        charcoal: "#1E1E1E", // --charcoal: body text
+        sage: "#6B7A5E", // --muted-sage: secondary text, borders
+        "soft-cream": "#F4F1E6", // --soft-cream: alternating section backgrounds
+        "fresh-sage": "#8FA876", // --fresh-sage: hover states, secondary buttons
+        turmeric: "#C98A3E", // --turmeric-gold: bestseller/featured tags ONLY
+        alert: "#B23B3B", // --alert-red: errors, out-of-stock
+        success: "#3D7A4E", // --success-green: order success, in-stock
       },
       fontFamily: {
         display: ["var(--font-display)", "Georgia", "serif"],

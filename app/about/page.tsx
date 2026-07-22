@@ -30,13 +30,13 @@ export default function AboutPage() {
         <h1 className="section-title mt-2">
           Good health advice shouldn&apos;t be this hard to find.
         </h1>
-        <p className="mt-6 text-lg leading-relaxed text-ink-soft">
+        <p className="mt-6 text-lg leading-relaxed text-sage">
           Wellness Kraft started with a simple frustration: it&apos;s easier to buy a
           supplement than to find out whether you actually need it. So we built
           both halves of the answer — verified experts you can talk to in
           minutes, and a small range of medically-tested products they trust.
         </p>
-        <p className="mt-4 leading-relaxed text-ink-soft">
+        <p className="mt-4 leading-relaxed text-sage">
           Every expert on this platform has had their credentials verified.
           Every product in our store is our own, batch-tested, and labelled
           honestly. And the two work together: after a consultation, your
@@ -47,17 +47,17 @@ export default function AboutPage() {
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         {VALUES.map((v) => (
           <div key={v.title} className="card p-6">
-            <h2 className="font-display text-xl font-semibold text-ink">{v.title}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{v.text}</p>
+            <h2 className="font-display text-xl font-semibold text-charcoal">{v.title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-sage">{v.text}</p>
           </div>
         ))}
       </div>
 
-      <div className="mt-14 rounded-3xl bg-pine-mist p-8 text-center sm:p-12">
+      <div className="mt-14 rounded-3xl bg-soft-cream p-8 text-center sm:p-12">
         <h2 className="font-display text-2xl font-semibold sm:text-3xl">
           Start with a conversation
         </h2>
-        <p className="mx-auto mt-2 max-w-lg text-ink-soft">
+        <p className="mx-auto mt-2 max-w-lg text-sage">
           Fifteen minutes with the right expert saves months of guesswork.
         </p>
         <Link href="/experts" className="btn-primary mt-6">

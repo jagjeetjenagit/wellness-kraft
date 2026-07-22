@@ -36,19 +36,19 @@ export default async function HomePage() {
       <DemoBanner />
 
       {/* HERO */}
-      <section className="texture-dots relative overflow-hidden border-b border-sand">
+      <section className="texture-dots relative overflow-hidden border-b border-sage/30">
         <div
-          className="pointer-events-none absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full bg-pine-light blur-3xl"
+          className="pointer-events-none absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full bg-soft-cream blur-3xl"
           aria-hidden="true"
         />
         <div className="container-x relative py-14 sm:py-28">
           <div className="max-w-2xl">
             <p className="eyebrow animate-rise-1">Consultations · Wellness Store</p>
-            <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-6xl">
+            <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.1] tracking-tight text-charcoal sm:text-6xl">
               Feel better, with an expert{" "}
-              <em className="text-pine">actually in your corner.</em>
+              <em className="text-olive">actually in your corner.</em>
             </h1>
-            <p className="mt-6 max-w-xl animate-rise-3 text-lg leading-relaxed text-ink-soft">
+            <p className="mt-6 max-w-xl animate-rise-3 text-lg leading-relaxed text-sage">
               Book 1-on-1 consultations with verified health professionals, and
               shop our own medically-tested wellness products — recommended only
               when you truly need them.
@@ -67,11 +67,11 @@ export default async function HomePage() {
           <div className="mt-12 grid gap-4 sm:mt-16 sm:grid-cols-3">
             {TRUST.map((t) => (
               <div key={t.title} className="card p-5">
-                <p className="flex items-center gap-2 font-semibold text-ink">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-pine-light text-pine" aria-hidden="true">✓</span>
+                <p className="flex items-center gap-2 font-semibold text-charcoal">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-soft-cream text-olive" aria-hidden="true">✓</span>
                   {t.title}
                 </p>
-                <p className="mt-1.5 text-sm text-ink-soft">{t.text}</p>
+                <p className="mt-1.5 text-sm text-sage">{t.text}</p>
               </div>
             ))}
           </div>
@@ -97,16 +97,16 @@ export default async function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="bg-pine-mist">
+      <section className="bg-soft-cream">
         <div className="container-x py-12 sm:py-20">
           <p className="eyebrow">How it works</p>
           <h2 className="section-title mt-2">Three simple steps</h2>
           <div className="mt-10 grid gap-8 md:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n} className="relative">
-                <span className="font-display text-6xl font-semibold text-pine/20">{s.n}</span>
-                <h3 className="mt-2 font-display text-xl font-semibold text-ink">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.text}</p>
+                <span className="font-display text-6xl font-semibold text-olive/20">{s.n}</span>
+                <h3 className="mt-2 font-display text-xl font-semibold text-charcoal">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-sage">{s.text}</p>
               </div>
             ))}
           </div>
@@ -136,7 +136,7 @@ export default async function HomePage() {
 
       {/* CLOSING CTA */}
       <section className="container-x pb-4">
-        <div className="overflow-hidden rounded-3xl bg-pine-deep px-5 py-10 text-center text-white sm:px-12 sm:py-14">
+        <div className="overflow-hidden rounded-3xl bg-olive px-5 py-10 text-center text-white sm:px-12 sm:py-14">
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">
             Not sure where to start?
           </h2>
@@ -146,7 +146,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/experts"
-            className="btn mt-8 bg-white text-pine-deep hover:-translate-y-0.5 hover:shadow-lift"
+            className="btn mt-8 bg-white text-olive hover:-translate-y-0.5 hover:shadow-lift"
           >
             Book a Consultation
           </Link>

@@ -15,7 +15,7 @@ export default function AuthButtons() {
       // so the 320px header never overflows.
       <Link
         href="/sign-in"
-        className="hidden text-sm font-semibold text-ink-soft hover:text-pine sm:block"
+        className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
       >
         Sign in
       </Link>
@@ -26,7 +26,7 @@ export default function AuthButtons() {
       <SignedIn>
         <Link
           href="/dashboard"
-          className="hidden text-sm font-semibold text-ink-soft hover:text-pine sm:block"
+          className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
         >
           My account
         </Link>
@@ -35,7 +35,7 @@ export default function AuthButtons() {
       <SignedOut>
         <Link
           href="/sign-in"
-          className="hidden text-sm font-semibold text-ink-soft hover:text-pine sm:block"
+          className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
         >
           Sign in
         </Link>

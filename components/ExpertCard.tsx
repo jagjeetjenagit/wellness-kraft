@@ -13,16 +13,16 @@ export default function ExpertCard({ expert }: { expert: ExpertT }) {
           className="h-52 w-full"
         />
         <div className="flex flex-1 flex-col p-5">
-          <p className="text-xs font-bold uppercase tracking-wider text-pine">
+          <p className="text-xs font-bold uppercase tracking-wider text-olive">
             {expert.specialty}
           </p>
-          <h3 className="mt-1 font-display text-xl font-semibold text-ink group-hover:text-pine">
+          <h3 className="mt-1 font-display text-xl font-semibold text-charcoal group-hover:text-olive">
             {expert.name}
           </h3>
           <div className="mt-2">
             <Stars rating={expert.rating} count={expert.reviewCount} />
           </div>
-          <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{expert.bio}</p>
+          <p className="mt-3 line-clamp-2 text-sm text-sage">{expert.bio}</p>
           <span className="btn-primary mt-5 w-full">Book a Consultation</span>
         </div>
       </Link>

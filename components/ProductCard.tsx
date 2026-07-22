@@ -15,27 +15,27 @@ export default function ProductCard({ product }: { product: ProductT }) {
           className="h-48 w-full"
         />
         {product.consultRecommended && (
-          <span className="badge absolute left-3 top-3 bg-pine text-white">
+          <span className="badge absolute left-3 top-3 bg-olive text-white">
             Consult recommended
           </span>
         )}
         {out && (
-          <span className="badge absolute right-3 top-3 bg-ink/80 text-white">
+          <span className="badge absolute right-3 top-3 bg-alert text-white">
             Out of stock
           </span>
         )}
       </Link>
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-xs font-bold uppercase tracking-wider text-ink-faint">
+        <p className="text-xs font-bold uppercase tracking-wider text-sage/70">
           {product.category}
         </p>
         <Link href={`/product/${product.slug}`}>
-          <h3 className="mt-1 font-display text-lg font-semibold leading-snug text-ink group-hover:text-pine">
+          <h3 className="mt-1 font-display text-lg font-semibold leading-snug text-charcoal group-hover:text-olive">
             {product.name}
           </h3>
         </Link>
         <div className="mt-auto flex items-center justify-between pt-4">
-          <span className="text-lg font-bold text-ink">{formatINR(product.price)}</span>
+          <span className="text-lg font-bold text-charcoal">{formatINR(product.price)}</span>
           <AddToCartButton product={product} compact />
         </div>
       </div>

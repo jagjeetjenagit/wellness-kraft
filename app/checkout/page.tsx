@@ -44,7 +44,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
 
   if (!ready) {
-    return <div className="container-x py-24 text-center text-ink-soft">Loading…</div>;
+    return <div className="container-x py-24 text-center text-sage">Loading…</div>;
   }
 
   if (items.length === 0 && status !== "verifying") {
@@ -92,7 +92,7 @@ export default function CheckoutPage() {
         description: "Order payment",
         order_id: data.razorpayOrderId,
         prefill: { name: form.name, email: form.email, contact: form.phone },
-        theme: { color: "#0E6B4F" },
+        theme: { color: "#334720" },
         handler: async (response: {
           razorpay_order_id: string;
           razorpay_payment_id: string;
@@ -157,7 +157,7 @@ export default function CheckoutPage() {
           ))}
 
           {error && (
-            <div className="rounded-xl border border-clay/30 bg-clay-light p-4 text-sm font-semibold text-clay sm:col-span-2">
+            <div className="rounded-xl border border-alert/30 bg-alert/10 p-4 text-sm font-semibold text-alert sm:col-span-2">
               {error}
             </div>
           )}
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
                 ? "Confirming your payment…"
                 : `Pay ${formatINR(total)} securely`}
           </button>
-          <p className="text-center text-xs text-ink-faint sm:col-span-2">
+          <p className="text-center text-xs text-sage/70 sm:col-span-2">
             Payments are handled by Razorpay. We never see or store your card details.
           </p>
         </form>
@@ -183,14 +183,14 @@ export default function CheckoutPage() {
           <ul className="mt-4 space-y-3 text-sm">
             {items.map((i) => (
               <li key={i.id} className="flex justify-between gap-3">
-                <span className="text-ink-soft">
-                  {i.name} <span className="text-ink-faint">× {i.quantity}</span>
+                <span className="text-sage">
+                  {i.name} <span className="text-sage/70">× {i.quantity}</span>
                 </span>
                 <span className="font-semibold">{formatINR(i.price * i.quantity)}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex justify-between border-t border-sand pt-4 font-bold">
+          <div className="mt-4 flex justify-between border-t border-sage/30 pt-4 font-bold">
             <span>Total</span>
             <span>{formatINR(total)}</span>
           </div>

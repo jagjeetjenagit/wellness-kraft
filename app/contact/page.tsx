@@ -15,7 +15,7 @@ export default function ContactPage() {
         <div>
           <p className="eyebrow">Contact</p>
           <h1 className="section-title mt-2">We&apos;re happy to help</h1>
-          <p className="mt-4 leading-relaxed text-ink-soft">
+          <p className="mt-4 leading-relaxed text-sage">
             Questions about a consultation, an order, or which expert is right
             for you? Send us a message and a real person will reply — usually
             within one working day.
@@ -23,28 +23,28 @@ export default function ContactPage() {
 
           <dl className="mt-8 space-y-5 text-sm">
             <div>
-              <dt className="font-bold uppercase tracking-wider text-ink-faint">Consultations</dt>
-              <dd className="mt-1 text-ink-soft">
+              <dt className="font-bold uppercase tracking-wider text-sage/70">Consultations</dt>
+              <dd className="mt-1 text-sage">
                 Fastest way:{" "}
-                <Link href="/experts" className="font-semibold text-pine hover:underline">
+                <Link href="/experts" className="font-semibold text-olive hover:underline">
                   book directly on an expert&apos;s calendar
                 </Link>
                 . Need to reschedule? Use the link in your confirmation email.
               </dd>
             </div>
             <div>
-              <dt className="font-bold uppercase tracking-wider text-ink-faint">Orders</dt>
-              <dd className="mt-1 text-ink-soft">
+              <dt className="font-bold uppercase tracking-wider text-sage/70">Orders</dt>
+              <dd className="mt-1 text-sage">
                 Track any order from{" "}
-                <Link href="/dashboard" className="font-semibold text-pine hover:underline">
+                <Link href="/dashboard" className="font-semibold text-olive hover:underline">
                   your dashboard
                 </Link>
                 . For delivery issues, message us with your order number.
               </dd>
             </div>
             <div>
-              <dt className="font-bold uppercase tracking-wider text-ink-faint">Hours</dt>
-              <dd className="mt-1 text-ink-soft">Monday–Saturday, 10:00–18:00 IST</dd>
+              <dt className="font-bold uppercase tracking-wider text-sage/70">Hours</dt>
+              <dd className="mt-1 text-sage">Monday–Saturday, 10:00–18:00 IST</dd>
             </div>
           </dl>
         </div>
