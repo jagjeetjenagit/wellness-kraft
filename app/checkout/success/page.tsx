@@ -43,7 +43,7 @@ export default async function OrderSuccessPage({
 
       {order && (
         <div className="card mt-8 w-full max-w-md p-6 text-left">
-          <h2 className="font-display text-lg font-semibold">What you ordered</h2>
+          <h2 className="font-display text-xl font-semibold">What you ordered</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {order.items.map((i) => (
               <li key={i.id} className="flex justify-between">

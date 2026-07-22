@@ -16,7 +16,7 @@ export default function ExpertCard({ expert }: { expert: ExpertT }) {
           <p className="text-xs font-bold uppercase tracking-wider text-olive">
             {expert.specialty}
           </p>
-          <h3 className="mt-1 font-display text-xl font-semibold text-charcoal group-hover:text-olive">
+          <h3 className="mt-1 font-display text-2xl font-semibold text-charcoal group-hover:text-olive">
             {expert.name}
           </h3>
           <div className="mt-2">

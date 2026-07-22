@@ -55,13 +55,13 @@ export default function AboutPage() {
 
       {/* WHAT WE STAND FOR */}
       <div className="mt-14">
-        <h2 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
+        <h2 className="font-display text-3xl font-semibold text-olive sm:text-4xl">
           What We Stand For
         </h2>
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {PRINCIPLES.map((p) => (
             <div key={p.title} className="card p-6">
-              <h3 className="font-display text-xl font-semibold text-charcoal">{p.title}</h3>
+              <h3 className="font-display text-2xl font-semibold text-charcoal">{p.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-charcoal/75">{p.text}</p>
             </div>
           ))}
@@ -72,7 +72,7 @@ export default function AboutPage() {
           TODO(client): add doctor bios, qualifications, and photos here
           once finalised. */}
       <div className="mt-14">
-        <h2 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
+        <h2 className="font-display text-3xl font-semibold text-olive sm:text-4xl">
           Our Team
         </h2>
         <div className="mt-6 rounded-2xl border border-dashed border-sage/40 bg-soft-cream p-8 text-center">
@@ -83,7 +83,7 @@ export default function AboutPage() {
       </div>
 
       <div className="mt-14 rounded-3xl bg-soft-cream p-8 text-center sm:p-12">
-        <h2 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
+        <h2 className="font-display text-3xl font-semibold text-olive sm:text-4xl">
           Start with a conversation
         </h2>
         <p className="mx-auto mt-2 max-w-lg text-charcoal/75">

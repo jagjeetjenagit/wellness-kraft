@@ -41,7 +41,7 @@ export default function AdminBookingsPage() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold">Bookings ({bookings.length})</h2>
+      <h2 className="font-display text-3xl font-semibold">Bookings ({bookings.length})</h2>
       <p className="mt-2 max-w-2xl text-sm text-charcoal/75">
         Bookings appear here automatically once the Cal.com webhook is connected
         (README, &ldquo;Cal.com&rdquo; section). You can always see every booking in your

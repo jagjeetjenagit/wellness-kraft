@@ -127,7 +127,7 @@ export default function AdminExpertsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-2xl font-semibold">Experts ({experts.length})</h2>
+        <h2 className="font-display text-3xl font-semibold">Experts ({experts.length})</h2>
         <button onClick={startNew} className="btn-primary">+ Add expert</button>
       </div>
 
@@ -139,7 +139,7 @@ export default function AdminExpertsPage() {
 
       {editing && (
         <form onSubmit={save} className="card mt-6 grid gap-4 p-6 sm:grid-cols-2">
-          <h3 className="font-display text-lg font-semibold sm:col-span-2">
+          <h3 className="font-display text-xl font-semibold sm:col-span-2">
             {editing === "new" ? "New expert" : "Edit expert"}
           </h3>
           <div>

@@ -16,7 +16,7 @@ export default function BookingWidget({
   if (!calLink) {
     return (
       <div className="card p-8 text-center">
-        <h3 className="font-display text-xl font-semibold">
+        <h3 className="font-display text-2xl font-semibold">
           Online booking coming soon for {expertName}
         </h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-charcoal/75">

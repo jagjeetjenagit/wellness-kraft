@@ -14,7 +14,7 @@ export default function SignInPage() {
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
         <div className="card max-w-lg p-8 text-center">
           <p className="eyebrow">Almost there</p>
-          <h1 className="mt-3 font-display text-2xl font-semibold">
+          <h1 className="mt-3 font-display text-3xl font-semibold">
             Login isn&apos;t switched on yet
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-charcoal/75">

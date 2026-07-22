@@ -72,7 +72,7 @@ export default function Logo({ variant = "horizontal", className = "" }: LogoPro
         className="block h-9 w-9 shrink-0 rounded-md bg-cream"
         style={iconCrop}
       />
-      <span className="whitespace-nowrap font-display text-lg font-semibold uppercase tracking-[0.18em] text-olive">
+      <span className="whitespace-nowrap font-display text-xl font-semibold uppercase tracking-[0.18em] text-olive">
         Wellness Kraft
       </span>
     </span>

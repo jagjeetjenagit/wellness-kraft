@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Albert_Sans } from "next/font/google";
+import { Cormorant_Garamond, Albert_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -8,8 +8,9 @@ import Analytics from "@/components/Analytics";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { siteUrl } from "@/lib/config";
 
-// Serif headings echo the "WELLNESS KRAFT" wordmark (see Logo-Usage-Brief)
-const playfair = Playfair_Display({
+// Refined serif to echo the thin inscriptional caps of the "WELLNESS
+// KRAFT" wordmark — Cormorant is one of the faces named in the brief.
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
@@ -52,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
   const inner = (
-    <html lang="en" className={`${playfair.variable} ${albertSans.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${albertSans.variable}`}>
       <body>
         <CartProvider>
           <Header />

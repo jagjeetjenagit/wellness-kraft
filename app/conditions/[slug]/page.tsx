@@ -53,7 +53,7 @@ export default function ConditionPage({ params }: Props) {
       </div>
 
       <div className="mt-12 rounded-3xl bg-soft-cream p-8 text-center sm:p-12">
-        <h2 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
+        <h2 className="font-display text-3xl font-semibold text-olive sm:text-4xl">
           Talk it through with an expert
         </h2>
         <p className="mx-auto mt-2 max-w-lg text-charcoal/75">
