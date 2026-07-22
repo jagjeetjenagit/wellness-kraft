@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     return (
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
         <div className="card max-w-lg p-8 text-center">
-          <h1 className="font-display text-3xl font-semibold">Dashboard needs login first</h1>
+          <h1 className="font-display text-2xl font-semibold">Dashboard needs login first</h1>
           <p className="mt-3 text-sm text-charcoal/75">
             Set up Clerk (README step 2) to enable customer accounts, then this
             page will show each customer their bookings and orders.
@@ -41,7 +41,7 @@ export default async function DashboardPage() {
     return (
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
         <div className="card max-w-lg p-8 text-center">
-          <h1 className="font-display text-3xl font-semibold">Please sign in</h1>
+          <h1 className="font-display text-2xl font-semibold">Please sign in</h1>
           <Link href="/sign-in" className="btn-primary mt-6">Sign in</Link>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
         {/* Bookings */}
         <section>
-          <h2 className="font-display text-3xl font-semibold">My consultations</h2>
+          <h2 className="font-display text-2xl font-semibold">My consultations</h2>
           {bookings.length === 0 ? (
             <div className="card mt-4 p-8 text-center">
               <p className="text-sm text-charcoal/75">No consultations booked yet.</p>
@@ -135,7 +135,7 @@ export default async function DashboardPage() {
 
         {/* Orders */}
         <section>
-          <h2 className="font-display text-3xl font-semibold">My orders</h2>
+          <h2 className="font-display text-2xl font-semibold">My orders</h2>
           {orders.length === 0 ? (
             <div className="card mt-4 p-8 text-center">
               <p className="text-sm text-charcoal/75">No orders yet.</p>

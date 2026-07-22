@@ -61,8 +61,8 @@ export default function Logo({ variant = "horizontal", className = "" }: LogoPro
     );
   }
 
-  // horizontal: cropped mark + wordmark as live text (serif, wide tracking,
-  // deep olive #334720 — exact logo hex per the brief).
+  // horizontal: cropped mark + wordmark as live text in the site sans —
+  // clean and readable at navbar size (the logo image keeps its own serif).
   // TODO(client assets): replace the text with the real horizontal lockup
   // once an SVG / transparent PNG is provided.
   return (
@@ -72,7 +72,7 @@ export default function Logo({ variant = "horizontal", className = "" }: LogoPro
         className="block h-9 w-9 shrink-0 rounded-md bg-cream"
         style={iconCrop}
       />
-      <span className="whitespace-nowrap font-display text-xl font-semibold uppercase tracking-[0.18em] text-olive">
+      <span className="whitespace-nowrap text-xl font-bold tracking-tight text-olive">
         Wellness Kraft
       </span>
     </span>

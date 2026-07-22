@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Albert_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -8,19 +8,14 @@ import Analytics from "@/components/Analytics";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { siteUrl } from "@/lib/config";
 
-// Refined serif to echo the thin inscriptional caps of the "WELLNESS
-// KRAFT" wordmark — Cormorant is one of the faces named in the brief.
-const cormorant = Cormorant_Garamond({
+// One clean professional sans for the whole site (Practo-style).
+// Serif experiments (Playfair, Cormorant) read decorative next to the
+// clinical, trustworthy tone the client wants — the logo image keeps
+// its own serif lettering.
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
-
-const albertSans = Albert_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
+  variable: "--font-sans",
 });
 
 export const viewport: Viewport = {
@@ -53,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
   const inner = (
-    <html lang="en" className={`${cormorant.variable} ${albertSans.variable}`}>
+    <html lang="en" className={inter.variable}>
       <body>
         <CartProvider>
           <Header />

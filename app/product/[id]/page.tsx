@@ -49,7 +49,7 @@ export default async function ProductPage({ params }: Props) {
             <p className="text-xs font-bold uppercase tracking-wider text-sage/70">
               {product.category} · SKU {product.sku}
             </p>
-            <h1 className="mt-2 font-display text-4xl font-semibold leading-tight text-charcoal sm:text-5xl">
+            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-charcoal sm:text-4xl">
               {product.name}
             </h1>
 

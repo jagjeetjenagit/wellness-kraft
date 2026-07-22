@@ -30,7 +30,7 @@ export default function ProductCard({ product }: { product: ProductT }) {
           {product.category}
         </p>
         <Link href={`/product/${product.slug}`}>
-          <h3 className="mt-1 font-display text-xl font-semibold leading-snug text-charcoal group-hover:text-olive">
+          <h3 className="mt-1 font-display text-lg font-semibold leading-snug text-charcoal group-hover:text-olive">
             {product.name}
           </h3>
         </Link>

@@ -29,7 +29,7 @@ export function ExpertPhoto({
       role="img"
       aria-label={`Placeholder portrait for ${name}`}
     >
-      <span className="font-display text-4xl font-semibold text-white/90">
+      <span className="font-display text-3xl font-semibold text-white/90">
         {initials(name)}
       </span>
     </div>

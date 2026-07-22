@@ -21,9 +21,11 @@ const config: Config = {
         alert: "#B23B3B", // --alert-red: errors, out-of-stock
         success: "#3D7A4E", // --success-green: order success, in-stock
       },
+      // Single professional sans; font-display kept as an alias so the
+      // many existing font-display classes keep working.
       fontFamily: {
-        display: ["var(--font-display)", "Georgia", "serif"],
-        body: ["var(--font-body)", "system-ui", "sans-serif"],
+        display: ["var(--font-sans)", "system-ui", "sans-serif"],
+        body: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       boxShadow: {
         card: "0 1px 2px rgba(27,40,35,0.06), 0 8px 24px -12px rgba(27,40,35,0.14)",

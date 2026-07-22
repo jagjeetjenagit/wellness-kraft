@@ -24,11 +24,10 @@
   body {
     @apply bg-cream text-charcoal font-body antialiased;
   }
-  /* Headings use the serif display face to match the logo wordmark */
   h1,
   h2,
   h3 {
-    @apply font-display;
+    @apply font-display tracking-tight;
   }
   ::selection {
     background: var(--deep-olive);
@@ -68,9 +67,8 @@
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.18em] text-olive;
   }
-  /* Cormorant runs visually smaller than the sans, hence the larger steps */
   .section-title {
-    @apply font-display text-4xl font-semibold tracking-tight text-olive sm:text-5xl;
+    @apply font-display text-3xl font-bold tracking-tight text-olive sm:text-4xl;
   }
 }
 

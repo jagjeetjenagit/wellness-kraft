@@ -50,7 +50,7 @@ export default async function ExpertProfilePage({ params }: Props) {
                 <p className="text-xs font-bold uppercase tracking-wider text-olive">
                   {expert.specialty}
                 </p>
-                <h1 className="mt-1 font-display text-3xl font-semibold text-charcoal">
+                <h1 className="mt-1 font-display text-2xl font-semibold text-charcoal">
                   {expert.name}
                 </h1>
                 <div className="mt-3">
@@ -74,7 +74,7 @@ export default async function ExpertProfilePage({ params }: Props) {
 
           {/* Bio + booking */}
           <div>
-            <h2 className="font-display text-3xl font-semibold text-charcoal">
+            <h2 className="font-display text-2xl font-semibold text-charcoal">
               About {expert.name.split(" ")[0] === "Dr." ? expert.name : expert.name.split(" ")[0]}
             </h2>
             <p className="mt-4 whitespace-pre-line leading-relaxed text-charcoal/75">
@@ -83,7 +83,7 @@ export default async function ExpertProfilePage({ params }: Props) {
 
             <div className="mt-10" id="book">
               <p className="eyebrow">Book a consultation</p>
-              <h2 className="mt-2 font-display text-3xl font-semibold text-charcoal">
+              <h2 className="mt-2 font-display text-2xl font-semibold text-charcoal">
                 Pick a time that works for you
               </h2>
               <div className="mt-5">

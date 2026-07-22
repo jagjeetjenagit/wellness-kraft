@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h2 className="font-display text-3xl font-semibold">Orders ({orders.length})</h2>
+        <h2 className="font-display text-2xl font-semibold">Orders ({orders.length})</h2>
         <div className="flex flex-wrap gap-2">
           {["ALL", ...STATUSES].map((s) => (
             <button

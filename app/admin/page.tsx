@@ -72,7 +72,7 @@ export default async function AdminOverviewPage() {
             }`}
           >
             <p className="text-xs font-bold uppercase tracking-wider text-sage/70">{c.label}</p>
-            <p className={`mt-2 font-display text-4xl font-semibold ${c.warn ? "text-alert" : "text-charcoal"}`}>
+            <p className={`mt-2 font-display text-3xl font-semibold ${c.warn ? "text-alert" : "text-charcoal"}`}>
               {c.value}
             </p>
           </Link>
@@ -80,7 +80,7 @@ export default async function AdminOverviewPage() {
       </div>
 
       <div className="card mt-8 p-6">
-        <h2 className="font-display text-2xl font-semibold">Quick actions</h2>
+        <h2 className="font-display text-xl font-semibold">Quick actions</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link href="/admin/products" className="btn-primary">Add a product</Link>
           <Link href="/admin/experts" className="btn-secondary">Add an expert</Link>

@@ -51,7 +51,7 @@ export default function CartPage() {
                 <div className="flex items-start justify-between gap-3">
                   <Link
                     href={`/product/${item.slug}`}
-                    className="font-display text-xl font-semibold text-charcoal hover:text-olive"
+                    className="font-display text-lg font-semibold text-charcoal hover:text-olive"
                   >
                     {item.name}
                   </Link>
@@ -93,7 +93,7 @@ export default function CartPage() {
         </div>
 
         <aside className="card h-fit p-6">
-          <h2 className="font-display text-2xl font-semibold">Order summary</h2>
+          <h2 className="font-display text-xl font-semibold">Order summary</h2>
           <dl className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-sage">Subtotal</dt>

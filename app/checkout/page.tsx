@@ -179,7 +179,7 @@ export default function CheckoutPage() {
         </form>
 
         <aside className="card h-fit p-6">
-          <h2 className="font-display text-2xl font-semibold">Your order</h2>
+          <h2 className="font-display text-xl font-semibold">Your order</h2>
           <ul className="mt-4 space-y-3 text-sm">
             {items.map((i) => (
               <li key={i.id} className="flex justify-between gap-3">

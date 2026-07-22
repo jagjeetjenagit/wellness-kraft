@@ -100,7 +100,7 @@ export default function HomePage() {
             <p className="eyebrow animate-rise-1">Consultations · Natural Products · Lifestyle Plans</p>
             {/* Wordmark-style wide tracking lives in the uppercase eyebrow;
                 the serif headline itself stays tight for readability */}
-            <h1 className="mt-4 animate-rise-2 font-display text-5xl font-semibold leading-[1.12] tracking-tight text-olive sm:text-7xl">
+            <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.12] tracking-tight text-olive sm:text-6xl">
               Real experts. Natural solutions. Lasting lifestyle change.
             </h1>
             <p className="mt-6 max-w-2xl animate-rise-3 text-lg leading-relaxed text-charcoal/75">
@@ -141,7 +141,7 @@ export default function HomePage() {
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-soft-cream text-olive" aria-hidden="true">
                   {p.icon}
                 </span>
-                <h3 className="mt-4 font-display text-2xl font-semibold text-charcoal">{p.title}</h3>
+                <h3 className="mt-4 font-display text-xl font-semibold text-charcoal">{p.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-charcoal/75">{p.text}</p>
               </div>
             ))}
@@ -181,7 +181,7 @@ export default function HomePage() {
             {STEPS.map((s) => (
               <div key={s.n} className="relative">
                 <span className="font-display text-6xl font-semibold text-olive/20">{s.n}</span>
-                <h3 className="mt-2 font-display text-2xl font-semibold text-charcoal">{s.title}</h3>
+                <h3 className="mt-2 font-display text-xl font-semibold text-charcoal">{s.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-charcoal/75">{s.text}</p>
               </div>
             ))}
@@ -230,7 +230,7 @@ export default function HomePage() {
       {/* CLOSING CTA */}
       <section className="container-x py-12 sm:py-16">
         <div className="overflow-hidden rounded-3xl bg-olive px-5 py-10 text-center text-cream sm:px-12 sm:py-14">
-          <h2 className="font-display text-4xl font-semibold sm:text-5xl">
+          <h2 className="font-display text-3xl font-semibold sm:text-4xl">
             Your lifestyle change starts with one conversation.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-cream/75">
