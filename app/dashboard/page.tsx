@@ -123,10 +123,27 @@ export default async function DashboardPage() {
                       )}
                       <p className="mt-1 text-sm text-charcoal/75">{formatDateTime(b.startTime)}</p>
                     </div>
-                    <span className={`badge ${statusColors[b.status] || "bg-soft-cream text-sage"}`}>
-                      {b.status.toLowerCase()}
-                    </span>
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className={`badge ${statusColors[b.status] || "bg-soft-cream text-sage"}`}>
+                        {b.status.toLowerCase()}
+                      </span>
+                      {b.amountPaid > 0 && (
+                        <span className="badge bg-success/10 text-success">
+                          Paid {formatINR(b.amountPaid)}
+                        </span>
+                      )}
+                    </div>
                   </div>
+                  {b.prescription && (
+                    <div className="mt-4 rounded-xl border border-sage/30 bg-soft-cream p-4">
+                      <p className="text-xs font-bold uppercase tracking-wider text-olive">
+                        Prescription &amp; advice
+                      </p>
+                      <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-charcoal/75">
+                        {b.prescription}
+                      </p>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ExpertT } from "@/lib/types";
+import { formatINR } from "@/lib/utils";
 import Stars from "./Stars";
 import { ExpertPhoto } from "./Placeholder";
 
@@ -23,7 +24,17 @@ export default function ExpertCard({ expert }: { expert: ExpertT }) {
             <Stars rating={expert.rating} count={expert.reviewCount} />
           </div>
           <p className="mt-3 line-clamp-2 text-sm text-charcoal/75">{expert.bio}</p>
-          <span className="btn-primary mt-5 w-full">Book a Consultation</span>
+          <div className="mt-auto flex items-center justify-between pt-4">
+            {expert.fee > 0 ? (
+              <p className="font-bold text-charcoal">
+                {formatINR(expert.fee)}{" "}
+                <span className="text-xs font-normal text-sage">/ session</span>
+              </p>
+            ) : (
+              <span />
+            )}
+          </div>
+          <span className="btn-primary mt-3 w-full">Book a Consultation</span>
         </div>
       </Link>
     </article>

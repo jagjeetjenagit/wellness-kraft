@@ -11,6 +11,7 @@ export interface ExpertT {
   credentials: string[];
   rating: number;
   reviewCount: number;
+  fee: number; // 1-on-1 consultation fee in rupees; 0 = no online payment
   calLink: string;
   featured: boolean;
   active?: boolean;

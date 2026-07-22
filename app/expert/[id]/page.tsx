@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExpert, getExpertProducts } from "@/lib/data";
+import { formatINR } from "@/lib/utils";
 import Stars from "@/components/Stars";
 import { ExpertPhoto } from "@/components/Placeholder";
 import BookingWidget from "@/components/BookingWidget";
@@ -56,6 +57,12 @@ export default async function ExpertProfilePage({ params }: Props) {
                 <div className="mt-3">
                   <Stars rating={expert.rating} count={expert.reviewCount} />
                 </div>
+                {expert.fee > 0 && (
+                  <p className="mt-3 text-lg font-bold text-olive">
+                    {formatINR(expert.fee)}{" "}
+                    <span className="text-sm font-normal text-sage">per 1-on-1 session</span>
+                  </p>
+                )}
                 <hr className="my-5 border-sage/30" />
                 <p className="text-sm font-bold uppercase tracking-wider text-sage/70">
                   Credentials
@@ -87,7 +94,12 @@ export default async function ExpertProfilePage({ params }: Props) {
                 Pick a time that works for you
               </h2>
               <div className="mt-5">
-                <BookingWidget calLink={expert.calLink} expertName={expert.name} />
+                <BookingWidget
+                  calLink={expert.calLink}
+                  expertName={expert.name}
+                  expertId={expert.id}
+                  fee={expert.fee}
+                />
               </div>
             </div>
           </div>

@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
           : String(b.credentials || "").split(",").map((s: string) => s.trim()).filter(Boolean),
         rating: Number(b.rating) || 5,
         reviewCount: Number(b.reviewCount) || 0,
+        fee: Math.max(0, Math.round(Number(b.fee) || 0)),
         calLink: b.calLink?.trim() || "",
         featured: !!b.featured,
         active: b.active !== false,

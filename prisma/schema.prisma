@@ -29,6 +29,7 @@ model Expert {
   credentials String[]
   rating      Float     @default(5)
   reviewCount Int       @default(0)
+  fee         Int       @default(0) // 1-on-1 consultation fee in rupees; 0 = no online payment
   calLink     String    @default("")
   featured    Boolean   @default(false)
   active      Boolean   @default(true)
@@ -88,19 +89,40 @@ model OrderItem {
 }
 
 model Booking {
-  id            String    @id @default(cuid())
-  calUid        String?   @unique
-  userId        String?
-  user          User?     @relation(fields: [userId], references: [id])
-  expertId      String?
-  expert        Expert?   @relation(fields: [expertId], references: [id])
-  expertName    String    @default("")
-  title         String
-  startTime     DateTime
-  endTime       DateTime?
-  status        String    @default("CONFIRMED") // CONFIRMED | CANCELLED | COMPLETED
-  attendeeName  String    @default("")
-  attendeeEmail String    @default("")
-  attendeePhone String    @default("")
-  createdAt     DateTime  @default(now())
+  id                String    @id @default(cuid())
+  calUid            String?   @unique
+  userId            String?
+  user              User?     @relation(fields: [userId], references: [id])
+  expertId          String?
+  expert            Expert?   @relation(fields: [expertId], references: [id])
+  expertName        String    @default("")
+  title             String
+  startTime         DateTime
+  endTime           DateTime?
+  status            String    @default("CONFIRMED") // CONFIRMED | CANCELLED | COMPLETED
+  attendeeName      String    @default("")
+  attendeeEmail     String    @default("")
+  attendeePhone     String    @default("")
+  amountPaid        Int       @default(0) // consultation fee paid online, in rupees
+  razorpayPaymentId String    @default("")
+  prescription      String    @default("") @db.Text // expert's advice/prescription, shown in the customer dashboard
+  createdAt         DateTime  @default(now())
+}
+
+// Online payment collected for a consultation (before the Cal.com slot
+// is picked). Linked to the Booking afterwards via the Cal webhook,
+// matched on the customer's email.
+model ConsultPayment {
+  id                String   @id @default(cuid())
+  razorpayOrderId   String   @unique
+  razorpayPaymentId String   @default("")
+  status            String   @default("PENDING") // PENDING | PAID | FAILED
+  amount            Int // rupees
+  expertId          String?
+  expertName        String   @default("General Consultation")
+  customerName      String   @default("")
+  customerEmail     String   @default("")
+  customerPhone     String   @default("")
+  bookingId         String? // set once matched to a Booking
+  createdAt         DateTime @default(now())
 }

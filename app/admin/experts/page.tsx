@@ -11,6 +11,7 @@ interface AdminExpert {
   credentials: string[];
   rating: number;
   reviewCount: number;
+  fee: number;
   calLink: string;
   featured: boolean;
   active: boolean;
@@ -30,6 +31,7 @@ const EMPTY = {
   credentials: "",
   rating: "5",
   reviewCount: "0",
+  fee: "0",
   calLink: "",
   featured: false,
   active: true,
@@ -85,6 +87,7 @@ export default function AdminExpertsPage() {
       credentials: ex.credentials.join(", "),
       rating: String(ex.rating),
       reviewCount: String(ex.reviewCount),
+      fee: String(ex.fee),
       calLink: ex.calLink,
       featured: ex.featured,
       active: ex.active,
@@ -176,6 +179,10 @@ export default function AdminExpertsPage() {
             <label className="label">Number of reviews</label>
             <input type="number" min="0" className="input" value={String(form.reviewCount)} onChange={(e) => setForm({ ...form, reviewCount: e.target.value })} />
           </div>
+          <div>
+            <label className="label">Consultation fee (₹ per session, 0 = no online payment)</label>
+            <input type="number" min="0" className="input" value={String(form.fee)} onChange={(e) => setForm({ ...form, fee: e.target.value })} />
+          </div>
 
           {productOptions.length > 0 && (
             <div className="sm:col-span-2">
@@ -248,7 +255,10 @@ export default function AdminExpertsPage() {
                 <tr key={ex.id} className="border-b border-sage/30/60 last:border-0">
                   <td className="p-4">
                     <p className="font-semibold text-charcoal">{ex.name}</p>
-                    <p className="text-xs text-sage/70">{ex.specialty}</p>
+                    <p className="text-xs text-sage/70">
+                      {ex.specialty}
+                      {ex.fee > 0 && <> · ₹{ex.fee}/session</>}
+                    </p>
                   </td>
                   <td className="p-4">
                     {ex.calLink ? (

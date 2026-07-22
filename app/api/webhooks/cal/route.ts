@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
             .catch(() => null)
         : null;
 
-      await prisma.booking.upsert({
+      const booking = await prisma.booking.upsert({
         where: { calUid: uid },
         update: {
           startTime: new Date(p.startTime),
@@ -85,6 +85,36 @@ export async function POST(req: NextRequest) {
           attendeePhone: attendee.phoneNumber || "",
         },
       });
+
+      // Link the online consultation payment (made before slot selection)
+      // to this booking, matched on the attendee's email within 48 hours.
+      if (booking.amountPaid === 0 && attendee.email) {
+        const payment = await prisma.consultPayment
+          .findFirst({
+            where: {
+              status: "PAID",
+              bookingId: null,
+              customerEmail: { equals: attendee.email, mode: "insensitive" },
+              createdAt: { gte: new Date(Date.now() - 48 * 60 * 60 * 1000) },
+            },
+            orderBy: { createdAt: "desc" },
+          })
+          .catch(() => null);
+        if (payment) {
+          await prisma
+            .$transaction([
+              prisma.booking.update({
+                where: { id: booking.id },
+                data: { amountPaid: payment.amount, razorpayPaymentId: payment.razorpayPaymentId },
+              }),
+              prisma.consultPayment.update({
+                where: { id: payment.id },
+                data: { bookingId: booking.id },
+              }),
+            ])
+            .catch((e) => console.error("payment link failed:", e));
+        }
+      }
 
       if (type === "BOOKING_CREATED") {
         sendBookingEmails({
