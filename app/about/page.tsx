@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Why Veda Wellness exists: verified experts, honestly-labelled wellness products, and advice you can act on.",
+    "Why Wellness Kraft exists: verified experts, honestly-labelled wellness products, and advice you can act on.",
 };
 
 const VALUES = [
@@ -31,7 +31,7 @@ export default function AboutPage() {
           Good health advice shouldn&apos;t be this hard to find.
         </h1>
         <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-          Veda Wellness started with a simple frustration: it&apos;s easier to buy a
+          Wellness Kraft started with a simple frustration: it&apos;s easier to buy a
           supplement than to find out whether you actually need it. So we built
           both halves of the answer — verified experts you can talk to in
           minutes, and a small range of medically-tested products they trust.

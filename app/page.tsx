@@ -8,7 +8,7 @@ import DemoBanner from "@/components/DemoBanner";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Veda Wellness — Book Verified Health Experts & Shop Tested Wellness Products",
+  title: "Wellness Kraft — Book Verified Health Experts & Shop Tested Wellness Products",
   description:
     "1-on-1 consultations with verified nutritionists, Ayurveda physicians, dermatologists and more. Shop medically-tested wellness products with secure checkout.",
 };

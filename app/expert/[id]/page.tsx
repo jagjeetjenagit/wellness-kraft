@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${expert.name} — ${expert.specialty}`,
     description: expert.bio.slice(0, 155),
     openGraph: {
-      title: `${expert.name} — ${expert.specialty} | Veda Wellness`,
+      title: `${expert.name} — ${expert.specialty} | Wellness Kraft`,
       description: expert.bio.slice(0, 155),
     },
   };

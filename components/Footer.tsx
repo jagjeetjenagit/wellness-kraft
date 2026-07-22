@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container-x grid gap-8 py-10 sm:grid-cols-2 sm:gap-10 sm:py-14 lg:grid-cols-4">
         <div>
           <p className="font-display text-2xl font-semibold">
-            Veda<span className="text-gold"> Wellness</span>
+            Wellness<span className="text-gold"> Kraft</span>
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
             Verified experts. Medically-tested wellness products. Honest
@@ -54,7 +54,7 @@ export default function Footer() {
             nature; always follow the personalised advice of a qualified professional.
           </p>
           <p className="mt-4 text-xs text-white/40">
-            © {new Date().getFullYear()} Veda Wellness. All rights reserved.
+            © {new Date().getFullYear()} Wellness Kraft. All rights reserved.
           </p>
         </div>
       </div>

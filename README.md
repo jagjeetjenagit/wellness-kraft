@@ -1,4 +1,4 @@
-# Veda Wellness — Consultations + Store
+# Wellness Kraft — Consultations + Store
 
 A complete website for booking expert consultations and selling wellness
 products. Built with Next.js, and powered by free managed services — no
@@ -81,7 +81,7 @@ This stores your real products, experts, orders and bookings.
 
 1. Go to https://neon.tech and click **Sign up** (use your Google account —
    fastest).
-2. Create a project (any name, e.g. "veda-wellness"; region: Singapore is
+2. Create a project (any name, e.g. "wellness-kraft"; region: Singapore is
    closest to India).
 3. On the project page click **Connect** and copy the **connection string**
    (it starts with `postgresql://`).

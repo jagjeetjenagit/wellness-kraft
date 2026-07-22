@@ -21,7 +21,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-sand bg-paper/90 backdrop-blur">
       <div className="container-x flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" aria-label="Veda Wellness home">
+        <Link href="/" className="flex items-center gap-2" aria-label="Wellness Kraft home">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-pine text-white">
             {/* leaf mark */}
             <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
@@ -35,7 +35,7 @@ export default function Header() {
             </svg>
           </span>
           <span className="font-display text-xl font-semibold tracking-tight">
-            Veda<span className="text-pine"> Wellness</span>
+            Wellness<span className="text-pine"> Kraft</span>
           </span>
         </Link>
 

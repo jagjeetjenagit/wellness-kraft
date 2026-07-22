@@ -27,21 +27,21 @@ export const viewport: Viewport = {
   // Lets the site extend into notch/gesture areas; safe-area padding
   // in globals.css keeps content clear of them on phones.
   viewportFit: "cover",
-  themeColor: "#FAF7F1",
+  themeColor: "#FEFAEF",
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: "Veda Wellness — Expert Consultations & Tested Wellness Products",
-    template: "%s | Veda Wellness",
+    default: "Wellness Kraft — Expert Consultations & Tested Wellness Products",
+    template: "%s | Wellness Kraft",
   },
   description:
     "Book 1-on-1 consultations with verified health experts and shop medically-tested wellness products. Nutrition, Ayurveda, skin, sleep and more.",
   openGraph: {
     type: "website",
-    siteName: "Veda Wellness",
-    title: "Veda Wellness — Expert Consultations & Tested Wellness Products",
+    siteName: "Wellness Kraft",
+    title: "Wellness Kraft — Expert Consultations & Tested Wellness Products",
     description:
       "Book 1-on-1 consultations with verified health experts and shop medically-tested wellness products.",
   },

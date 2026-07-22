@@ -88,7 +88,7 @@ export default function CheckoutPage() {
         key: data.key,
         amount: data.amount,
         currency: data.currency,
-        name: "Veda Wellness",
+        name: "Wellness Kraft",
         description: "Order payment",
         order_id: data.razorpayOrderId,
         prefill: { name: form.name, email: form.email, contact: form.phone },
