@@ -408,17 +408,15 @@ export default function BookingWidget({
           Consultation fee: {formatINR(fee)} — payable at your session.
         </p>
       )}
-      {/* No inner overflow/fixed height: let the Cal embed auto-size to its
-          content so there's no cramped nested scrollbar. On desktop the
-          column layout puts the calendar and time slots side by side, which
-          cuts down the scrolling a lot. */}
+      {/* Month view is the reliable layout; drop the inner overflow so there's
+          no cramped nested scrollbar (the page scrolls naturally instead). */}
       <div className="card overflow-hidden p-1 sm:p-3">
         <Cal
           calLink={calLink}
-          style={{ width: "100%", minHeight: "560px" }}
+          style={{ width: "100%", minHeight: "680px" }}
           config={{
             theme: "light",
-            layout: "column_view",
+            layout: "month_view",
             ...(signedIn ? { name: userName, email: userEmail } : {}),
           }}
         />

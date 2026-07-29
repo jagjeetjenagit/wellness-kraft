@@ -141,11 +141,12 @@ export default async function DashboardPage() {
                       </p>
                       <p className="mt-1 text-sm text-charcoal/75">Paid on {formatDate(c.createdAt)}</p>
                       <p className="mt-2 text-xs text-sage/70">
-                        Pick a time on the calendar to confirm your slot — we&apos;ll email you the details.
+                        Your appointment date &amp; time will show here once scheduled. We&apos;ll
+                        also email you a confirmation.
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1.5">
-                      <span className="badge bg-sage/15 text-sage">confirmation pending</span>
+                      <span className="badge bg-sage/15 text-sage">to be scheduled</span>
                       <span className="badge bg-success/10 text-success">Paid {formatINR(c.amount)}</span>
                     </div>
                   </div>

@@ -16,6 +16,16 @@ interface AdminBooking {
   prescription: string;
 }
 
+interface PaidConsult {
+  id: string;
+  expertName: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  amount: number;
+  createdAt: string;
+}
+
 const badge: Record<string, string> = {
   CONFIRMED: "bg-soft-cream text-olive",
   CANCELLED: "bg-alert/10 text-alert",
@@ -24,6 +34,7 @@ const badge: Record<string, string> = {
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
+  const [paidConsults, setPaidConsults] = useState<PaidConsult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState<string | null>(null);
@@ -36,7 +47,8 @@ export default function AdminBookingsPage() {
         const res = await fetch("/api/bookings");
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Could not load bookings.");
-        setBookings(data);
+        setBookings(data.bookings || []);
+        setPaidConsults(data.paidConsults || []);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Could not load bookings.");
       }
@@ -87,11 +99,48 @@ export default function AdminBookingsPage() {
         </p>
       )}
 
+      {paidConsults.length > 0 && (
+        <div className="mt-6 rounded-2xl border border-success/40 bg-success/5 p-5">
+          <p className="text-sm font-bold text-olive">
+            Paid consultations awaiting a scheduled time ({paidConsults.length})
+          </p>
+          <p className="mt-1 text-xs text-charcoal/70">
+            These customers have paid. Their chosen date/time appears above once the
+            Cal.com webhook is connected — until then, reach out to confirm a slot.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {paidConsults.map((c) => (
+              <li
+                key={c.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white p-3 text-sm"
+              >
+                <div>
+                  <p className="font-semibold text-charcoal">
+                    {c.customerName || "Customer"}
+                    {c.expertName ? <span className="font-normal text-sage/80"> · {c.expertName}</span> : null}
+                  </p>
+                  <p className="text-xs text-sage/70">
+                    {c.customerEmail}
+                    {c.customerPhone ? ` · ${c.customerPhone}` : ""} · paid {formatDateTime(c.createdAt)}
+                  </p>
+                </div>
+                <span className="badge bg-success/10 text-success">Paid {formatINR(c.amount)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {loading ? (
         <p className="mt-8 text-sage">Loading bookings…</p>
-      ) : bookings.length === 0 ? (
+      ) : bookings.length === 0 && paidConsults.length === 0 ? (
         <div className="card mt-6 p-10 text-center text-sage">
           No bookings recorded yet.
+        </div>
+      ) : bookings.length === 0 ? (
+        <div className="card mt-6 p-8 text-center text-sage">
+          No <em>scheduled</em> bookings yet — paid consultations awaiting a time slot
+          are listed above. Scheduled slots appear here once the Cal.com webhook is connected.
         </div>
       ) : (
         <div className="card mt-6 overflow-x-auto">
