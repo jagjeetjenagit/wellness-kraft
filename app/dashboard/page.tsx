@@ -88,6 +88,25 @@ export default async function DashboardPage() {
         .catch(() => [])
     : [];
 
+  // Consultations the customer has PAID for but that aren't yet linked to a
+  // scheduled Cal.com booking (the Cal webhook links them once the slot is
+  // picked). Showing these means a paid consult always appears here, even
+  // before/without the calendar webhook firing.
+  const paidConsults =
+    prisma && email
+      ? await prisma.consultPayment
+          .findMany({
+            where: {
+              status: "PAID",
+              bookingId: null,
+              customerEmail: { equals: email, mode: "insensitive" as const },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 20,
+          })
+          .catch(() => [])
+      : [];
+
   return (
     <div className="container-x py-12 sm:py-16">
       <p className="eyebrow">My account</p>
@@ -106,13 +125,32 @@ export default async function DashboardPage() {
         {/* Bookings */}
         <section>
           <h2 className="font-display text-2xl font-semibold">My consultations</h2>
-          {bookings.length === 0 ? (
+          {bookings.length === 0 && paidConsults.length === 0 ? (
             <div className="card mt-4 p-8 text-center">
               <p className="text-sm text-charcoal/75">No consultations booked yet.</p>
               <Link href="/experts" className="btn-primary mt-4">Book your first consultation</Link>
             </div>
           ) : (
             <ul className="mt-4 space-y-3">
+              {paidConsults.map((c) => (
+                <li key={c.id} className="card p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-charcoal">
+                        Consultation{c.expertName ? ` with ${c.expertName}` : ""}
+                      </p>
+                      <p className="mt-1 text-sm text-charcoal/75">Paid on {formatDate(c.createdAt)}</p>
+                      <p className="mt-2 text-xs text-sage/70">
+                        Pick a time on the calendar to confirm your slot — we&apos;ll email you the details.
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className="badge bg-sage/15 text-sage">confirmation pending</span>
+                      <span className="badge bg-success/10 text-success">Paid {formatINR(c.amount)}</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
               {bookings.map((b) => (
                 <li key={b.id} className="card p-5">
                   <div className="flex items-start justify-between gap-3">
