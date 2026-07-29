@@ -1,18 +1,25 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 // Signed-in-only areas. Everything else is public.
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/admin(.*)"]);
+function isProtected(pathname: string) {
+  return pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
+}
 
-const clerkConfigured = !!(
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY
+const authConfigured = !!(
+  process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
 );
 
-// If Clerk isn't set up yet, the site still works (pages show
-// friendly "connect Clerk" notices instead of crashing).
-export default clerkConfigured
-  ? clerkMiddleware((auth, req) => {
-      if (isProtectedRoute(req)) auth().protect();
+// If Google login isn't set up yet, the site still works (pages show
+// friendly "connect Google" notices instead of crashing).
+export default authConfigured
+  ? auth((req) => {
+      if (isProtected(req.nextUrl.pathname) && !req.auth) {
+        const url = new URL("/sign-in", req.nextUrl.origin);
+        url.searchParams.set("callbackUrl", req.nextUrl.pathname);
+        return NextResponse.redirect(url);
+      }
+      return NextResponse.next();
     })
   : () => NextResponse.next();
 

@@ -22,12 +22,15 @@ export async function POST(req: NextRequest) {
     if (!b.name?.trim() || !b.specialty?.trim()) {
       return NextResponse.json({ error: "Name and specialty are required." }, { status: 400 });
     }
+    if (!b.photo?.trim()) {
+      return NextResponse.json({ error: "A photo is required for every expert." }, { status: 400 });
+    }
     const expert = await prisma.expert.create({
       data: {
         name: b.name.trim(),
         slug: b.slug?.trim() || slugify(b.name) + "-" + Date.now().toString(36).slice(-4),
         specialty: b.specialty.trim(),
-        photo: b.photo?.trim() || "",
+        photo: b.photo.trim(),
         bio: b.bio?.trim() || "",
         credentials: Array.isArray(b.credentials)
           ? b.credentials

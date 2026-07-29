@@ -6,6 +6,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   if (error) return error;
   try {
     const b = await req.json();
+    if (b.photo !== undefined && !String(b.photo).trim()) {
+      return NextResponse.json({ error: "A photo is required for every expert." }, { status: 400 });
+    }
     const expert = await prisma.expert.update({
       where: { id: params.id },
       data: {

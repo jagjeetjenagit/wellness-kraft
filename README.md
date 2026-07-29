@@ -6,7 +6,7 @@ coding needed to run it.
 
 **What's inside:** Home page, expert profiles with live booking calendars
 (Cal.com), a product store with cart and secure checkout (Razorpay),
-phone-OTP customer login (Clerk), customer dashboard, and a full admin area
+Sign in with Google customer login, customer dashboard, and a full admin area
 for managing products, experts, orders and bookings.
 
 ---
@@ -95,34 +95,67 @@ This stores your real products, experts, orders and bookings.
    ```
    npm run db:setup
    ```
-   This creates your database tables and loads the sample experts/products
-   into them (you can edit everything later in the admin area).
+   This creates your database tables. It does **not** add any dummy content —
+   you add your real experts and products yourself in the admin area (Part 2).
 6. Start the site again: `npm run dev`. The yellow "Preview mode" banner is
-   now gone — you're on real data.
+   now gone — you're on your own (empty) database, ready for real content.
 
-### 2) Login — Clerk (free) — ~5 min
+   > Want temporary sample experts/products to see how things look? Run
+   > `npm run db:seed-samples` once — then delete them from `/admin` before
+   > going live.
 
-Gives customers phone-OTP login (perfect for India) and protects your admin
-area.
+### 2) Login — Google (free) — ~5 min
 
-1. Go to https://clerk.com and sign up.
-2. Click **Create application**. Name it anything. Under sign-in options,
-   switch **ON**: **Phone number**. (You can also leave Email on.)
-3. Click **Create**. You land on a page showing two API keys.
-4. Copy each one into `.env`:
+Gives customers one-click **Sign in with Google** and protects your admin
+area. No SMS, no monthly fees.
+
+1. Go to https://console.cloud.google.com and sign in. Create a project
+   (top bar → **Select a project** → **New Project**) — name it anything.
+2. Left menu → **APIs & Services** → **OAuth consent screen**. Choose
+   **External**, fill in the app name + your email, and save. (You can leave
+   it in "Testing" mode; add your own Google email under **Test users**.)
+3. Left menu → **APIs & Services** → **Credentials** → **Create credentials**
+   → **OAuth client ID** → Application type **Web application**.
+4. Under **Authorized redirect URIs**, click **Add URI** and paste:
    ```
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
-   CLERK_SECRET_KEY="sk_test_..."
+   http://localhost:3000/api/auth/callback/google
    ```
-5. **Make yourself the admin:** in `.env`, put the email or phone number YOU
-   will sign in with:
+   (When you go live, add your real domain too, e.g.
+   `https://yourdomain.com/api/auth/callback/google`.)
+5. Click **Create**. Google shows a **Client ID** and **Client secret** —
+   copy each into `.env`:
+   ```
+   AUTH_GOOGLE_ID="....apps.googleusercontent.com"
+   AUTH_GOOGLE_SECRET="...."
+   ```
+   `AUTH_SECRET` is already filled in for you (any long random string).
+6. **Make yourself the admin:** in `.env`, put the Google email YOU will
+   sign in with:
    ```
    ADMIN_EMAILS="youremail@gmail.com"
-   ADMIN_PHONES="+919812345678"
    ```
-6. Save `.env`, restart the site (**Ctrl+C**, then `npm run dev`).
-7. Test it: click **Sign in** on the site, log in with your phone/email,
-   then visit **http://localhost:3000/admin** — you're in the admin area.
+7. Save `.env`, restart the site (**Ctrl+C**, then `npm run dev`).
+8. Test it: click **Sign in** → **Continue with Google**, then visit
+   **http://localhost:3000/admin** — you're in the admin area.
+
+### 2b) Image uploads — Vercel Blob (free) — ~3 min
+
+So you can **drag-and-drop and crop** product/expert photos in the admin
+(instead of pasting links). Needed once you deploy; optional on localhost.
+
+1. In the **Vercel dashboard** → your project → **Storage** → **Create a
+   database** → choose **Blob** → **Connect**.
+2. Open the new store → copy its **`BLOB_READ_WRITE_TOKEN`**.
+3. Paste it into `.env` (and add the same variable in Vercel → Settings →
+   Environment Variables):
+   ```
+   BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
+   ```
+4. Restart the site. Now in **/admin**, adding a product or expert lets you
+   drag a photo in and crop it to a neat square.
+
+> Without this token the image picker still works — it just asks you to
+> paste an image link instead of uploading.
 
 ### 3) Payments — Razorpay — ~10 min
 
@@ -254,9 +287,11 @@ dashboard, and confirmation emails go out via Resend.
      `NEXT_PUBLIC_SITE_URL` to your real address (e.g.
      `https://veda-wellness.vercel.app`), then go to **Deployments** and
      click **⋯ → Redeploy** on the latest one.
-   - In **Clerk**: your app currently runs in "test" mode which works fine on
-     Vercel. When you buy a custom domain later, Clerk's dashboard will guide
-     you through "production instance" setup (5 minutes).
+   - In **Google login**: add your Vercel/production URL as a second
+     **Authorized redirect URI** in Google Cloud Console (Credentials → your
+     OAuth client), e.g. `https://your-domain.com/api/auth/callback/google`.
+     Also set `AUTH_URL` (your real address) and `AUTH_TRUST_HOST=true` in
+     Vercel's Environment Variables.
    - In **Cal.com**: set the webhook URL to your real address (Part 2, step 5).
 
 ### Making changes later
@@ -280,11 +315,12 @@ go through this list top to bottom:
 
 1. **Database** — Neon `DATABASE_URL` set in Vercel, `npm run db:setup`
    done once (and `npm run db:push` after any later database update).
-2. **Login** — Clerk keys in Vercel; your own email/phone in
-   `ADMIN_EMAILS`/`ADMIN_PHONES`. Confirm `/admin` blocks a non-admin
-   account. When you buy a custom domain, switch Clerk to a
-   **production instance** (their dashboard guides you) and replace the
-   `pk_test_`/`sk_test_` keys with `pk_live_`/`sk_live_` ones in Vercel.
+2. **Login** — `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET` and
+   `AUTH_URL` set in Vercel; your own Google email in `ADMIN_EMAILS`. Confirm
+   `/admin` blocks a non-admin account. Make sure your production URL is added
+   as an **Authorized redirect URI** in Google Cloud Console, and move the
+   OAuth consent screen from "Testing" to "In production" so any customer can
+   sign in (not just your test users).
 3. **Payments** — Razorpay business verification approved → flip the
    dashboard to **Live Mode**, generate LIVE keys, replace both values in
    Vercel, Redeploy. Do one real ₹ small-value order and one paid
@@ -303,10 +339,10 @@ go through this list top to bottom:
    shows a contact fallback).
 7. **Site address** — `NEXT_PUBLIC_SITE_URL` set to your real address in
    Vercel, then Redeploy (fixes sitemap, email links and social previews).
-8. **Real content** — replace sample experts/products in /admin with real
-   ones (real fees, real photos, real stock); update the "[X]+ people
-   guided" placeholder on the homepage; add real testimonials and team
-   bios when ready.
+8. **Real content** — add your experts and products in /admin (each one
+   needs a photo — it's required, and experts need a Cal.com booking link).
+   Confirm no leftover sample data remains; update the "[X]+ people guided"
+   placeholder on the homepage; add real testimonials and team bios when ready.
 9. **Brand assets** — swap in the transparent-PNG/SVG/icon-only logo files
    when the client provides them (see TODOs in `components/Logo.tsx`).
 10. **Compliance** — read every page once: guidance/support wording only,
@@ -338,11 +374,12 @@ the main photo).
 | Problem | Fix |
 |---|---|
 | Yellow "Preview mode" banner on the site | The database isn't connected — do Part 2, step 1, then `npm run db:setup`. |
-| "Login isn't switched on yet" on the Sign in page | Add the two Clerk keys to `.env` and restart (`Ctrl+C`, `npm run dev`). |
+| "Login isn't switched on yet" on the Sign in page | Add `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` to `.env` and restart (`Ctrl+C`, `npm run dev`). |
+| Google sign-in shows "redirect_uri_mismatch" | The redirect URI in Google Cloud Console doesn't match. It must be exactly `http://localhost:3000/api/auth/callback/google` (and your live domain in production). |
 | Checkout says payment isn't switched on | Add the two Razorpay keys to `.env` and restart. |
 | No confirmation emails arriving | Add `RESEND_API_KEY` and `ADMIN_NOTIFY_EMAIL`. On the free plan without a domain, Resend only delivers to your own signup email (see Part 2, step 4). |
 | Expert page shows "booking coming soon" | That expert has no Cal.com link yet — add it in `/admin` → Experts. |
-| `/admin` says access denied | Put YOUR login email/phone into `ADMIN_EMAILS` / `ADMIN_PHONES` in `.env` (exactly as you sign in with) and restart. |
+| `/admin` says access denied | Put YOUR Google email into `ADMIN_EMAILS` in `.env` (exactly the address you sign in with) and restart. |
 | Changed `.env` but nothing happened | Always restart: press **Ctrl+C** in PowerShell, then `npm run dev`. On Vercel: update the variable in Settings and Redeploy. |
 | `npm` is not recognized | Node.js isn't installed (or you didn't restart after installing) — Part 1, step 1. |
 
@@ -354,7 +391,7 @@ the main photo).
 |---|---|---|
 | Website hosting | Vercel | Yes |
 | Database | Neon Postgres | Yes |
-| Customer login (phone OTP) | Clerk | Yes (10k monthly users) |
+| Customer login (Sign in with Google) | Auth.js + Google OAuth | Yes (unlimited, free) |
 | Booking calendars | Cal.com | Yes |
 | Payments | Razorpay | Pay-per-transaction fee only |
 | Emails | Resend | Yes (100/day) |

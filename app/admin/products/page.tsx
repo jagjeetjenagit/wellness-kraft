@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { formatINR } from "@/lib/utils";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 interface AdminProduct {
   id: string;
@@ -79,6 +80,11 @@ export default function AdminProductsPage() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
+    const imgs = String(form.images).split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+    if (imgs.length === 0) {
+      setError("Please add at least one product image link.");
+      return;
+    }
     setSaving(true);
     setError("");
     try {
@@ -151,17 +157,14 @@ export default function AdminProductsPage() {
             <textarea rows={4} className="input resize-y" value={String(form.description)} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </div>
           <div className="sm:col-span-2">
-            <label className="label">Image links — one per line (first one is the main photo)</label>
-            <textarea
-              rows={3}
-              className="input resize-y"
-              placeholder={"https://example.com/photo-front.jpg\nhttps://example.com/photo-back.jpg"}
-              value={String(form.images)}
-              onChange={(e) => setForm({ ...form, images: e.target.value })}
+            <label className="label">Photos (required — first one is the main photo)</label>
+            <ImageUploader
+              value={String(form.images).split(/\r?\n/).map((s) => s.trim()).filter(Boolean)}
+              onChange={(urls) => setForm({ ...form, images: urls.join("\n") })}
+              folder="products"
+              max={6}
+              outSize={1000}
             />
-            <p className="mt-1 text-xs text-sage/70">
-              Tip: upload photos free at postimages.org, then paste the &ldquo;Direct link&rdquo; here.
-            </p>
           </div>
           <div className="flex flex-wrap gap-6 sm:col-span-2">
             {(

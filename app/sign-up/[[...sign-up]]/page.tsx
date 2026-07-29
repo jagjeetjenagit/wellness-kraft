@@ -4,21 +4,21 @@ import GoogleAuthButton from "@/components/GoogleAuthButton";
 import { hasAuth } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Sign in",
+  title: "Create account",
   robots: { index: false },
 };
 
-export default function SignInPage() {
+export default function SignUpPage() {
   if (!hasAuth()) {
     return (
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
         <div className="card max-w-lg p-8 text-center">
           <p className="eyebrow">Almost there</p>
           <h1 className="mt-3 font-display text-2xl font-semibold">
-            Login isn&apos;t switched on yet
+            Sign-up isn&apos;t switched on yet
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-charcoal/75">
-            To enable Google login, add your Google OAuth keys to the{" "}
+            To let customers create accounts, add your Google OAuth keys to the{" "}
             <code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">.env</code> file —
             it takes about 5 minutes. Full walkthrough in the README,{" "}
             <strong>step&nbsp;&ldquo;2) Set up login (Google)&rdquo;</strong>.
@@ -35,21 +35,20 @@ export default function SignInPage() {
   return (
     <div className="container-x flex min-h-[70vh] items-center justify-center py-16">
       <div className="card w-full max-w-md p-8 text-center">
-        <p className="eyebrow">Welcome back</p>
+        <p className="eyebrow">Get started</p>
         <h1 className="mt-3 font-display text-2xl font-semibold">
-          Sign in to Wellness Kraft
+          Create your account
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-charcoal/75">
-          Use your Google account to access your bookings, orders and
-          consultations.
+          One click with Google — no passwords or OTPs to remember.
         </p>
         <div className="mt-6">
-          <GoogleAuthButton label="Continue with Google" />
+          <GoogleAuthButton label="Sign up with Google" />
         </div>
         <p className="mt-6 text-xs text-charcoal/60">
-          New here? Signing in with Google creates your account automatically.{" "}
-          <Link href="/sign-up" className="font-semibold text-olive hover:underline">
-            Learn more
+          Already have an account?{" "}
+          <Link href="/sign-in" className="font-semibold text-olive hover:underline">
+            Sign in
           </Link>
         </p>
       </div>

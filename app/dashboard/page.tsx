@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSafeUser, ensureDbUser, userEmail, userPhone, isAdmin } from "@/lib/auth";
-import { hasClerk, hasDatabase } from "@/lib/config";
+import { hasAuth, hasDatabase } from "@/lib/config";
 import { getPrisma } from "@/lib/prisma";
 import { formatINR, formatDateTime, formatDate } from "@/lib/utils";
 
@@ -22,14 +22,14 @@ const statusColors: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  if (!hasClerk()) {
+  if (!hasAuth()) {
     return (
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
         <div className="card max-w-lg p-8 text-center">
           <h1 className="font-display text-2xl font-semibold">Dashboard needs login first</h1>
           <p className="mt-3 text-sm text-charcoal/75">
-            Set up Clerk (README step 2) to enable customer accounts, then this
-            page will show each customer their bookings and orders.
+            Set up Google login (README step 2) to enable customer accounts, then
+            this page will show each customer their bookings and orders.
           </p>
         </div>
       </div>

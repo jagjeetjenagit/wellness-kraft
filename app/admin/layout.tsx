@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdmin } from "@/lib/auth";
-import { hasClerk, hasDatabase } from "@/lib/config";
+import { hasAuth, hasDatabase } from "@/lib/config";
 import AdminNav from "@/components/admin/AdminNav";
 
 export const dynamic = "force-dynamic";
@@ -25,8 +25,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <p className="mt-3 text-sm leading-relaxed text-charcoal/75">
             Sign in with an admin account to manage experts, products, orders
             and bookings. Admins are set in the <code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">.env</code>{" "}
-            file (<code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">ADMIN_EMAILS</code> /{" "}
-            <code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">ADMIN_PHONES</code>) — README step 2.
+            file (<code className="rounded bg-soft-cream px-1.5 py-0.5 text-xs">ADMIN_EMAILS</code>) —
+            use the same Google email you sign in with. See README step 2.
           </p>
           <Link href="/sign-in" className="btn-primary mt-6">Sign in</Link>
         </div>
@@ -36,9 +36,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="container-x py-10">
-      {!hasClerk() && (
+      {!hasAuth() && (
         <div className="mb-6 rounded-2xl border border-sage/40 bg-soft-cream p-4 text-sm font-semibold text-sage">
-          ⚠️ Preview: the admin area is open because login (Clerk) isn&apos;t configured
+          ⚠️ Preview: the admin area is open because Google login isn&apos;t configured
           yet. In production it locks automatically. See README step 2.
         </div>
       )}

@@ -29,6 +29,10 @@ export async function POST(req: NextRequest) {
     if (!Number.isFinite(price) || price <= 0) {
       return NextResponse.json({ error: "Price must be a positive number (in rupees)." }, { status: 400 });
     }
+    const images = parseImages(b.images);
+    if (images.length === 0) {
+      return NextResponse.json({ error: "At least one product image is required." }, { status: 400 });
+    }
     const product = await prisma.product.create({
       data: {
         name: b.name.trim(),
@@ -36,7 +40,7 @@ export async function POST(req: NextRequest) {
         sku: b.sku?.trim() || "SKU-" + Date.now().toString(36).toUpperCase(),
         description: b.description?.trim() || "",
         price,
-        images: parseImages(b.images),
+        images,
         stock: Math.max(0, Math.round(Number(b.stock)) || 0),
         category: b.category?.trim() || "General",
         consultRecommended: !!b.consultRecommended,

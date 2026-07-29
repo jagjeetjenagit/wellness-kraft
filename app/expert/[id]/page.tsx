@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExpert, getExpertProducts } from "@/lib/data";
+import { getBookingIdentity } from "@/lib/auth";
 import { formatINR } from "@/lib/utils";
 import Stars from "@/components/Stars";
 import { ExpertPhoto } from "@/components/Placeholder";
@@ -33,6 +34,7 @@ export default async function ExpertProfilePage({ params }: Props) {
   if (!expert) notFound();
 
   const products = await getExpertProducts(expert);
+  const identity = await getBookingIdentity();
 
   return (
     <>
@@ -99,6 +101,11 @@ export default async function ExpertProfilePage({ params }: Props) {
                   expertName={expert.name}
                   expertId={expert.id}
                   fee={expert.fee}
+                  authEnabled={identity.authEnabled}
+                  signedIn={identity.signedIn}
+                  userName={identity.name}
+                  userEmail={identity.email}
+                  savedPhone={identity.phone}
                 />
               </div>
             </div>

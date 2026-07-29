@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import BookingWidget from "@/components/BookingWidget";
 import { generalConsultFee, generalCalLink } from "@/lib/config";
+import { getBookingIdentity } from "@/lib/auth";
 import { formatINR } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "General Consultation",
@@ -17,8 +20,9 @@ const COVERS = [
   "Honest advice on whether you need products at all",
 ];
 
-export default function GeneralConsultPage() {
+export default async function GeneralConsultPage() {
   const fee = generalConsultFee();
+  const identity = await getBookingIdentity();
   return (
     <div className="container-x py-12 sm:py-16">
       <Link href="/experts" className="text-sm font-semibold text-olive hover:underline">
@@ -52,6 +56,11 @@ export default function GeneralConsultPage() {
             calLink={generalCalLink()}
             expertName="General Consultation"
             fee={fee}
+            authEnabled={identity.authEnabled}
+            signedIn={identity.signedIn}
+            userName={identity.name}
+            userEmail={identity.email}
+            savedPhone={identity.phone}
           />
         </div>
       </div>

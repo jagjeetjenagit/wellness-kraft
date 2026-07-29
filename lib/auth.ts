@@ -1,76 +1,128 @@
-import { currentUser } from "@clerk/nextjs/server";
-import type { User as ClerkUser } from "@clerk/nextjs/server";
-import { hasClerk, hasDatabase } from "./config";
+import { auth as getSession } from "@/auth";
+import { hasAuth, hasDatabase } from "./config";
 import { getPrisma } from "./prisma";
 
-// Safe wrapper around Clerk: returns null instead of crashing when
-// Clerk isn't configured yet.
-export async function getSafeUser(): Promise<ClerkUser | null> {
-  if (!hasClerk()) return null;
+// Normalized signed-in user. Previously this was Clerk's User type;
+// now it's derived from the Google (Auth.js) session, but the shape the
+// rest of the app relies on (email, name, firstName) is preserved.
+export type AppUser = {
+  id: string; // stable Google account id (sub)
+  email: string;
+  name: string;
+  firstName: string;
+  image?: string;
+};
+
+// Safe wrapper: returns null instead of crashing when Google login
+// isn't configured or nobody is signed in.
+export async function getSafeUser(): Promise<AppUser | null> {
+  if (!hasAuth()) return null;
   try {
-    return await currentUser();
+    const session = await getSession();
+    const u = session?.user;
+    if (!u) return null;
+    const id = (u as { id?: string }).id || u.email || "";
+    if (!id) return null;
+    const name = u.name || "";
+    return {
+      id,
+      email: u.email || "",
+      name,
+      firstName: name.split(" ")[0] || "",
+      image: u.image || undefined,
+    };
   } catch {
     return null;
   }
 }
 
-function userEmail(u: ClerkUser): string {
-  return u.primaryEmailAddress?.emailAddress || u.emailAddresses[0]?.emailAddress || "";
+function userEmail(u: AppUser): string {
+  return u.email || "";
 }
 
-function userPhone(u: ClerkUser): string {
-  return u.primaryPhoneNumber?.phoneNumber || u.phoneNumbers[0]?.phoneNumber || "";
+function userPhone(_u: AppUser): string {
+  // Google sign-in never supplies a phone number.
+  return "";
 }
 
 // Is the signed-in person an admin?
-// Admin = listed in ADMIN_EMAILS / ADMIN_PHONES in .env, or given
-// the role "admin" in the Clerk dashboard (publicMetadata).
+// Admin = their Google email is listed in ADMIN_EMAILS in .env.
 export async function isAdmin(): Promise<boolean> {
-  // Local preview before Clerk is set up: admin stays open in
+  // Local preview before login is set up: admin stays open in
   // development only, so the client can see it. Locked in production.
-  if (!hasClerk()) return process.env.NODE_ENV === "development";
+  if (!hasAuth()) return process.env.NODE_ENV === "development";
 
   const user = await getSafeUser();
   if (!user) return false;
-
-  if ((user.publicMetadata as Record<string, unknown>)?.role === "admin") return true;
 
   const adminEmails = (process.env.ADMIN_EMAILS || "")
     .split(",")
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
-  const adminPhones = (process.env.ADMIN_PHONES || "")
-    .split(",")
-    .map((s) => s.replace(/[\s-]/g, ""))
-    .filter(Boolean);
 
   const email = userEmail(user).toLowerCase();
-  const phone = userPhone(user).replace(/[\s-]/g, "");
-
-  if (email && adminEmails.includes(email)) return true;
-  if (phone && adminPhones.includes(phone)) return true;
-  return false;
+  return !!email && adminEmails.includes(email);
 }
 
-// Keep a copy of the Clerk user in our own database (created on
+// Everything the booking widget needs to know about the visitor, resolved
+// on the server: whether login is even configured, whether they're signed
+// in, and their name/email (from Google) plus any phone we've saved before.
+// Google never gives us a phone, so we collect it once and reuse it.
+export async function getBookingIdentity(): Promise<{
+  authEnabled: boolean;
+  signedIn: boolean;
+  name: string;
+  email: string;
+  phone: string;
+}> {
+  const authEnabled = hasAuth();
+  const blank = { authEnabled, signedIn: false, name: "", email: "", phone: "" };
+  if (!authEnabled) return blank;
+
+  const user = await getSafeUser();
+  if (!user) return blank;
+
+  await ensureDbUser(user);
+
+  let phone = "";
+  if (hasDatabase()) {
+    const prisma = getPrisma();
+    if (prisma) {
+      try {
+        const row = await prisma.user.findUnique({
+          where: { clerkId: user.id },
+          select: { phone: true },
+        });
+        phone = row?.phone || "";
+      } catch {
+        // ignore — phone just stays empty and we'll ask for it
+      }
+    }
+  }
+
+  return { authEnabled: true, signedIn: true, name: user.name, email: user.email, phone };
+}
+
+// Keep a copy of the signed-in user in our own database (created on
 // first visit to the dashboard). Returns the database user id.
-export async function ensureDbUser(clerkUser: ClerkUser): Promise<string | null> {
+// The `clerkId` column is reused to store the Google account id, so no
+// database migration is needed.
+export async function ensureDbUser(user: AppUser): Promise<string | null> {
   if (!hasDatabase()) return null;
   const prisma = getPrisma();
   if (!prisma) return null;
   try {
     const dbUser = await prisma.user.upsert({
-      where: { clerkId: clerkUser.id },
+      where: { clerkId: user.id },
       update: {
-        name: clerkUser.fullName || undefined,
-        email: userEmail(clerkUser) || undefined,
-        phone: userPhone(clerkUser) || undefined,
+        name: user.name || undefined,
+        email: user.email || undefined,
       },
       create: {
-        clerkId: clerkUser.id,
-        name: clerkUser.fullName || "",
-        email: userEmail(clerkUser),
-        phone: userPhone(clerkUser),
+        clerkId: user.id,
+        name: user.name || "",
+        email: user.email || "",
+        phone: "",
       },
     });
     return dbUser.id;

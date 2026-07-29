@@ -15,6 +15,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   if (error) return error;
   try {
     const b = await req.json();
+    const images = parseImages(b.images);
+    if (images !== undefined && images.length === 0) {
+      return NextResponse.json({ error: "At least one product image is required." }, { status: 400 });
+    }
     const product = await prisma.product.update({
       where: { id: params.id },
       data: {
@@ -22,7 +26,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         sku: b.sku?.trim(),
         description: b.description?.trim() ?? undefined,
         price: b.price !== undefined ? Math.round(Number(b.price)) : undefined,
-        images: parseImages(b.images),
+        images,
         stock: b.stock !== undefined ? Math.max(0, Math.round(Number(b.stock))) : undefined,
         category: b.category?.trim(),
         consultRecommended:

@@ -14,12 +14,13 @@ export default async function AdminOverviewPage() {
     products: 0,
     lowStock: 0,
     experts: 0,
+    expertsNoLink: 0,
     upcomingBookings: 0,
   };
 
   if (prisma) {
     try {
-      const [paidAgg, processing, products, lowStock, experts, upcomingBookings] =
+      const [paidAgg, processing, products, lowStock, experts, expertsNoLink, upcomingBookings] =
         await Promise.all([
           prisma.order.aggregate({
             where: { paymentStatus: "PAID" },
@@ -32,6 +33,8 @@ export default async function AdminOverviewPage() {
           prisma.product.count({ where: { active: true } }),
           prisma.product.count({ where: { active: true, stock: { lte: 5 } } }),
           prisma.expert.count({ where: { active: true } }),
+          // Live experts customers can see but can't book — no Cal.com link.
+          prisma.expert.count({ where: { active: true, calLink: "" } }),
           prisma.booking.count({
             where: { status: "CONFIRMED", startTime: { gte: new Date() } },
           }),
@@ -43,6 +46,7 @@ export default async function AdminOverviewPage() {
         products,
         lowStock,
         experts,
+        expertsNoLink,
         upcomingBookings,
       };
     } catch {
@@ -62,6 +66,22 @@ export default async function AdminOverviewPage() {
 
   return (
     <div>
+      {stats.expertsNoLink > 0 && (
+        <Link
+          href="/admin/experts"
+          className="mb-6 flex items-start gap-3 rounded-2xl border border-alert/40 bg-alert/10 p-4 transition-colors hover:bg-alert/15"
+        >
+          <span aria-hidden="true" className="text-lg leading-none">⚠️</span>
+          <span className="text-sm font-semibold text-alert">
+            {stats.expertsNoLink} live{" "}
+            {stats.expertsNoLink === 1 ? "expert has" : "experts have"} no booking link —
+            customers can see{" "}
+            {stats.expertsNoLink === 1 ? "them" : "them"} but can&apos;t book.
+            <span className="ml-1 font-bold underline">Add a Cal.com link →</span>
+          </span>
+        </Link>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <Link

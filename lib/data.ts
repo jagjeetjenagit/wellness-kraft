@@ -46,7 +46,10 @@ export async function getExpert(idOrSlug: string): Promise<ExpertT | null> {
       where: { OR: [{ id: idOrSlug }, { slug: idOrSlug }], active: true },
     });
   } catch {
-    return null;
+    // DB connected but unreachable/unmigrated: fall back to demo data so
+    // the detail page stays consistent with the (also-falling-back) list
+    // instead of 404-ing. A genuine "not found" returns null above.
+    return demoExperts.find((e) => e.id === idOrSlug || e.slug === idOrSlug) || null;
   }
 }
 
@@ -62,7 +65,10 @@ export async function getExpertProducts(expert: ExpertT): Promise<ProductT[]> {
     });
     return rows;
   } catch {
-    return [];
+    // Keep the "recommended products" strip in sync with the demo
+    // fallback used by getExpert when the DB is unreachable.
+    const slugs = SAMPLE_RECOMMENDATIONS[expert.slug] || [];
+    return demoProducts.filter((p) => slugs.includes(p.slug));
   }
 }
 
@@ -89,7 +95,9 @@ export async function getProduct(idOrSlug: string): Promise<ProductT | null> {
       where: { OR: [{ id: idOrSlug }, { slug: idOrSlug }], active: true },
     });
   } catch {
-    return null;
+    // Same graceful fallback as getExpert: don't 404 the detail page when
+    // the DB is unreachable/unmigrated; the shop list falls back too.
+    return demoProducts.find((p) => p.id === idOrSlug || p.slug === idOrSlug) || null;
   }
 }
 

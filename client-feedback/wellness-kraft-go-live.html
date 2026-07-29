@@ -1,0 +1,592 @@
+<title>Wellness Kraft — Go-Live QA & Handoff</title>
+<style>
+  :root {
+    --ground:   #FEFAEF;
+    --surface:  #FFFFFF;
+    --surface2: #F4F1E6;
+    --ink:      #26291F;
+    --ink-soft: #4A5140;
+    --muted:    #6B7A5E;
+    --faint:    #8C9A7E;
+    --accent:   #334720;
+    --accent-2: #55703A;
+    --line:     #DDE0CE;
+    --line-soft:#E9E7D6;
+    --gold:     #B4841C;
+    --alert:    #A8402C;
+    --alert-bg: #F6E5DF;
+    --ok:       #3F6B34;
+    --ok-bg:    #E6EFDD;
+    --shadow:   0 1px 2px rgba(38,41,31,.05), 0 6px 22px rgba(38,41,31,.06);
+    --radius:   14px;
+    --maxw:     900px;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:   #16190F;
+      --surface:  #1E2217;
+      --surface2: #232819;
+      --ink:      #ECEADB;
+      --ink-soft: #C6CBB4;
+      --muted:    #9DAB8B;
+      --faint:    #7E8C6D;
+      --accent:   #AEC78F;
+      --accent-2: #C3D6A9;
+      --line:     #333A28;
+      --line-soft:#2A3020;
+      --gold:     #E0B84E;
+      --alert:    #E58A72;
+      --alert-bg: #35211C;
+      --ok:       #9BC57E;
+      --ok-bg:    #23301B;
+      --shadow:   0 1px 2px rgba(0,0,0,.25), 0 8px 26px rgba(0,0,0,.32);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FEFAEF; --surface:#FFFFFF; --surface2:#F4F1E6; --ink:#26291F; --ink-soft:#4A5140;
+    --muted:#6B7A5E; --faint:#8C9A7E; --accent:#334720; --accent-2:#55703A; --line:#DDE0CE;
+    --line-soft:#E9E7D6; --gold:#B4841C; --alert:#A8402C; --alert-bg:#F6E5DF; --ok:#3F6B34; --ok-bg:#E6EFDD;
+    --shadow:0 1px 2px rgba(38,41,31,.05),0 6px 22px rgba(38,41,31,.06);
+  }
+  :root[data-theme="dark"] {
+    --ground:#16190F; --surface:#1E2217; --surface2:#232819; --ink:#ECEADB; --ink-soft:#C6CBB4;
+    --muted:#9DAB8B; --faint:#7E8C6D; --accent:#AEC78F; --accent-2:#C3D6A9; --line:#333A28;
+    --line-soft:#2A3020; --gold:#E0B84E; --alert:#E58A72; --alert-bg:#35211C; --ok:#9BC57E; --ok-bg:#23301B;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 8px 26px rgba(0,0,0,.32);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px 96px; }
+
+  /* ---- Sticky progress bar ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: var(--maxw); margin: 0 auto; padding: 12px 22px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .brandmark { font-family: var(--serif); font-weight: 600; font-size: 17px; letter-spacing: .01em; color: var(--accent); white-space: nowrap; }
+  .brandmark span { color: var(--muted); font-family: var(--sans); font-weight: 500; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; margin-left: 8px; }
+  .meter { flex: 1 1 220px; min-width: 180px; }
+  .meter-track { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); border-radius: 999px; transition: width .35s ease; }
+  .meter-label { font-size: 12.5px; color: var(--muted); margin-top: 5px; font-variant-numeric: tabular-nums; }
+  .meter-label b { color: var(--ink); font-weight: 600; }
+  .controls { display: flex; gap: 8px; }
+  button.ctl {
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--ink-soft); background: var(--surface); border: 1px solid var(--line);
+    padding: 7px 12px; border-radius: 9px; transition: background .15s, border-color .15s, color .15s;
+  }
+  button.ctl:hover { border-color: var(--accent); color: var(--accent); }
+  button.ctl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.ctl[aria-pressed="true"] { background: var(--accent); color: var(--ground); border-color: var(--accent); }
+
+  /* ---- Masthead ---- */
+  header.hero { padding: 54px 0 8px; }
+  .eyebrow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; letter-spacing: -.01em; margin: 12px 0 0; text-wrap: balance; }
+  .lede { color: var(--ink-soft); font-size: 17px; max-width: 62ch; margin: 16px 0 0; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .chip { font-size: 12.5px; font-weight: 600; color: var(--muted); background: var(--surface2); border: 1px solid var(--line-soft); padding: 5px 11px; border-radius: 999px; }
+
+  /* ---- How to use / legend ---- */
+  .callout {
+    margin-top: 30px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px;
+  }
+  .callout h2 { font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 26px; }
+  .legend div { font-size: 14px; color: var(--ink-soft); display: flex; gap: 9px; align-items: flex-start; }
+  .tag { font-size: 10.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; padding: 3px 7px; border-radius: 5px; white-space: nowrap; line-height: 1.3; margin-top: 1px; }
+  .tag.blocker { color: var(--alert); background: var(--alert-bg); }
+  .tag.live { color: var(--gold); background: color-mix(in srgb, var(--gold) 15%, transparent); }
+
+  /* ---- Phases ---- */
+  section.phase { margin-top: 40px; scroll-margin-top: 90px; }
+  .phase-head { display: flex; align-items: baseline; gap: 14px; border-bottom: 2px solid var(--accent); padding-bottom: 12px; margin-bottom: 4px; }
+  .phase-num { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: .05em; }
+  .phase-title { font-size: 21px; font-weight: 700; letter-spacing: -.01em; margin: 0; }
+  .phase-sub { color: var(--muted); font-size: 14px; margin: 0 0 0 auto; text-align: right; }
+  .phase-count { font-variant-numeric: tabular-nums; }
+
+  ul.tests { list-style: none; margin: 0; padding: 0; }
+  li.test {
+    display: grid; grid-template-columns: 26px 1fr; gap: 14px;
+    padding: 15px 4px 15px 2px; border-bottom: 1px solid var(--line-soft);
+    align-items: start;
+  }
+  li.test:last-child { border-bottom: 0; }
+  .cbx { appearance: none; -webkit-appearance: none; margin: 2px 0 0; width: 21px; height: 21px; border: 2px solid var(--faint); border-radius: 6px; cursor: pointer; background: var(--surface); position: relative; flex: none; transition: border-color .15s, background .15s; }
+  .cbx:hover { border-color: var(--accent); }
+  .cbx:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cbx:checked { background: var(--accent); border-color: var(--accent); }
+  .cbx:checked::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid var(--ground); border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
+  .body .action { font-weight: 600; color: var(--ink); }
+  .body .expect { display: block; color: var(--muted); font-size: 14px; margin-top: 3px; }
+  .body .expect::before { content: "Expect — "; color: var(--faint); font-weight: 600; }
+  .body code { font-family: var(--mono); font-size: 12.5px; background: var(--surface2); border: 1px solid var(--line-soft); padding: 1.5px 6px; border-radius: 5px; color: var(--accent); word-break: break-word; }
+  .row-tags { display: inline-flex; gap: 6px; margin-left: 8px; vertical-align: middle; }
+  li.test.done .body .action { color: var(--faint); text-decoration: line-through; text-decoration-color: var(--line); }
+  li.test.done .body .expect, li.test.done .row-tags { opacity: .5; }
+  body.hide-done li.test.done { display: none; }
+
+  .note { font-size: 13.5px; color: var(--ink-soft); background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 8px 13px; margin-top: 9px; }
+
+  /* ---- Handoff footer ---- */
+  .handoff { margin-top: 56px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 30px 28px; }
+  .handoff h2 { font-family: var(--serif); font-size: 24px; margin: 0 0 6px; }
+  .handoff p.sub { color: var(--muted); margin: 0 0 22px; }
+  table.svc { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .svc-scroll { overflow-x: auto; }
+  table.svc th, table.svc td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  table.svc th { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  table.svc td:first-child { font-weight: 600; white-space: nowrap; }
+  table.svc code { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .signoff { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 20px 40px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .signoff div { flex: 1 1 200px; }
+  .signoff .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  .signoff .line { margin-top: 26px; border-bottom: 1.5px solid var(--faint); }
+  footer.foot { margin-top: 34px; text-align: center; color: var(--faint); font-size: 12.5px; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* ---- Print ---- */
+  @media print {
+    :root { --ground:#fff; --surface:#fff; --surface2:#fff; --ink:#000; --ink-soft:#222; --muted:#444; --line:#bbb; --line-soft:#ddd; --accent:#2c3d1b; }
+    .topbar, .controls, .no-print { display: none !important; }
+    body { font-size: 11pt; }
+    .wrap { max-width: none; padding: 0; }
+    section.phase, .handoff, li.test { break-inside: avoid; }
+    .callout, .handoff { box-shadow: none; }
+    li.test.done .body .action { text-decoration: none; color: #000; }
+    body.hide-done li.test.done { display: grid !important; }
+    .cbx { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+
+<div class="topbar no-print">
+  <div class="topbar-inner">
+    <div class="brandmark">Wellness&nbsp;Kraft <span>Go-Live QA</span></div>
+    <div class="meter">
+      <div class="meter-track"><div class="meter-fill" id="fill"></div></div>
+      <div class="meter-label"><b id="doneCount">0</b> of <b id="totalCount">0</b> checks passed · <span id="pct">0%</span></div>
+    </div>
+    <div class="controls">
+      <button class="ctl" id="toggleDone" aria-pressed="false">Hide passed</button>
+      <button class="ctl" id="printBtn">Print / PDF</button>
+      <button class="ctl" id="resetBtn">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Production readiness &middot; Wellness Kraft</p>
+    <h1>Every-flow go-live checklist &amp; client handoff</h1>
+    <p class="lede">Work through each phase in order. Tick a check only when the <b>expected result</b> actually happens on screen — not when you think it should. Anything marked <span class="tag blocker">Blocker</span> must pass before the site goes public. Progress saves automatically in this browser. <b>Phase 14 is new</b> — it re-tests everything changed in the latest build (Google-only login, gated booking, required photos, uploads).</p>
+    <div class="meta-row">
+      <span class="chip">Next.js 14 · Vercel</span>
+      <span class="chip">Google login (Auth.js)</span>
+      <span class="chip">Neon Postgres</span>
+      <span class="chip">Razorpay · Cal.com · Resend</span>
+    </div>
+
+    <div class="callout">
+      <h2>How to read each line</h2>
+      <div class="legend">
+        <div><span class="tag blocker">Blocker</span><span>Must pass. A real customer would be blocked or lose money if this fails.</span></div>
+        <div><span class="tag live">Live-only</span><span>Only relevant on the real Vercel URL / live keys, not on <code>localhost</code>.</span></div>
+        <div><span class="cbx" style="pointer-events:none" aria-hidden="true"></span><span>Tap the box once the “Expect —” line is true on screen.</span></div>
+        <div><span style="font-weight:600;color:var(--accent)">Print / PDF</span><span>Exports a clean copy (no controls, all items shown) to hand to the client.</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PHASE 0 -->
+  <section class="phase" id="p0">
+    <div class="phase-head">
+      <span class="phase-num">Phase 00</span>
+      <h2 class="phase-title">Setup &amp; environment</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Fresh install runs clean.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect"><code>npm install</code> then <code>npm run dev</code> starts with no red errors in the terminal.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">All keys present in <code>.env</code>.</span><span class="expect">Database, Google login, Razorpay, Resend and site URL are filled — no empty values you intend to use.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Database schema is live.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect"><code>npm run db:setup</code> completed once; experts &amp; products load from the database, not demo mode.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">No “Preview mode” / demo banners anywhere.</span><span class="expect">The yellow demo banner is gone on the home, shop and expert pages.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Production build succeeds.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect"><code>npm run build</code> finishes with no type or build errors.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 1 -->
+  <section class="phase" id="p1">
+    <div class="phase-head">
+      <span class="phase-num">Phase 01</span>
+      <h2 class="phase-title">Login &amp; accounts</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">“Sign in” shows the Google button.</span><span class="expect">Header → Sign in opens a card with a single “Continue with Google” button (no phone/OTP fields).</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">New account sign-up works.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">A Google account that has never signed in before lands on <code>/dashboard</code> — no “external account not found” error.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Returning sign-in works.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Signing out and back in with the same Google account returns you to the dashboard instantly.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Sign out works.</span><span class="expect">“Sign out” returns to the home page and the header shows “Sign in” again.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Header reflects state.</span><span class="expect">Signed in shows “My account” + “Sign out”; signed out shows “Sign in”. No flicker of the wrong one.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Protected pages redirect when logged out.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Visiting <code>/dashboard</code> or <code>/admin</code> while signed out sends you to Sign in, then back after login.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin gate is correct.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Your email in <code>ADMIN_EMAILS</code> reaches <code>/admin</code>; a different Google account gets “this area is for the site owner”.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section class="phase" id="p2">
+    <div class="phase-head">
+      <span class="phase-num">Phase 02</span>
+      <h2 class="phase-title">Browsing &amp; content</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Home page loads fully.</span><span class="expect">Logo, hero, featured experts and products all render; no broken images or empty sections.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Every top-nav link works.</span><span class="expect">Experts, Shop, About, Contact and the logo all navigate without a 404.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Experts list renders.</span><span class="expect"><code>/experts</code> shows expert cards with photo, name, specialty and rating.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Every expert profile opens.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Clicking any expert opens <code>/expert/&hellip;</code> with bio, fee and a booking widget — no “page doesn’t exist”.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Shop list renders and product pages open.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Every product on <code>/shop</code> opens its detail page with price, description and “Add to cart”.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Condition pages resolve.</span><span class="expect">Each <code>/conditions/&hellip;</code> link from the site opens real content, not a 404.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Prices are correct and formatted.</span><span class="expect">All amounts show as ₹ in whole rupees (e.g. ₹499), consistent between list, detail and cart.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">No placeholder copy remains.</span><span class="expect">No “lorem”, “[X]+ people guided”, or dummy testimonials/bios left in customer-facing text.</span><div class="note">Watch the trust-count number, testimonials and doctor bios — these were flagged as pending client assets.</div></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Real logo assets in place.</span><span class="expect">Final logo (and any reversed/icon versions) look crisp on cream and dark backgrounds; no stretched JPEG.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 3 -->
+  <section class="phase" id="p3">
+    <div class="phase-head">
+      <span class="phase-num">Phase 03</span>
+      <h2 class="phase-title">Consultations &amp; booking</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Each expert has a working Cal.com link.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">The booking widget loads that expert’s real calendar — no “booking coming soon” on a live expert.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">A test booking completes end-to-end.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Picking a slot and confirming shows Cal.com’s success screen and blocks that time on the calendar.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Booking appears in history.</span><span class="expect">If the Cal.com webhook is set, the booking shows on the customer’s dashboard and in <code>/admin</code> → Bookings.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">General consultation path works.</span><span class="expect">The “Not sure who to pick?” option opens with the correct fee (default ₹499); if no general link is set it shows the contact fallback, not a crash.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Paid consultation charges correctly.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">A consultation with a fee routes through payment before the booking is confirmed.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin can add a prescription.</span><span class="expect">In Admin → Bookings, adding prescription/advice text shows it on that customer’s dashboard under the booking.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 4 -->
+  <section class="phase" id="p4">
+    <div class="phase-head">
+      <span class="phase-num">Phase 04</span>
+      <h2 class="phase-title">Cart, checkout &amp; payments</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Add / update / remove in cart.</span><span class="expect">Quantities change, items remove, the count badge and totals update, and the cart survives a page refresh.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Cart totals are accurate.</span><span class="expect">Line items, quantities and grand total add up exactly to the rupee.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Checkout form validates.</span><span class="expect">Missing name / email / phone / address is caught with a clear message before payment opens.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Razorpay test payment succeeds.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">With test keys, a test card completes payment and you reach the checkout success page.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Order is saved as PAID.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">The new order shows in Admin → Orders marked paid, with correct items and amount.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Stock decrements on payment.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">The purchased product’s stock drops by the quantity bought after a successful payment.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Failed / cancelled payment is safe.</span><span class="expect">Closing the Razorpay window leaves the order unpaid and does NOT reduce stock or clear the cart.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Out-of-stock handled.</span><span class="expect">A zero-stock product can’t be over-ordered; the UI shows it as unavailable.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Payment signature is verified server-side.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Orders only flip to paid via the verify step — a tampered/forged callback is rejected.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 5 -->
+  <section class="phase" id="p5">
+    <div class="phase-head">
+      <span class="phase-num">Phase 05</span>
+      <h2 class="phase-title">Emails &amp; notifications</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Order confirmation to customer.</span><span class="expect">A test order sends a confirmation email with order number, items and total.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Owner notification arrives.</span><span class="expect">The address in <code>ADMIN_NOTIFY_EMAIL</code> gets a “new order” email with a link to the admin orders page.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Contact form delivers.</span><span class="expect">Submitting Contact sends the message to the owner inbox and thanks the visitor.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Links inside emails are absolute &amp; correct.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">Email links point to the real domain (from <code>NEXT_PUBLIC_SITE_URL</code>), not localhost.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Domain sending set up (or limitation known).<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">On the free Resend plan without a verified domain, emails only reach your own signup address — client is aware, or a domain is verified.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 6 -->
+  <section class="phase" id="p6">
+    <div class="phase-head">
+      <span class="phase-num">Phase 06</span>
+      <h2 class="phase-title">Customer dashboard</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Dashboard greets the right person.</span><span class="expect">Shows the signed-in name/email at the top.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Orders list is scoped to the user.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">A customer sees only their own orders — never another customer’s.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Consultations list is scoped to the user.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Bookings shown belong only to that customer, with status and any prescription.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Empty states read well.</span><span class="expect">A brand-new account sees friendly “no orders / no consultations yet” prompts, not blanks or errors.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin shortcut only for admins.</span><span class="expect">The “Open admin area” link appears only for admin accounts.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 7 -->
+  <section class="phase" id="p7">
+    <div class="phase-head">
+      <span class="phase-num">Phase 07</span>
+      <h2 class="phase-title">Admin area</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Dashboard stats are sensible.</span><span class="expect">Revenue, paid orders, orders-to-ship, active products/experts and upcoming bookings show real numbers.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Products: create, edit, deactivate.</span><span class="expect">Adding/editing a product reflects on the shop immediately; deactivating hides it from customers.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Experts: create, edit, deactivate.</span><span class="expect">New expert (with Cal.com link) appears on <code>/experts</code>; deactivating removes them.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Orders: view &amp; update fulfilment.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Marking an order shipped/delivered updates its status for the customer too.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Low-stock warning shows.</span><span class="expect">Products at or below 5 units are flagged in admin.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin API is protected.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Admin create/edit/delete API calls fail with 403 for non-admins even if called directly.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 8 -->
+  <section class="phase" id="p8">
+    <div class="phase-head">
+      <span class="phase-num">Phase 08</span>
+      <h2 class="phase-title">Security &amp; access</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Secrets never reach the browser.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Only <code>NEXT_PUBLIC_*</code> values appear client-side; secret keys (Razorpay secret, Auth secret, DB URL) do not.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action"><code>.env</code> is not committed.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect"><code>.env</code> is git-ignored; no live keys in the repo history.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin dev-bypass is off in production.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">The “open in dev” admin access does NOT apply on the live site — real login is enforced.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Google OAuth consent is production-ready.<span class="row-tags"><span class="tag blocker">Blocker</span><span class="tag live">Live-only</span></span></span><span class="expect">Consent screen is “In production” (not just Testing), so any customer — not only test users — can sign in.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Redirect URIs match the live domain.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">Google Cloud has <code>https://your-domain/api/auth/callback/google</code> added — no <code>redirect_uri_mismatch</code>.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">HTTPS everywhere.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">The live site loads over https with a valid padlock; no mixed-content warnings.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 9 -->
+  <section class="phase" id="p9">
+    <div class="phase-head">
+      <span class="phase-num">Phase 09</span>
+      <h2 class="phase-title">SEO, performance &amp; analytics</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Titles &amp; descriptions per page.</span><span class="expect">Home, shop, experts and product pages each have a unique, sensible browser-tab title.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Sitemap &amp; robots reflect live URL.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect"><code>/sitemap.xml</code> lists real pages on the live domain; admin/dashboard are not indexed.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Social preview looks right.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">Pasting the URL in WhatsApp/Slack shows the correct title, description and image.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Analytics fires (if used).</span><span class="expect">With GA4/GTM IDs set, real-time analytics registers your visit; if unused, IDs are left blank (no console errors).</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Images are optimised.</span><span class="expect">Hero/LCP image loads promptly; no giant unoptimised files; above-the-fold logo has priority.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">No console errors on key pages.</span><span class="expect">Home, shop, a product, an expert and checkout show a clean browser console (ignore third-party extension noise).</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 10 -->
+  <section class="phase" id="p10">
+    <div class="phase-head">
+      <span class="phase-num">Phase 10</span>
+      <h2 class="phase-title">Responsive &amp; cross-browser</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Phone layout (≈360–390px).<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Header, hamburger menu, cards and checkout all fit with no sideways scroll.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Tablet &amp; desktop layouts.</span><span class="expect">Grids reflow cleanly at tablet and wide-desktop widths.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Mobile menu works.</span><span class="expect">Hamburger opens/closes; every link inside navigates and the menu closes after.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Chrome, Safari &amp; a mobile browser.</span><span class="expect">Home, booking and checkout behave the same across at least these three.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Tap targets &amp; forms on mobile.</span><span class="expect">Buttons are easily tappable; keyboards don’t cover the field being typed in checkout.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 11 -->
+  <section class="phase" id="p11">
+    <div class="phase-head">
+      <span class="phase-num">Phase 11</span>
+      <h2 class="phase-title">Compliance &amp; content</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Health disclaimer present.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Footer health disclaimer is visible site-wide.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">FSSAI-safe wording only.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Supplement/condition copy is support/guidance language — no disease-cure or treatment claims anywhere.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Legal pages exist.</span><span class="expect">Privacy, terms, shipping and refund/return info are present and linked (as agreed with the client).</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Contact details are real.</span><span class="expect">Business email/phone/address shown are the client’s actual details.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Product &amp; expert data is final.</span><span class="expect">Real products, prices, stock, expert names, bios and photos — no leftover sample seed data in production.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 12 -->
+  <section class="phase" id="p12">
+    <div class="phase-head">
+      <span class="phase-num">Phase 12</span>
+      <h2 class="phase-title">Deploy &amp; go-live switches</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">All env vars set in Vercel.<span class="row-tags"><span class="tag blocker">Blocker</span><span class="tag live">Live-only</span></span></span><span class="expect">Database, <code>AUTH_SECRET</code>, <code>AUTH_GOOGLE_ID/SECRET</code>, <code>AUTH_URL</code>, <code>AUTH_TRUST_HOST=true</code>, <code>BLOB_READ_WRITE_TOKEN</code>, Razorpay, Resend and <code>NEXT_PUBLIC_SITE_URL</code> all present.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action"><code>NEXT_PUBLIC_SITE_URL</code> = real domain.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">Set to the live address, then redeployed (fixes sitemap, email links, social previews).</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Razorpay switched to LIVE keys.<span class="row-tags"><span class="tag blocker">Blocker</span><span class="tag live">Live-only</span></span></span><span class="expect">Business verification approved; <code>rzp_live_</code> keys in Vercel; a tiny real payment succeeds then is refunded.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Cal.com webhook points to live URL.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">Webhook URL uses the real domain so booking history records on the live site.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Database migrated on production.<span class="row-tags"><span class="tag blocker">Blocker</span><span class="tag live">Live-only</span></span></span><span class="expect">Production database has the current schema (<code>db:push</code> run after any schema change).</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Custom domain + SSL active.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">Domain resolves to Vercel with a valid certificate; www and root both work.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 13 -->
+  <section class="phase" id="p13">
+    <div class="phase-head">
+      <span class="phase-num">Phase 13</span>
+      <h2 class="phase-title">Post-launch smoke test</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Real sign-in on the live site.<span class="row-tags"><span class="tag blocker">Blocker</span><span class="tag live">Live-only</span></span></span><span class="expect">Sign in with Google on the production URL succeeds and reaches the dashboard.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">One real order end-to-end.<span class="row-tags"><span class="tag blocker">Blocker</span><span class="tag live">Live-only</span></span></span><span class="expect">A live low-value purchase pays, saves as paid, decrements stock, and both emails arrive; then refund it.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">One real booking end-to-end.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect">A live consultation books, blocks the calendar and appears in admin.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin reachable on live domain.</span><span class="expect">The client can sign in and reach <code>/admin</code> on the real site.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Client can make a change.</span><span class="expect">Client successfully adds/edits one product or expert from <code>/admin</code> unaided.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 14 -->
+  <section class="phase" id="p14">
+    <div class="phase-head">
+      <span class="phase-num">Phase 14</span>
+      <h2 class="phase-title">New in this build — priority re-test</h2>
+      <p class="phase-sub"><span class="phase-count"></span></p>
+    </div>
+    <p class="note" style="margin-top:14px;margin-bottom:6px">These flows changed recently (Google-only login, gated booking, phone-once, required photos, drag-and-drop uploads, no seeded data). Re-test them specifically before launch — they aren&apos;t covered by earlier passes.</p>
+    <ul class="tests">
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Google is the only login — no phone/OTP anywhere.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Sign-in and sign-up show only “Continue with Google”. No phone-number or OTP field appears on any auth screen.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Brand-new Google account creates itself.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">A never-before-seen Google account signs in first try and lands on the dashboard — no “external account not found”.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Signed-out visitor can’t reach the booking form.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">On an expert with a Cal link, a logged-out visitor sees “Sign in to book with …” + Google button — never the payment/calendar directly.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">After sign-in you return to the same expert.</span><span class="expect">Signing in from the booking gate lands you back on that expert’s page, ready to book — not on a generic dashboard.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">No name/email re-entry when signed in.</span><span class="expect">The booking box shows “Booking as [name] · [email]” from Google — it never asks you to type name or email again.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Phone is asked once, then remembered.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">First booking asks for a phone; book again later and it’s pre-filled (with an “Edit” option) — not asked from scratch.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Paid consult: pay → calendar, as the signed-in user.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Fee pays with a test card, then the calendar opens pre-filled with your Google name/email.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Expert with no Cal link shows the safe fallback.</span><span class="expect">An expert with no booking link shows “booking coming soon → Request a booking” (contact), not a broken widget or the gate.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin warns about un-bookable experts.</span><span class="expect">The admin dashboard shows “N live experts have no booking link”; the expert form warns + confirms “save anyway?” when Live without a link.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">A product can’t be saved without a photo.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Trying to save a product with no image is blocked — in the form <em>and</em> if the API is called directly.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">An expert can’t be saved without a photo.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Same rule for experts — a photo is required to save.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Drag-and-drop upload + crop works.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Dragging a photo into a product/expert opens the crop window; “Crop &amp; upload” stores it and shows the square thumbnail.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Uploaded images come out uniform.</span><span class="expect">Products crop to 1000×1000, experts to 800×800 — the shop grid and expert cards look even, no stretched/odd-ratio photos.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Multiple product photos + main + remove.</span><span class="expect">A product accepts several photos; the first is tagged “Main”; the × removes one; the shop shows the main photo.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Upload fallback is graceful.</span><span class="expect">If the Blob token is missing, the picker says uploads aren’t on and lets you paste a link instead — never a dead end or crash.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Vercel Blob token set in production.<span class="row-tags"><span class="tag live">Live-only</span></span></span><span class="expect"><code>BLOB_READ_WRITE_TOKEN</code> is in Vercel and a real upload from the live admin succeeds.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">No dummy data anywhere.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Shop and experts show only what you added in /admin. No sample “Priya Sharma” / “Ashwagandha” placeholders remain.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Empty catalog degrades cleanly.</span><span class="expect">Before you add content, shop/experts/home show tidy empty states — no crash, no leftover demo data.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Setup no longer seeds samples.</span><span class="expect"><code>npm run db:setup</code> only creates tables; sample data only appears if someone runs <code>npm run db:seed-samples</code> on purpose.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Unpublished items stay hidden.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">A product/expert with “Visible” unticked does not appear on the public site, only in /admin.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Detail pages never 404 on a DB hiccup.</span><span class="expect">If the database briefly fails, an expert/product detail page falls back gracefully rather than showing “page doesn’t exist”.</span></div></li>
+      <li class="test"><input type="checkbox" class="cbx"><div class="body"><span class="action">Admin is locked in production.<span class="row-tags"><span class="tag blocker">Blocker</span></span></span><span class="expect">Since Google login is configured, <code>/admin</code> needs a real admin sign-in even in dev — the old “open in dev” bypass no longer applies.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- HANDOFF -->
+  <div class="handoff" id="handoff">
+    <h2>Client handoff summary</h2>
+    <p class="sub">What has been delivered, what powers it, and what it costs to run.</p>
+    <div class="svc-scroll">
+      <table class="svc">
+        <thead><tr><th>What it does</th><th>Service</th><th>Free tier?</th><th>Owner action needed</th></tr></thead>
+        <tbody>
+          <tr><td>Website hosting</td><td>Vercel</td><td>Yes</td><td>Redeploys automatically on each change</td></tr>
+          <tr><td>Database</td><td>Neon Postgres</td><td>Yes</td><td>None day-to-day</td></tr>
+          <tr><td>Customer login</td><td>Google (Auth.js)</td><td>Yes — unlimited</td><td>Keep OAuth consent “In production”</td></tr>
+          <tr><td>Payments</td><td>Razorpay</td><td>Per-transaction fee</td><td>Use LIVE keys once verified</td></tr>
+          <tr><td>Bookings</td><td>Cal.com</td><td>Yes</td><td>One calendar link per expert</td></tr>
+          <tr><td>Emails</td><td>Resend</td><td>Yes (verify a domain for full delivery)</td><td>Verify sending domain for production</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note" style="margin-top:18px">Everything the client manages day-to-day — products, prices, stock, experts, orders, bookings and prescriptions — lives in the <b>/admin</b> area. The full step-by-step setup and “making changes later” guide is in <code>README.md</code>.</div>
+
+    <div class="signoff no-print">
+      <div><div class="lbl">Tested by</div><div class="line"></div></div>
+      <div><div class="lbl">Date</div><div class="line"></div></div>
+      <div><div class="lbl">Approved for launch</div><div class="line"></div></div>
+    </div>
+  </div>
+
+  <footer class="foot">Wellness Kraft · Go-live QA &amp; handoff · Tick every Blocker before announcing the site publicly.</footer>
+</div>
+
+<script>
+(function () {
+  var KEY = "wk-golive-v2";
+  var items = Array.prototype.slice.call(document.querySelectorAll("li.test"));
+  var boxes = [];
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { saved = {}; }
+
+  items.forEach(function (li, i) {
+    var box = li.querySelector(".cbx");
+    box.dataset.k = "t" + i;
+    box.setAttribute("aria-label", (li.querySelector(".action") || {}).textContent || ("Check " + (i + 1)));
+    if (saved[box.dataset.k]) { box.checked = true; li.classList.add("done"); }
+    box.addEventListener("change", function () {
+      li.classList.toggle("done", box.checked);
+      persist(); update();
+    });
+    boxes.push(box);
+  });
+
+  function persist() {
+    var o = {};
+    boxes.forEach(function (b) { if (b.checked) o[b.dataset.k] = 1; });
+    try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
+  }
+
+  var fill = document.getElementById("fill");
+  var doneEl = document.getElementById("doneCount");
+  var totalEl = document.getElementById("totalCount");
+  var pctEl = document.getElementById("pct");
+
+  function update() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    var total = boxes.length;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    fill.style.width = pct + "%";
+    doneEl.textContent = done;
+    totalEl.textContent = total;
+    pctEl.textContent = pct + "%";
+    // per-phase counts
+    document.querySelectorAll("section.phase").forEach(function (sec) {
+      var bs = sec.querySelectorAll(".cbx");
+      var d = 0; bs.forEach(function (b) { if (b.checked) d++; });
+      var t = bs.length;
+      var lbl = sec.querySelector(".phase-count");
+      if (lbl) { lbl.textContent = d + " / " + t; lbl.style.color = (d === t && t) ? "var(--ok)" : ""; }
+    });
+  }
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    if (!confirm("Clear all ticks and start the checklist over?")) return;
+    boxes.forEach(function (b) { b.checked = false; b.closest("li.test").classList.remove("done"); });
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    update();
+  });
+
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+
+  var hide = document.getElementById("toggleDone");
+  hide.addEventListener("click", function () {
+    var on = document.body.classList.toggle("hide-done");
+    hide.setAttribute("aria-pressed", on ? "true" : "false");
+    hide.textContent = on ? "Show passed" : "Hide passed";
+  });
+
+  update();
+})();
+</script>

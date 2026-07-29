@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 interface AdminExpert {
   id: string;
@@ -98,6 +99,19 @@ export default function AdminExpertsPage() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
+    if (!String(form.photo).trim()) {
+      setError("Please add a photo link for this expert.");
+      return;
+    }
+    // Guard the dangerous combo: Live on the site but no way to book.
+    if (form.active && !String(form.calLink).trim()) {
+      const ok = confirm(
+        "This expert is set to Visible but has no Cal.com booking link.\n\n" +
+          "Customers will see them but can't book online — they'll only get a " +
+          "\"request a booking\" contact option instead.\n\nSave anyway?"
+      );
+      if (!ok) return;
+    }
     setSaving(true);
     setError("");
     try {
@@ -154,14 +168,27 @@ export default function AdminExpertsPage() {
             <input required className="input" placeholder="e.g. Clinical Nutritionist" value={String(form.specialty)} onChange={(e) => setForm({ ...form, specialty: e.target.value })} />
           </div>
           <div className="sm:col-span-2">
-            <label className="label">Photo link (optional — a nice placeholder shows if empty)</label>
-            <input className="input" placeholder="https://example.com/photo.jpg" value={String(form.photo)} onChange={(e) => setForm({ ...form, photo: e.target.value })} />
+            <label className="label">Photo (required)</label>
+            <ImageUploader
+              value={String(form.photo).trim() ? [String(form.photo)] : []}
+              onChange={(urls) => setForm({ ...form, photo: urls[0] || "" })}
+              folder="experts"
+              max={1}
+              outSize={800}
+            />
           </div>
           <div className="sm:col-span-2">
             <label className="label">
               Cal.com link — the part after cal.com/ (e.g. priya-sharma/consultation)
             </label>
             <input className="input" placeholder="username/event-name" value={String(form.calLink)} onChange={(e) => setForm({ ...form, calLink: e.target.value })} />
+            {form.active && !String(form.calLink).trim() && (
+              <p className="mt-2 rounded-lg border border-alert/30 bg-alert/10 p-2.5 text-xs font-semibold text-alert">
+                ⚠️ Without a booking link this expert is visible but can&apos;t be booked online.
+                Add the part after <code className="font-mono">cal.com/</code>, or untick
+                &ldquo;Visible on the site&rdquo; until their calendar is ready.
+              </p>
+            )}
           </div>
           <div className="sm:col-span-2">
             <label className="label">Bio (their story, approach, who they help)</label>

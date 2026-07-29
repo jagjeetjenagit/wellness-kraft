@@ -4,14 +4,21 @@
 
 export const hasDatabase = () => !!process.env.DATABASE_URL;
 
-export const hasClerk = () =>
-  !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-  !!process.env.CLERK_SECRET_KEY;
+// True once Google login (Auth.js) is configured. The old name `hasClerk`
+// is kept as an alias so existing call sites keep working.
+export const hasAuth = () =>
+  !!process.env.AUTH_GOOGLE_ID && !!process.env.AUTH_GOOGLE_SECRET;
+
+export const hasClerk = hasAuth;
 
 export const hasRazorpay = () =>
   !!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID && !!process.env.RAZORPAY_KEY_SECRET;
 
 export const hasResend = () => !!process.env.RESEND_API_KEY;
+
+// Image uploads (Vercel Blob). When missing, the admin image picker
+// falls back to pasting a link so the site still works.
+export const hasBlob = () => !!process.env.BLOB_READ_WRITE_TOKEN;
 
 export const siteUrl = () =>
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

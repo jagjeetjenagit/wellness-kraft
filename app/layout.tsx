@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -45,22 +45,22 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-  const inner = (
+  // SessionProvider exposes the Google login state to client components
+  // (the header account menu). It's safe to always mount — when login
+  // isn't configured yet the session is simply null and the site works
+  // exactly as before.
+  return (
     <html lang="en" className={inter.variable}>
       <body>
-        <CartProvider>
-          <Header />
-          <main className="min-h-[70vh]">{children}</main>
-          <Footer />
-        </CartProvider>
+        <SessionProvider>
+          <CartProvider>
+            <Header />
+            <main className="min-h-[70vh]">{children}</main>
+            <Footer />
+          </CartProvider>
+        </SessionProvider>
         <Analytics />
       </body>
     </html>
   );
-
-  // Only wrap with Clerk once its keys exist — the site never
-  // shows a blank screen because a key is missing.
-  return clerkEnabled ? <ClerkProvider>{inner}</ClerkProvider> : inner;
 }

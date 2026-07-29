@@ -1,45 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { useSession, signOut } from "next-auth/react";
 
 // Login / account controls in the header.
-// If Clerk isn't configured yet, we show a plain link (the sign-in
-// page explains what to set up) instead of crashing.
-const clerkEnabled = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
+// When nobody is signed in (or Google login isn't configured yet) we
+// show a plain "Sign in" link — the sign-in page explains any setup that
+// is still needed instead of crashing.
 export default function AuthButtons() {
-  if (!clerkEnabled) {
-    return (
-      // On phones "Sign in" lives in the hamburger menu instead,
-      // so the 320px header never overflows.
-      <Link
-        href="/sign-in"
-        className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
-      >
-        Sign in
-      </Link>
-    );
+  const { data: session, status } = useSession();
+
+  // Avoid a flash of the wrong control while the session resolves.
+  if (status === "loading") {
+    return <div className="hidden h-5 w-16 sm:block" aria-hidden="true" />;
   }
-  return (
-    <>
-      <SignedIn>
+
+  if (session?.user) {
+    const name = session.user.name || session.user.email || "Account";
+    return (
+      <div className="flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
+          className="hidden max-w-[10rem] truncate text-sm font-semibold text-sage hover:text-olive sm:block"
+          title={name}
         >
           My account
         </Link>
-        <UserButton afterSignOutUrl="/" />
-      </SignedIn>
-      <SignedOut>
-        <Link
-          href="/sign-in"
-          className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className="hidden text-sm font-semibold text-sage/80 hover:text-olive sm:block"
         >
-          Sign in
-        </Link>
-      </SignedOut>
-    </>
+          Sign out
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href="/sign-in"
+      className="hidden text-sm font-semibold text-sage hover:text-olive sm:block"
+    >
+      Sign in
+    </Link>
   );
 }
