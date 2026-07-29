@@ -9,7 +9,10 @@ import { formatINR } from "@/lib/utils";
 
 declare global {
   interface Window {
-    Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
+    Razorpay?: new (options: Record<string, unknown>) => {
+      open: () => void;
+      on: (event: string, handler: (resp: { error?: { description?: string } }) => void) => void;
+    };
   }
 }
 
@@ -167,6 +170,18 @@ export default function BookingWidget({
           }
         },
         modal: { ondismiss: () => setStatus("idle") },
+      });
+      rzp.on("payment.failed", (resp) => {
+        setStatus("idle");
+        fetch("/api/razorpay/failed", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ razorpay_order_id: data.razorpayOrderId }),
+        }).catch(() => {});
+        setError(
+          resp?.error?.description ||
+            "Payment failed. No money was deducted. Please try another payment method."
+        );
       });
       rzp.open();
     } catch (err) {

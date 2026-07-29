@@ -43,6 +43,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: blob.url });
   } catch (err) {
     console.error("blob upload failed:", err);
-    return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 500 });
+    // Surface the real reason (this endpoint is admin-only) so setup
+    // issues like a wrong/expired token are obvious instead of generic.
+    const detail = err instanceof Error ? err.message : "unknown error";
+    return NextResponse.json({ error: `Upload failed: ${detail}` }, { status: 500 });
   }
 }

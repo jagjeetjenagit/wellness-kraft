@@ -160,27 +160,75 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <ul className="mt-4 space-y-3">
-              {orders.map((o) => (
-                <li key={o.id} className="card p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold text-charcoal">
-                        Order {o.id.slice(-8).toUpperCase()}
-                      </p>
-                      <p className="text-sm text-charcoal/75">
-                        {formatDate(o.createdAt)} · {o.items.length}{" "}
-                        {o.items.length === 1 ? "item" : "items"} · {formatINR(o.total)}
-                      </p>
-                      <p className="mt-1 text-xs text-sage/70">
-                        {o.items.map((i) => `${i.name} × ${i.quantity}`).join(", ")}
-                      </p>
-                    </div>
-                    <span className={`badge ${statusColors[o.fulfillmentStatus] || "bg-soft-cream text-sage"}`}>
-                      {o.fulfillmentStatus.toLowerCase()}
-                    </span>
-                  </div>
-                </li>
-              ))}
+              {orders.map((o) => {
+                const pay =
+                  o.paymentStatus === "PAID"
+                    ? { label: "Paid", cls: "bg-success/10 text-success" }
+                    : o.paymentStatus === "FAILED"
+                      ? { label: "Payment failed", cls: "bg-alert/10 text-alert" }
+                      : { label: "Payment pending", cls: "bg-sage/15 text-sage" };
+                return (
+                  <li key={o.id} className="card p-5">
+                    <details className="group">
+                      <summary className="flex cursor-pointer list-none items-start justify-between gap-3 [&::-webkit-details-marker]:hidden">
+                        <div>
+                          <p className="font-semibold text-charcoal">
+                            Order {o.id.slice(-8).toUpperCase()}
+                          </p>
+                          <p className="text-sm text-charcoal/75">
+                            {formatDate(o.createdAt)} · {o.items.length}{" "}
+                            {o.items.length === 1 ? "item" : "items"} · {formatINR(o.total)}
+                          </p>
+                          <p className="mt-2 text-xs font-semibold text-olive">
+                            View full summary ▾
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <span className={`badge ${pay.cls}`}>{pay.label}</span>
+                          {o.paymentStatus === "PAID" && (
+                            <span className={`badge ${statusColors[o.fulfillmentStatus] || "bg-soft-cream text-sage"}`}>
+                              {o.fulfillmentStatus.toLowerCase()}
+                            </span>
+                          )}
+                        </div>
+                      </summary>
+
+                      <div className="mt-4 border-t border-sage/30 pt-4 text-sm">
+                        <ul className="space-y-1.5">
+                          {o.items.map((i) => (
+                            <li key={i.id} className="flex justify-between gap-3 text-charcoal/75">
+                              <span>{i.name} × {i.quantity}</span>
+                              <span className="font-semibold">{formatINR(i.price * i.quantity)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-3 flex justify-between border-t border-sage/20 pt-3 font-bold text-charcoal">
+                          <span>Total</span>
+                          <span>{formatINR(o.total)}</span>
+                        </div>
+                        <div className="mt-4 grid gap-3 rounded-xl bg-soft-cream p-3 sm:grid-cols-2">
+                          <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-sage/70">Deliver to</p>
+                            <p className="mt-1 leading-relaxed text-charcoal/75">
+                              {o.shipName}<br />
+                              {o.shipAddress1}
+                              {o.shipAddress2 ? `, ${o.shipAddress2}` : ""}<br />
+                              {o.shipCity}, {o.shipState} — {o.shipPincode}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-sage/70">Payment</p>
+                            <p className="mt-1 leading-relaxed text-charcoal/75">
+                              {pay.label}
+                              {o.razorpayPaymentId ? <><br />Ref: {o.razorpayPaymentId}</> : null}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </details>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
