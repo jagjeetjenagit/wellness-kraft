@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState } from "react";
 import { formatDateTime, formatINR } from "@/lib/utils";
+import { meetUrlFor } from "@/lib/slots";
 
 interface AdminBooking {
   id: string;
@@ -86,11 +87,10 @@ export default function AdminBookingsPage() {
     <div>
       <h2 className="font-display text-2xl font-semibold">Bookings ({bookings.length})</h2>
       <p className="mt-2 max-w-2xl text-sm text-charcoal/75">
-        Bookings appear here automatically once the Cal.com webhook is connected
-        (README, &ldquo;Cal.com&rdquo; section). After a consultation, use
-        &ldquo;Prescription&rdquo; to write the advice/plan — the customer sees it in
-        their dashboard. Keep it to guidance and supplement advice only (no
-        disease-cure claims).
+        Bookings appear here as soon as a customer picks a time slot on the site.
+        After a consultation, use &ldquo;Prescription&rdquo; to write the advice/plan —
+        the customer sees it in their dashboard. Keep it to guidance and supplement
+        advice only (no disease-cure claims).
       </p>
 
       {error && (
@@ -105,8 +105,8 @@ export default function AdminBookingsPage() {
             Paid consultations awaiting a scheduled time ({paidConsults.length})
           </p>
           <p className="mt-1 text-xs text-charcoal/70">
-            These customers have paid. Their chosen date/time appears above once the
-            Cal.com webhook is connected — until then, reach out to confirm a slot.
+            These customers have paid but haven&apos;t picked a time yet. Once they choose
+            a slot on the site, it moves up into the scheduled list below.
           </p>
           <ul className="mt-3 space-y-2">
             {paidConsults.map((c) => (
@@ -140,7 +140,7 @@ export default function AdminBookingsPage() {
       ) : bookings.length === 0 ? (
         <div className="card mt-6 p-8 text-center text-sage">
           No <em>scheduled</em> bookings yet — paid consultations awaiting a time slot
-          are listed above. Scheduled slots appear here once the Cal.com webhook is connected.
+          are listed above. They move here once the customer picks a slot.
         </div>
       ) : (
         <div className="card mt-6 overflow-x-auto">
@@ -163,6 +163,16 @@ export default function AdminBookingsPage() {
                     <td className="p-4">
                       <p className="text-charcoal">{b.title}</p>
                       {b.expertName && <p className="text-xs text-sage/70">with {b.expertName}</p>}
+                      {b.status === "CONFIRMED" && new Date(b.startTime).getTime() > Date.now() && (
+                        <a
+                          href={meetUrlFor(b.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-semibold text-olive hover:underline"
+                        >
+                          Join video call ↗
+                        </a>
+                      )}
                     </td>
                     <td className="p-4 text-sage">
                       {b.attendeeName}

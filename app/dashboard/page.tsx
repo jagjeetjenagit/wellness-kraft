@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSafeUser, ensureDbUser, userEmail, userPhone, isAdmin } from "@/lib/auth";
-import { hasAuth, hasDatabase, generalCalLink } from "@/lib/config";
+import { hasAuth, hasDatabase } from "@/lib/config";
 import { getPrisma } from "@/lib/prisma";
 import { formatINR, formatDateTime, formatDate } from "@/lib/utils";
-import ConsultScheduler from "@/components/ConsultScheduler";
+import { meetUrlFor } from "@/lib/slots";
 
 export const dynamic = "force-dynamic";
 
@@ -116,13 +116,12 @@ export default async function DashboardPage() {
   const consultExperts =
     prisma && expertIds.length
       ? await prisma.expert
-          .findMany({ where: { id: { in: expertIds } }, select: { id: true, calLink: true } })
+          .findMany({ where: { id: { in: expertIds } }, select: { id: true, slug: true } })
           .catch(() => [])
       : [];
-  const calLinkFor = (expertId: string | null) =>
-    expertId
-      ? consultExperts.find((e) => e.id === expertId)?.calLink || ""
-      : generalCalLink();
+  // Where the customer goes to pick a time for an already-paid consult.
+  const scheduleHref = (expertId: string | null) =>
+    expertId ? `/expert/${consultExperts.find((e) => e.id === expertId)?.slug || ""}` : "/consult";
 
   return (
     <div className="container-x py-12 sm:py-16">
@@ -142,9 +141,6 @@ export default async function DashboardPage() {
         {/* Bookings */}
         <section>
           <h2 className="font-display text-2xl font-semibold">My consultations</h2>
-          {paidConsults.length > 0 && (
-            <ConsultScheduler userName={user.name} userEmail={email} phone={phone} />
-          )}
           {bookings.length === 0 && paidConsults.length === 0 ? (
             <div className="card mt-4 p-8 text-center">
               <p className="text-sm text-charcoal/75">No consultations booked yet.</p>
@@ -152,49 +148,29 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <ul className="mt-4 space-y-3">
-              {paidConsults.map((c) => {
-                const link = calLinkFor(c.expertId);
-                return (
-                  <li key={c.id} className="card p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-charcoal">
-                          Consultation{c.expertName ? ` with ${c.expertName}` : ""}
-                        </p>
-                        <p className="mt-1 text-sm text-charcoal/75">Paid on {formatDate(c.createdAt)}</p>
-                        <p className="mt-2 text-xs text-sage/70">
-                          You&apos;ve paid — now pick a time that suits you. You&apos;ll get a
-                          confirmation with a Google Meet link by email.
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5">
-                        <span className="badge bg-sage/15 text-sage">to be scheduled</span>
-                        <span className="badge bg-success/10 text-success">Paid {formatINR(c.amount)}</span>
-                      </div>
-                    </div>
-                    {link ? (
-                      <button
-                        type="button"
-                        data-cal-link={link}
-                        data-cal-config={JSON.stringify({
-                          layout: "month_view",
-                          theme: "light",
-                          name: user.name,
-                          email,
-                        })}
-                        className="btn-primary mt-4"
-                      >
-                        Pick your date &amp; time
-                      </button>
-                    ) : (
-                      <p className="mt-4 text-xs font-semibold text-alert">
-                        This expert&apos;s calendar isn&apos;t connected yet —{" "}
-                        <Link href="/contact" className="underline">contact us</Link> to schedule.
+              {paidConsults.map((c) => (
+                <li key={c.id} className="card p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-charcoal">
+                        Consultation{c.expertName ? ` with ${c.expertName}` : ""}
                       </p>
-                    )}
-                  </li>
-                );
-              })}
+                      <p className="mt-1 text-sm text-charcoal/75">Paid on {formatDate(c.createdAt)}</p>
+                      <p className="mt-2 text-xs text-sage/70">
+                        You&apos;ve paid — now pick a time that suits you. You&apos;ll get a
+                        private video link once you&apos;ve chosen a slot.
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className="badge bg-sage/15 text-sage">to be scheduled</span>
+                      <span className="badge bg-success/10 text-success">Paid {formatINR(c.amount)}</span>
+                    </div>
+                  </div>
+                  <Link href={scheduleHref(c.expertId)} className="btn-primary mt-4 inline-flex">
+                    Pick your date &amp; time
+                  </Link>
+                </li>
+              ))}
               {bookings.map((b) => (
                 <li key={b.id} className="card p-5">
                   <div className="flex items-start justify-between gap-3">
@@ -216,6 +192,16 @@ export default async function DashboardPage() {
                       )}
                     </div>
                   </div>
+                  {b.status === "CONFIRMED" && new Date(b.startTime).getTime() > Date.now() && (
+                    <a
+                      href={meetUrlFor(b.id)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary mt-4 inline-flex !py-2 text-sm"
+                    >
+                      Join video call
+                    </a>
+                  )}
                   {b.prescription && (
                     <div className="mt-4 rounded-xl border border-sage/30 bg-soft-cream p-4">
                       <p className="text-xs font-bold uppercase tracking-wider text-olive">
