@@ -3,7 +3,11 @@ import { auth } from "@/auth";
 
 // Signed-in-only areas. Everything else is public.
 function isProtected(pathname: string) {
-  return pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
+  return (
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/studio")
+  );
 }
 
 const authConfigured = !!(

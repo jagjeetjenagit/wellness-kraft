@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
         reviewCount: Number(b.reviewCount) || 0,
         fee: Math.max(0, Math.round(Number(b.fee) || 0)),
         calLink: b.calLink?.trim() || "",
+        email: b.email?.trim() || "",
         featured: !!b.featured,
         active: b.active !== false,
         products: Array.isArray(b.productIds)

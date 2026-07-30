@@ -34,6 +34,13 @@ model Expert {
   featured    Boolean   @default(false)
   active      Boolean   @default(true)
   createdAt   DateTime  @default(now())
+  // Expert self-service portal: the Google email they log in with.
+  email       String    @default("")
+  // Bookable availability (used by the native slot engine).
+  availDays   String    @default("1,2,3,4,5,6") // weekday numbers, 0=Sun..6=Sat
+  startHour   Int       @default(10) // first slot hour (IST)
+  endHour     Int       @default(18) // last slot starts before this hour (IST)
+  slotMins    Int       @default(30)
   products    Product[] @relation("ExpertRecommends")
   bookings    Booking[]
 }
@@ -106,6 +113,7 @@ model Booking {
   amountPaid        Int       @default(0) // consultation fee paid online, in rupees
   razorpayPaymentId String    @default("")
   prescription      String    @default("") @db.Text // expert's advice/prescription, shown in the customer dashboard
+  prescribedProductIds String[] @default([]) // products the expert recommends (Buy buttons in the dashboard)
   createdAt         DateTime  @default(now())
 }
 

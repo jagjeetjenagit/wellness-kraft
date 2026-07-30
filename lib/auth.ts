@@ -103,6 +103,23 @@ export async function getBookingIdentity(): Promise<{
   return { authEnabled: true, signedIn: true, name: user.name, email: user.email, phone };
 }
 
+// The Expert record whose login email matches the signed-in user, if any.
+// This is what powers the expert self-service portal (/studio).
+export async function getExpertForUser() {
+  if (!hasDatabase()) return null;
+  const user = await getSafeUser();
+  if (!user?.email) return null;
+  const prisma = getPrisma();
+  if (!prisma) return null;
+  try {
+    return await prisma.expert.findFirst({
+      where: { email: { equals: user.email, mode: "insensitive" }, active: true },
+    });
+  } catch {
+    return null;
+  }
+}
+
 // Has this person already paid for a consultation with this expert that
 // hasn't been scheduled yet? Used to skip the payment step so they never
 // pay twice — they go straight to picking a time.

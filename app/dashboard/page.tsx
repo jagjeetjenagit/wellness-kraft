@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getSafeUser, ensureDbUser, userEmail, userPhone, isAdmin } from "@/lib/auth";
+import { getSafeUser, ensureDbUser, userEmail, userPhone, isAdmin, getExpertForUser } from "@/lib/auth";
 import { hasAuth, hasDatabase } from "@/lib/config";
 import { getPrisma } from "@/lib/prisma";
 import { formatINR, formatDateTime, formatDate } from "@/lib/utils";
@@ -54,6 +54,7 @@ export default async function DashboardPage() {
   const email = userEmail(user);
   const phone = userPhone(user);
   const admin = await isAdmin();
+  const expertRecord = await getExpertForUser();
 
   const prisma = hasDatabase() ? getPrisma() : null;
 
@@ -131,9 +132,15 @@ export default async function DashboardPage() {
         Hello{user.firstName ? `, ${user.firstName}` : ""} 👋
       </h1>
       <p className="mt-2 text-sm text-charcoal/75">
-        {email || phone} {admin && (
+        {email || phone}{" "}
+        {admin && (
           <Link href="/admin" className="ml-2 font-semibold text-olive hover:underline">
             → Open admin area
+          </Link>
+        )}
+        {expertRecord && (
+          <Link href="/studio" className="ml-2 font-semibold text-olive hover:underline">
+            → Open Expert Studio
           </Link>
         )}
       </p>

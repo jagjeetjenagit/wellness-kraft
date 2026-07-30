@@ -25,6 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         reviewCount: b.reviewCount !== undefined ? Number(b.reviewCount) : undefined,
         fee: b.fee !== undefined ? Math.max(0, Math.round(Number(b.fee) || 0)) : undefined,
         calLink: b.calLink?.trim() ?? undefined,
+        email: b.email?.trim() ?? undefined,
         featured: b.featured !== undefined ? !!b.featured : undefined,
         active: b.active !== undefined ? !!b.active : undefined,
         products: Array.isArray(b.productIds)

@@ -14,6 +14,7 @@ interface AdminExpert {
   reviewCount: number;
   fee: number;
   calLink: string;
+  email: string;
   featured: boolean;
   active: boolean;
   products: { id: string }[];
@@ -34,6 +35,7 @@ const EMPTY = {
   reviewCount: "0",
   fee: "0",
   calLink: "",
+  email: "",
   featured: false,
   active: true,
 };
@@ -90,6 +92,7 @@ export default function AdminExpertsPage() {
       reviewCount: String(ex.reviewCount),
       fee: String(ex.fee),
       calLink: ex.calLink,
+      email: ex.email || "",
       featured: ex.featured,
       active: ex.active,
     });
@@ -189,6 +192,23 @@ export default function AdminExpertsPage() {
                 &ldquo;Visible on the site&rdquo; until their calendar is ready.
               </p>
             )}
+          </div>
+          <div className="sm:col-span-2">
+            <label className="label">
+              Expert&apos;s login email (their Google email — gives them their own Studio)
+            </label>
+            <input
+              type="email"
+              className="input"
+              placeholder="expert@gmail.com"
+              value={String(form.email)}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+            <p className="mt-1 text-xs text-sage/70">
+              The expert signs in with this Google email to manage their own bookings and
+              prescriptions at <code className="font-mono">/studio</code>. Leave blank if they
+              won&apos;t self-manage.
+            </p>
           </div>
           <div className="sm:col-span-2">
             <label className="label">Bio (their story, approach, who they help)</label>
