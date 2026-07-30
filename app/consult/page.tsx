@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import BookingWidget from "@/components/BookingWidget";
-import { generalConsultFee, generalCalLink } from "@/lib/config";
+import { generalConsultFee } from "@/lib/config";
 import { getBookingIdentity, hasUnlinkedPaidConsult } from "@/lib/auth";
 import { formatINR } from "@/lib/utils";
 
@@ -56,7 +56,6 @@ export default async function GeneralConsultPage() {
         </div>
         <div>
           <BookingWidget
-            calLink={generalCalLink()}
             expertName="General Consultation"
             fee={fee}
             authEnabled={identity.authEnabled}

@@ -100,7 +100,6 @@ export default async function ExpertProfilePage({ params }: Props) {
               </h2>
               <div className="mt-5">
                 <BookingWidget
-                  calLink={expert.calLink}
                   expertName={expert.name}
                   expertId={expert.id}
                   fee={expert.fee}

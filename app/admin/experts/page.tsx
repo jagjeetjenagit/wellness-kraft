@@ -13,7 +13,6 @@ interface AdminExpert {
   rating: number;
   reviewCount: number;
   fee: number;
-  calLink: string;
   email: string;
   featured: boolean;
   active: boolean;
@@ -34,7 +33,6 @@ const EMPTY = {
   rating: "5",
   reviewCount: "0",
   fee: "0",
-  calLink: "",
   email: "",
   featured: false,
   active: true,
@@ -91,7 +89,6 @@ export default function AdminExpertsPage() {
       rating: String(ex.rating),
       reviewCount: String(ex.reviewCount),
       fee: String(ex.fee),
-      calLink: ex.calLink,
       email: ex.email || "",
       featured: ex.featured,
       active: ex.active,
@@ -105,15 +102,6 @@ export default function AdminExpertsPage() {
     if (!String(form.photo).trim()) {
       setError("Please add a photo link for this expert.");
       return;
-    }
-    // Guard the dangerous combo: Live on the site but no way to book.
-    if (form.active && !String(form.calLink).trim()) {
-      const ok = confirm(
-        "This expert is set to Visible but has no Cal.com booking link.\n\n" +
-          "Customers will see them but can't book online — they'll only get a " +
-          "\"request a booking\" contact option instead.\n\nSave anyway?"
-      );
-      if (!ok) return;
     }
     setSaving(true);
     setError("");
@@ -179,19 +167,6 @@ export default function AdminExpertsPage() {
               max={1}
               outSize={800}
             />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="label">
-              Cal.com link — the part after cal.com/ (e.g. priya-sharma/consultation)
-            </label>
-            <input className="input" placeholder="username/event-name" value={String(form.calLink)} onChange={(e) => setForm({ ...form, calLink: e.target.value })} />
-            {form.active && !String(form.calLink).trim() && (
-              <p className="mt-2 rounded-lg border border-alert/30 bg-alert/10 p-2.5 text-xs font-semibold text-alert">
-                ⚠️ Without a booking link this expert is visible but can&apos;t be booked online.
-                Add the part after <code className="font-mono">cal.com/</code>, or untick
-                &ldquo;Visible on the site&rdquo; until their calendar is ready.
-              </p>
-            )}
           </div>
           <div className="sm:col-span-2">
             <label className="label">
@@ -291,7 +266,7 @@ export default function AdminExpertsPage() {
             <thead className="border-b border-sage/30 text-xs uppercase tracking-wider text-sage/70">
               <tr>
                 <th className="p-4">Expert</th>
-                <th className="p-4">Booking link</th>
+                <th className="p-4">Studio login</th>
                 <th className="p-4">Rating</th>
                 <th className="p-4">Status</th>
                 <th className="p-4"></th>
@@ -308,10 +283,12 @@ export default function AdminExpertsPage() {
                     </p>
                   </td>
                   <td className="p-4">
-                    {ex.calLink ? (
-                      <span className="badge bg-soft-cream text-olive">cal.com/{ex.calLink}</span>
+                    {ex.email ? (
+                      <span className="text-xs text-sage" title="Can log in to their own Studio">
+                        {ex.email}
+                      </span>
                     ) : (
-                      <span className="badge bg-alert/10 text-alert">Not connected</span>
+                      <span className="text-xs text-sage/60">No studio login</span>
                     )}
                   </td>
                   <td className="p-4 text-sage">

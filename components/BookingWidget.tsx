@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Script from "next/script";
 import { signIn } from "next-auth/react";
 import { formatINR } from "@/lib/utils";
@@ -26,10 +25,8 @@ declare global {
 // books the slot in our own DB and returns a private video link.
 //
 // Graceful degradation: if login isn't configured at all, the old
-// name/email/phone form is used so the site still works. `calLink` being
-// empty is used as the flag that the expert isn't bookable yet.
+// name/email/phone form is used so the site still works.
 export default function BookingWidget({
-  calLink,
   expertName,
   expertId = null,
   fee = 0,
@@ -40,7 +37,6 @@ export default function BookingWidget({
   savedPhone = "",
   alreadyPaid = false,
 }: {
-  calLink: string;
   expertName: string;
   expertId?: string | null;
   fee?: number;
@@ -65,23 +61,6 @@ export default function BookingWidget({
   const [ready, setReady] = useState(!!savedPhone); // free consults: show calendar?
 
   const firstName = userName.split(" ")[0] || "there";
-
-  if (!calLink) {
-    return (
-      <div className="card p-8 text-center">
-        <h3 className="font-display text-xl font-semibold">
-          Online booking coming soon for {expertName}
-        </h3>
-        <p className="mx-auto mt-2 max-w-md text-sm text-charcoal/75">
-          This expert&apos;s calendar isn&apos;t connected yet. Send us a message and
-          we&apos;ll arrange your consultation personally.
-        </p>
-        <Link href="/contact" className="btn-primary mt-6">
-          Request a booking
-        </Link>
-      </div>
-    );
-  }
 
   // ---- Sign-in required before booking ----
   if (authEnabled && !signedIn) {
