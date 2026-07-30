@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Cal from "@calcom/embed-react";
+import { useState, useEffect, useRef } from "react";
+import { getCalApi } from "@calcom/embed-react";
 import Link from "next/link";
 import Script from "next/script";
 import { signIn } from "next-auth/react";
@@ -61,6 +61,53 @@ export default function BookingWidget({
   const [ready, setReady] = useState(!!savedPhone); // free consults: show calendar?
 
   const firstName = userName.split(" ")[0] || "there";
+
+  // Keep the latest booking context available to the Cal event callback,
+  // which we subscribe to only once.
+  const ctx = useRef({ userName, userEmail, phone, expertId, expertName });
+  ctx.current = { userName, userEmail, phone, expertId, expertName };
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const cal = await getCalApi();
+        if (cancelled) return;
+        cal("ui", { theme: "light", styles: { branding: { brandColor: "#334720" } } });
+        // Fires when the customer finishes booking a slot in the popup — we
+        // record it in our own DB right away (no Cal webhook required).
+        cal("on", {
+          action: "bookingSuccessful",
+          callback: (e: { detail?: { data?: Record<string, unknown> } }) => {
+            const data = (e?.detail?.data ?? {}) as Record<string, unknown>;
+            const bk = ((data.booking as Record<string, unknown>) ?? data) as Record<string, unknown>;
+            const startTime = (bk.startTime ?? data.date ?? data.startTime ?? null) as string | null;
+            const uid = (bk.uid ?? data.uid ?? "") as string;
+            const c = ctx.current;
+            fetch("/api/consult/booked", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                uid,
+                startTime,
+                title: (bk.title as string) || `Consultation — ${c.expertName}`,
+                name: c.userName,
+                email: c.userEmail,
+                phone: c.phone,
+                expertId: c.expertId,
+                expertName: c.expertName,
+              }),
+            }).catch(() => {});
+          },
+        });
+      } catch {
+        // Embed API not ready — the Cal webhook (if set up) still records bookings.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!calLink) {
     return (
@@ -408,18 +455,27 @@ export default function BookingWidget({
           Consultation fee: {formatINR(fee)} — payable at your session.
         </p>
       )}
-      {/* Month view is the reliable layout; drop the inner overflow so there's
-          no cramped nested scrollbar (the page scrolls naturally instead). */}
-      <div className="card overflow-hidden p-1 sm:p-3">
-        <Cal
-          calLink={calLink}
-          style={{ width: "100%", minHeight: "680px" }}
-          config={{
-            theme: "light",
+      {/* Popup calendar: opens in a clean overlay (no page scrolling), greys
+          out unavailable slots, and attaches a private Google Meet link when
+          the expert's Cal event location is set to Google Meet. */}
+      <div className="card p-6 text-center sm:p-8">
+        <h3 className="font-display text-xl font-semibold">Pick your date &amp; time</h3>
+        <p className="mx-auto mt-2 max-w-sm text-sm text-charcoal/75">
+          Choose a slot that suits you — unavailable times are greyed out. You&apos;ll get a
+          confirmation with a private Google Meet link by email.
+        </p>
+        <button
+          type="button"
+          data-cal-link={calLink}
+          data-cal-config={JSON.stringify({
             layout: "month_view",
+            theme: "light",
             ...(signedIn ? { name: userName, email: userEmail } : {}),
-          }}
-        />
+          })}
+          className="btn-primary mt-5"
+        >
+          Choose date &amp; time
+        </button>
       </div>
     </div>
   );
