@@ -139,7 +139,7 @@ export default function SlotPicker({
                   key={g.date}
                   type="button"
                   onClick={() => setActive(g.date)}
-                  className={`shrink-0 rounded-xl border px-4 py-2 text-sm font-semibold transition-colors ${
+                  className={`min-h-[44px] shrink-0 rounded-xl border px-4 py-2 text-sm font-semibold transition-colors ${
                     active === g.date
                       ? "border-olive bg-olive text-cream"
                       : "border-sage/30 bg-white text-sage hover:border-olive"
@@ -159,7 +159,7 @@ export default function SlotPicker({
                 type="button"
                 disabled={s.taken || busy !== null}
                 onClick={() => book(s.iso)}
-                className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors ${
+                className={`min-h-[44px] rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors ${
                   s.taken
                     ? "cursor-not-allowed border-sage/20 bg-soft-cream text-sage/40 line-through"
                     : "border-sage/40 bg-white text-charcoal hover:border-olive hover:bg-soft-cream"

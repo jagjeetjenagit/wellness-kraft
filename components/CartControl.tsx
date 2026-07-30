@@ -61,8 +61,8 @@ export default function CartControl({
     );
   }
 
-  const btn = full ? "h-10 w-10 text-2xl" : "h-6 w-6 text-lg";
-  const qty = full ? "min-w-[2.5rem] text-base" : "min-w-[1.75rem] text-sm";
+  const btn = full ? "h-11 w-11 text-2xl" : "h-9 w-9 text-xl";
+  const qty = full ? "min-w-[2.5rem] text-base" : "min-w-[2rem] text-sm";
 
   return (
     <div

@@ -78,7 +78,7 @@ export default function StudioAvailability({
             key={d.n}
             type="button"
             onClick={() => toggleDay(d.n)}
-            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition-colors ${
+            className={`min-h-[44px] rounded-xl border px-4 py-2 text-sm font-semibold transition-colors ${
               days.includes(d.n)
                 ? "border-olive bg-olive text-cream"
                 : "border-sage/30 bg-white text-sage hover:border-olive"

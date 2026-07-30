@@ -83,6 +83,11 @@
    every rule here is scoped to small screens.
    ------------------------------------------------------------------ */
 @media (max-width: 639px) {
+  /* Long words / URLs / emails wrap instead of forcing a sideways scroll */
+  body {
+    overflow-wrap: break-word;
+  }
+
   /* Faster taps, no double-tap zoom delay on interactive elements */
   a,
   button,
