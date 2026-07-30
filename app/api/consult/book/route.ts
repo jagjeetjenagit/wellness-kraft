@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPrisma } from "@/lib/prisma";
 import { getSafeUser } from "@/lib/auth";
 import { generalConsultFee } from "@/lib/config";
-import { isValidSlot, meetUrlFor } from "@/lib/slots";
+import { isValidSlot, meetUrlFor, configFromExpert, DEFAULT_SLOT_CONFIG } from "@/lib/slots";
 
 // Books a consultation slot natively (no external calendar). Validates the
 // slot, prevents double-booking, links the paid consultation, and returns a
@@ -23,18 +23,20 @@ export async function POST(req: NextRequest) {
   const expertId: string | null = body?.expertId ? String(body.expertId) : null;
   const start = body?.startTime ? new Date(body.startTime) : null;
 
-  if (!start || !isValidSlot(start)) {
-    return NextResponse.json({ error: "That time isn't available. Please pick another." }, { status: 400 });
-  }
-
-  // Resolve fee + expert name from the source of truth.
+  // Resolve fee + expert name + availability from the source of truth.
   let fee = generalConsultFee();
   let expertName = "General Consultation";
+  let cfg = DEFAULT_SLOT_CONFIG;
   if (expertId) {
     const expert = await prisma.expert.findFirst({ where: { id: expertId, active: true } });
     if (!expert) return NextResponse.json({ error: "This expert is no longer available." }, { status: 404 });
     fee = expert.fee;
     expertName = expert.name;
+    cfg = configFromExpert(expert);
+  }
+
+  if (!start || !isValidSlot(start, cfg)) {
+    return NextResponse.json({ error: "That time isn't available. Please pick another." }, { status: 400 });
   }
 
   // Paid experts require a completed, unscheduled payment for this person.

@@ -1,9 +1,10 @@
 import { getExpertForUser } from "@/lib/auth";
 import { getPrisma } from "@/lib/prisma";
 import { formatDateTime, formatINR } from "@/lib/utils";
-import { meetUrlFor } from "@/lib/slots";
+import { meetUrlFor, configFromExpert } from "@/lib/slots";
 import JoinCall from "@/components/JoinCall";
 import StudioPrescription from "@/components/StudioPrescription";
+import StudioAvailability from "@/components/StudioAvailability";
 
 export const dynamic = "force-dynamic";
 
@@ -67,8 +68,20 @@ export default async function StudioPage() {
     </li>
   );
 
+  const cfg = configFromExpert(expert);
+
   return (
-    <div className="grid gap-10 lg:grid-cols-2">
+    <div className="space-y-10">
+      <StudioAvailability
+        initial={{
+          days: cfg.days,
+          startHour: cfg.startHour,
+          endHour: cfg.endHour,
+          slotMins: cfg.slotMins,
+        }}
+      />
+
+      <div className="grid gap-10 lg:grid-cols-2">
       <section>
         <h2 className="font-display text-2xl font-semibold">Upcoming consultations</h2>
         {upcoming.length === 0 ? (
@@ -90,6 +103,7 @@ export default async function StudioPage() {
           <ul className="mt-4 space-y-3">{past.map((b) => card(b, false))}</ul>
         )}
       </section>
+      </div>
     </div>
   );
 }
