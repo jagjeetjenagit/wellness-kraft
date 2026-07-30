@@ -2,6 +2,19 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import JoinCall from "@/components/JoinCall";
+
+function fullWhen(iso: string): string {
+  return new Date(iso).toLocaleString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  });
+}
 
 interface Slot {
   iso: string;
@@ -30,7 +43,7 @@ export default function SlotPicker({
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [done, setDone] = useState<{ meetUrl: string } | null>(null);
+  const [done, setDone] = useState<{ meetUrl: string; startTime: string } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -67,7 +80,7 @@ export default function SlotPicker({
         setBusy(null);
         return;
       }
-      setDone({ meetUrl: data.meetUrl });
+      setDone({ meetUrl: data.meetUrl, startTime: data.startTime });
       setTimeout(() => router.refresh(), 1500);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -83,13 +96,18 @@ export default function SlotPicker({
         </div>
         <h3 className="mt-3 font-display text-xl font-semibold">Your consultation is booked!</h3>
         <p className="mx-auto mt-2 max-w-sm text-sm text-charcoal/75">
-          You&apos;ll find it under <strong>My consultations</strong>, with this private video
-          link. Join at your appointment time:
+          Scheduled for
         </p>
-        <a href={done.meetUrl} target="_blank" rel="noopener noreferrer" className="btn-primary mt-4 inline-flex">
-          Join video call
-        </a>
-        <p className="mt-3 break-all text-xs text-sage/70">{done.meetUrl}</p>
+        <p className="mt-1 font-display text-lg font-semibold text-olive">
+          {fullWhen(done.startTime)}
+        </p>
+        <p className="mx-auto mt-3 max-w-sm text-sm text-charcoal/75">
+          You&apos;ll find this under <strong>My consultations</strong>. Your private video link
+          becomes active <strong>10 minutes before</strong> your appointment:
+        </p>
+        <div className="mt-2 flex justify-center">
+          <JoinCall startTime={done.startTime} meetUrl={done.meetUrl} />
+        </div>
       </div>
     );
   }
