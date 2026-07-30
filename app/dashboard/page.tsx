@@ -125,6 +125,19 @@ export default async function DashboardPage() {
   const scheduleHref = (expertId: string | null) =>
     expertId ? `/expert/${consultExperts.find((e) => e.id === expertId)?.slug || ""}` : "/consult";
 
+  // Products recommended by experts in prescriptions → shown as Buy buttons.
+  const rxProductIds = Array.from(new Set(bookings.flatMap((b) => b.prescribedProductIds || [])));
+  const rxProducts =
+    prisma && rxProductIds.length
+      ? await prisma.product
+          .findMany({
+            where: { id: { in: rxProductIds } },
+            select: { id: true, name: true, slug: true, price: true },
+          })
+          .catch(() => [])
+      : [];
+  const rxMap = new Map(rxProducts.map((p) => [p.id, p]));
+
   return (
     <div className="container-x py-12 sm:py-16">
       <p className="eyebrow">My account</p>
@@ -205,14 +218,36 @@ export default async function DashboardPage() {
                       <JoinCall startTime={new Date(b.startTime).toISOString()} meetUrl={meetUrlFor(b.id)} />
                     </div>
                   )}
-                  {b.prescription && (
+                  {(b.prescription || b.prescribedProductIds.length > 0) && (
                     <div className="mt-4 rounded-xl border border-sage/30 bg-soft-cream p-4">
                       <p className="text-xs font-bold uppercase tracking-wider text-olive">
                         Prescription &amp; advice
                       </p>
-                      <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-charcoal/75">
-                        {b.prescription}
-                      </p>
+                      {b.prescription && (
+                        <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-charcoal/75">
+                          {b.prescription}
+                        </p>
+                      )}
+                      {b.prescribedProductIds.length > 0 && (
+                        <div className="mt-3">
+                          <p className="text-xs font-semibold text-sage">Recommended products</p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {b.prescribedProductIds.map((pid) => {
+                              const p = rxMap.get(pid);
+                              if (!p) return null;
+                              return (
+                                <Link
+                                  key={pid}
+                                  href={`/product/${p.slug}`}
+                                  className="btn-secondary !py-1.5 text-sm"
+                                >
+                                  Buy {p.name} · {formatINR(p.price)}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </li>

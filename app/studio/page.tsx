@@ -17,6 +17,11 @@ export default async function StudioPage() {
         .findMany({ where: { expertId: expert.id }, orderBy: { startTime: "desc" }, take: 100 })
         .catch(() => [])
     : [];
+  const products = prisma
+    ? await prisma.product
+        .findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } })
+        .catch(() => [])
+    : [];
 
   const now = Date.now();
   const upcoming = bookings
@@ -53,7 +58,12 @@ export default async function StudioPage() {
       {isUpcoming && b.status === "CONFIRMED" && (
         <JoinCall startTime={new Date(b.startTime).toISOString()} meetUrl={meetUrlFor(b.id)} />
       )}
-      <StudioPrescription bookingId={b.id} initial={b.prescription} />
+      <StudioPrescription
+        bookingId={b.id}
+        initial={b.prescription}
+        products={products}
+        initialProductIds={b.prescribedProductIds}
+      />
     </li>
   );
 
