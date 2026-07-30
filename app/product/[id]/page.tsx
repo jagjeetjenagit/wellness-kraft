@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getProduct } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
 import ProductGallery from "@/components/ProductGallery";
-import AddToCartButton from "@/components/AddToCartButton";
+import CartControl from "@/components/CartControl";
 import DemoBanner from "@/components/DemoBanner";
 
 export const dynamic = "force-dynamic";
@@ -84,7 +84,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
 
             <div className="mt-8">
-              <AddToCartButton product={product} />
+              <CartControl product={product} full />
             </div>
 
             <ul className="mt-8 space-y-2 border-t border-sage/30 pt-6 text-sm text-charcoal/75">

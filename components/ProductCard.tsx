@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ProductT } from "@/lib/types";
 import { formatINR } from "@/lib/utils";
 import { ProductImage } from "./Placeholder";
-import AddToCartButton from "./AddToCartButton";
+import CartControl from "./CartControl";
 
 export default function ProductCard({ product }: { product: ProductT }) {
   const out = product.stock <= 0;
@@ -36,7 +36,7 @@ export default function ProductCard({ product }: { product: ProductT }) {
         </Link>
         <div className="mt-auto flex items-center justify-between pt-4">
           <span className="text-lg font-bold text-charcoal">{formatINR(product.price)}</span>
-          <AddToCartButton product={product} compact />
+          <CartControl product={product} />
         </div>
       </div>
     </article>
