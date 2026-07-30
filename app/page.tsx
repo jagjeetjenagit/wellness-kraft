@@ -1,7 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import DemoBanner from "@/components/DemoBanner";
+import ExpertCard from "@/components/ExpertCard";
+import ProductCard from "@/components/ProductCard";
 import { CONDITIONS } from "@/lib/conditions";
+import { getFeaturedExperts, getFeaturedProducts } from "@/lib/data";
+
+// Always fresh so experts/products added in /admin show up immediately.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Wellness Kraft — Real Experts. Natural Solutions. Lasting Lifestyle Change.",
@@ -84,7 +90,12 @@ const TRUST = [
   `${PLACEHOLDER_COUNT}+ people guided through lasting lifestyle change`,
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [experts, products] = await Promise.all([
+    getFeaturedExperts(3),
+    getFeaturedProducts(4),
+  ]);
+
   return (
     <>
       <DemoBanner />
@@ -191,6 +202,44 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* MEET OUR EXPERTS */}
+      {experts.length > 0 && (
+        <section className="container-x py-12 sm:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">Meet our experts</p>
+              <h2 className="section-title mt-2">Qualified people, real guidance</h2>
+            </div>
+            <Link href="/experts" className="btn-secondary">See all experts</Link>
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {experts.map((e) => (
+              <ExpertCard key={e.id} expert={e} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* FEATURED PRODUCTS */}
+      {products.length > 0 && (
+        <section className="bg-soft-cream">
+          <div className="container-x py-12 sm:py-20">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="eyebrow">Natural products</p>
+                <h2 className="section-title mt-2">Tested, natural, expert-picked</h2>
+              </div>
+              <Link href="/shop" className="btn-secondary">Shop all products</Link>
+            </div>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {products.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* TRUST STRIP */}
       <section className="container-x py-10 sm:py-14">

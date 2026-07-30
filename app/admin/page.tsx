@@ -19,12 +19,17 @@ export default async function AdminOverviewPage() {
 
   if (prisma) {
     try {
-      const [paidAgg, processing, products, lowStock, experts, upcomingBookings] =
+      const [paidAgg, consultAgg, processing, products, lowStock, experts, upcomingBookings] =
         await Promise.all([
           prisma.order.aggregate({
             where: { paymentStatus: "PAID" },
             _count: true,
             _sum: { total: true },
+          }),
+          // Consultation fees paid online also count toward revenue.
+          prisma.consultPayment.aggregate({
+            where: { status: "PAID" },
+            _sum: { amount: true },
           }),
           prisma.order.count({
             where: { paymentStatus: "PAID", fulfillmentStatus: "PROCESSING" },
@@ -38,7 +43,7 @@ export default async function AdminOverviewPage() {
         ]);
       stats = {
         paidOrders: paidAgg._count,
-        revenue: paidAgg._sum.total || 0,
+        revenue: (paidAgg._sum.total || 0) + (consultAgg._sum.amount || 0),
         processing,
         products,
         lowStock,

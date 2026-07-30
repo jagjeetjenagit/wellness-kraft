@@ -6,6 +6,7 @@ import { getPrisma } from "@/lib/prisma";
 import { formatINR, formatDateTime, formatDate } from "@/lib/utils";
 import { meetUrlFor } from "@/lib/slots";
 import JoinCall from "@/components/JoinCall";
+import CartControl from "@/components/CartControl";
 
 export const dynamic = "force-dynamic";
 
@@ -132,7 +133,7 @@ export default async function DashboardPage() {
       ? await prisma.product
           .findMany({
             where: { id: { in: rxProductIds } },
-            select: { id: true, name: true, slug: true, price: true },
+            select: { id: true, name: true, slug: true, price: true, images: true, stock: true },
           })
           .catch(() => [])
       : [];
@@ -231,18 +232,35 @@ export default async function DashboardPage() {
                       {b.prescribedProductIds.length > 0 && (
                         <div className="mt-3">
                           <p className="text-xs font-semibold text-sage">Recommended products</p>
-                          <div className="mt-2 flex flex-wrap gap-2">
+                          <div className="mt-2 space-y-2">
                             {b.prescribedProductIds.map((pid) => {
                               const p = rxMap.get(pid);
                               if (!p) return null;
                               return (
-                                <Link
+                                <div
                                   key={pid}
-                                  href={`/product/${p.slug}`}
-                                  className="btn-secondary !py-1.5 text-sm"
+                                  className="flex items-center justify-between gap-3 rounded-lg bg-white p-2.5"
                                 >
-                                  Buy {p.name} · {formatINR(p.price)}
-                                </Link>
+                                  <Link
+                                    href={`/product/${p.slug}`}
+                                    className="text-sm font-semibold text-charcoal hover:text-olive"
+                                  >
+                                    {p.name}{" "}
+                                    <span className="font-normal text-sage/80">
+                                      · {formatINR(p.price)}
+                                    </span>
+                                  </Link>
+                                  <CartControl
+                                    product={{
+                                      id: p.id,
+                                      slug: p.slug,
+                                      name: p.name,
+                                      price: p.price,
+                                      image: p.images[0] || "",
+                                      stock: p.stock,
+                                    }}
+                                  />
+                                </div>
                               );
                             })}
                           </div>
