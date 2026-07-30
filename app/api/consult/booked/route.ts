@@ -79,7 +79,14 @@ export async function POST(req: NextRequest) {
           .$transaction([
             prisma.booking.update({
               where: { id: booking.id },
-              data: { amountPaid: payment.amount, razorpayPaymentId: payment.razorpayPaymentId },
+              data: {
+                amountPaid: payment.amount,
+                razorpayPaymentId: payment.razorpayPaymentId,
+                // Reflect the paid consult's expert on the booking, so a
+                // booking scheduled from the dashboard shows the right name.
+                expertName: payment.expertName || booking.expertName,
+                ...(payment.expertId ? { expertId: payment.expertId } : {}),
+              },
             }),
             prisma.consultPayment.update({
               where: { id: payment.id },
