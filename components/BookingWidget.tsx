@@ -36,6 +36,7 @@ export default function BookingWidget({
   userName = "",
   userEmail = "",
   savedPhone = "",
+  alreadyPaid = false,
 }: {
   calLink: string;
   expertName: string;
@@ -46,6 +47,7 @@ export default function BookingWidget({
   userName?: string;
   userEmail?: string;
   savedPhone?: string;
+  alreadyPaid?: boolean;
 }) {
   const payEnabled = !!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID && fee > 0;
   const [paid, setPaid] = useState(false);
@@ -238,7 +240,8 @@ export default function BookingWidget({
   }
 
   // ---- Paid consultation: pay before the calendar unlocks ----
-  if (payEnabled && !paid) {
+  // Skip payment entirely if they've already paid for this expert.
+  if (payEnabled && !paid && !alreadyPaid) {
     // Streamlined flow for signed-in customers (no name/email re-entry).
     if (authEnabled && signedIn) {
       const onSubmit = async (e: React.FormEvent) => {
@@ -445,7 +448,7 @@ export default function BookingWidget({
   // ---- Calendar ----
   return (
     <div>
-      {paid && (
+      {(paid || alreadyPaid) && (
         <p className="mb-4 rounded-xl border border-success/30 bg-success/10 p-3 text-sm font-semibold text-success">
           ✓ Payment received — now pick a time that works for you.
         </p>

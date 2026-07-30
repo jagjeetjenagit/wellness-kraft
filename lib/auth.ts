@@ -103,6 +103,31 @@ export async function getBookingIdentity(): Promise<{
   return { authEnabled: true, signedIn: true, name: user.name, email: user.email, phone };
 }
 
+// Has this person already paid for a consultation with this expert that
+// hasn't been scheduled yet? Used to skip the payment step so they never
+// pay twice — they go straight to picking a time.
+export async function hasUnlinkedPaidConsult(
+  email: string,
+  expertId: string | null
+): Promise<boolean> {
+  if (!email || !hasDatabase()) return false;
+  const prisma = getPrisma();
+  if (!prisma) return false;
+  try {
+    const existing = await prisma.consultPayment.findFirst({
+      where: {
+        status: "PAID",
+        bookingId: null,
+        customerEmail: { equals: email, mode: "insensitive" },
+        expertId: expertId ?? null,
+      },
+    });
+    return !!existing;
+  } catch {
+    return false;
+  }
+}
+
 // Keep a copy of the signed-in user in our own database (created on
 // first visit to the dashboard). Returns the database user id.
 // The `clerkId` column is reused to store the Google account id, so no

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExpert, getExpertProducts } from "@/lib/data";
-import { getBookingIdentity } from "@/lib/auth";
+import { getBookingIdentity, hasUnlinkedPaidConsult } from "@/lib/auth";
 import { formatINR } from "@/lib/utils";
 import Stars from "@/components/Stars";
 import { ExpertPhoto } from "@/components/Placeholder";
@@ -35,6 +35,9 @@ export default async function ExpertProfilePage({ params }: Props) {
 
   const products = await getExpertProducts(expert);
   const identity = await getBookingIdentity();
+  const alreadyPaid = identity.signedIn
+    ? await hasUnlinkedPaidConsult(identity.email, expert.id)
+    : false;
 
   return (
     <>
@@ -106,6 +109,7 @@ export default async function ExpertProfilePage({ params }: Props) {
                   userName={identity.name}
                   userEmail={identity.email}
                   savedPhone={identity.phone}
+                  alreadyPaid={alreadyPaid}
                 />
               </div>
             </div>
