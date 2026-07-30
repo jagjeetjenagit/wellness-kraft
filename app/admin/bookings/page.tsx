@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { formatDateTime, formatINR } from "@/lib/utils";
 import { meetUrlFor } from "@/lib/slots";
+import JoinCall from "@/components/JoinCall";
 
 interface AdminBooking {
   id: string;
@@ -163,15 +164,8 @@ export default function AdminBookingsPage() {
                     <td className="p-4">
                       <p className="text-charcoal">{b.title}</p>
                       {b.expertName && <p className="text-xs text-sage/70">with {b.expertName}</p>}
-                      {b.status === "CONFIRMED" && new Date(b.startTime).getTime() > Date.now() && (
-                        <a
-                          href={meetUrlFor(b.id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs font-semibold text-olive hover:underline"
-                        >
-                          Join video call ↗
-                        </a>
+                      {b.status === "CONFIRMED" && (
+                        <JoinCall startTime={b.startTime} meetUrl={meetUrlFor(b.id)} />
                       )}
                     </td>
                     <td className="p-4 text-sage">

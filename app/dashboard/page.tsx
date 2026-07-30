@@ -5,6 +5,7 @@ import { hasAuth, hasDatabase } from "@/lib/config";
 import { getPrisma } from "@/lib/prisma";
 import { formatINR, formatDateTime, formatDate } from "@/lib/utils";
 import { meetUrlFor } from "@/lib/slots";
+import JoinCall from "@/components/JoinCall";
 
 export const dynamic = "force-dynamic";
 
@@ -192,15 +193,10 @@ export default async function DashboardPage() {
                       )}
                     </div>
                   </div>
-                  {b.status === "CONFIRMED" && new Date(b.startTime).getTime() > Date.now() && (
-                    <a
-                      href={meetUrlFor(b.id)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-primary mt-4 inline-flex !py-2 text-sm"
-                    >
-                      Join video call
-                    </a>
+                  {b.status === "CONFIRMED" && (
+                    <div className="mt-2">
+                      <JoinCall startTime={new Date(b.startTime).toISOString()} meetUrl={meetUrlFor(b.id)} />
+                    </div>
                   )}
                   {b.prescription && (
                     <div className="mt-4 rounded-xl border border-sage/30 bg-soft-cream p-4">
