@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPaymentSignature } from "@/lib/razorpay";
 import { getPrisma } from "@/lib/prisma";
+import { sendConsultPaymentReceipt, sendConsultPaymentFailedEmail } from "@/lib/email";
 
 // Step 2 of consultation payment: verify Razorpay's signature
 // server-side, then mark the ConsultPayment PAID. The booking widget
@@ -26,9 +27,17 @@ export async function POST(req: NextRequest) {
       razorpay_signature,
     });
     if (!valid) {
-      await prisma.consultPayment
+      const failed = await prisma.consultPayment
         .update({ where: { razorpayOrderId: razorpay_order_id }, data: { status: "FAILED" } })
         .catch(() => null);
+      if (failed) {
+        sendConsultPaymentFailedEmail({
+          customerName: failed.customerName,
+          customerEmail: failed.customerEmail,
+          expertName: failed.expertName,
+          amount: failed.amount,
+        }).catch((e) => console.error("consult failed email:", e));
+      }
       return NextResponse.json(
         { error: "Payment could not be verified. If money was deducted, it will be refunded automatically." },
         { status: 400 }
@@ -47,6 +56,14 @@ export async function POST(req: NextRequest) {
         where: { id: payment.id },
         data: { status: "PAID", razorpayPaymentId: razorpay_payment_id },
       });
+      // Receipt: confirm the fee and prompt them to pick a slot.
+      sendConsultPaymentReceipt({
+        customerName: payment.customerName,
+        customerEmail: payment.customerEmail,
+        expertName: payment.expertName,
+        amount: payment.amount,
+        reference: razorpay_payment_id,
+      }).catch((e) => console.error("consult receipt email:", e));
     }
 
     return NextResponse.json({ success: true });

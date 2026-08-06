@@ -2,8 +2,9 @@ import { Resend } from "resend";
 import { hasResend, siteUrl } from "./config";
 import { formatINR, formatDateTime } from "./utils";
 
-// All emails go through Resend. If the key isn't set yet, emails
-// are simply skipped (never an error the customer sees).
+// All emails go through Resend. If the key isn't set yet, emails are
+// simply skipped (never an error the customer sees). Every send is
+// best-effort: a mail failure must never block a payment or a booking.
 
 function getResend(): Resend | null {
   if (!hasResend()) return null;
@@ -12,6 +13,55 @@ function getResend(): Resend | null {
 
 const FROM = () => process.env.EMAIL_FROM || "onboarding@resend.dev";
 const ADMIN = () => process.env.ADMIN_NOTIFY_EMAIL || "";
+const BRAND = "Wellness Kraft";
+
+type Job = { to?: string | null; subject: string; html: string; replyTo?: string };
+
+// Fire a batch of emails, skipping any without a recipient. Never throws.
+async function deliver(jobs: Job[]): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+  const valid = jobs.filter((j) => j.to && j.to.includes("@"));
+  await Promise.allSettled(
+    valid.map((j) =>
+      resend.emails.send({
+        from: FROM(),
+        to: j.to as string,
+        subject: j.subject,
+        html: j.html,
+        ...(j.replyTo ? { replyTo: j.replyTo } : {}),
+      })
+    )
+  );
+}
+
+// Shared branded wrapper. `accent` picks the header colour: green for
+// good news (confirmations), muted red for problems (failures/cancels).
+function shell(headline: string, subline: string, inner: string, accent: "green" | "red" = "green"): string {
+  const bar = accent === "red" ? "#8a2b2b" : "#334720";
+  return `
+  <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#1e1e1e">
+    <div style="background:${bar};color:#fefaef;padding:24px;border-radius:12px 12px 0 0">
+      <h1 style="margin:0;font-size:22px">${headline}</h1>
+      ${subline ? `<p style="margin:8px 0 0;opacity:.85">${subline}</p>` : ""}
+    </div>
+    <div style="border:1px solid #d5d8cf;border-top:none;padding:24px;border-radius:0 0 12px 12px">
+      ${inner}
+      <p style="font-size:12px;color:#6b7a5e;margin-top:28px;border-top:1px solid #eee;padding-top:16px">
+        ${BRAND} · This is an automated message about your account with us.<br/>
+        Our products support general wellness and are not intended to diagnose, treat, cure or prevent any disease.
+      </p>
+    </div>
+  </div>`;
+}
+
+function button(href: string, label: string): string {
+  return `<p style="margin:20px 0"><a href="${href}" style="background:#334720;color:#fefaef;text-decoration:none;padding:12px 20px;border-radius:8px;display:inline-block;font-size:15px">${label}</a></p>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Orders                                                              */
+/* ------------------------------------------------------------------ */
 
 interface OrderEmailData {
   orderId: string;
@@ -22,102 +72,281 @@ interface OrderEmailData {
   address: string;
 }
 
-function orderHtml(o: OrderEmailData, forAdmin: boolean): string {
-  const rows = o.items
+function orderRows(items: OrderEmailData["items"]): string {
+  return items
     .map(
       (i) =>
         `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee">${i.name} × ${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right">${formatINR(i.price * i.quantity)}</td></tr>`
     )
     .join("");
-  return `
-  <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#1e1e1e">
-    <div style="background:#334720;color:#fefaef;padding:24px;border-radius:12px 12px 0 0">
-      <h1 style="margin:0;font-size:22px">${forAdmin ? "New order received" : "Thank you for your order"}</h1>
-      <p style="margin:8px 0 0;opacity:.85">Order ${o.orderId}</p>
-    </div>
-    <div style="border:1px solid #d5d8cf;border-top:none;padding:24px;border-radius:0 0 12px 12px">
-      ${forAdmin ? `<p><strong>Customer:</strong> ${o.customerName} (${o.customerEmail})</p>` : `<p>Hi ${o.customerName}, your payment was received and your order is being prepared.</p>`}
-      <table style="width:100%;border-collapse:collapse;margin:16px 0">${rows}
-        <tr><td style="padding:12px;font-weight:bold">Total paid</td><td style="padding:12px;text-align:right;font-weight:bold">${formatINR(o.total)}</td></tr>
-      </table>
-      <p style="font-size:14px;color:#6b7a5e"><strong>Delivery address:</strong><br/>${o.address}</p>
-      ${forAdmin ? `<p><a href="${siteUrl()}/admin/orders" style="color:#334720">Open the admin orders page →</a></p>` : `<p style="font-size:14px;color:#6b7a5e">You can track this order any time from <a href="${siteUrl()}/dashboard" style="color:#334720">your dashboard</a>.</p>`}
-      <p style="font-size:12px;color:#6b7a5e;margin-top:24px">Our products support general wellness and are not intended to diagnose, treat, cure or prevent any disease. Please follow the guidance of your consultant.</p>
-    </div>
-  </div>`;
 }
 
+// Order paid → confirmation to customer + alert to admin.
 export async function sendOrderEmails(o: OrderEmailData): Promise<void> {
-  const resend = getResend();
-  if (!resend) return;
-  const jobs: Promise<unknown>[] = [];
-  if (o.customerEmail) {
-    jobs.push(
-      resend.emails.send({
-        from: FROM(),
-        to: o.customerEmail,
-        subject: `Order confirmed — ${formatINR(o.total)} (${o.orderId})`,
-        html: orderHtml(o, false),
-      })
-    );
-  }
-  if (ADMIN()) {
-    jobs.push(
-      resend.emails.send({
-        from: FROM(),
-        to: ADMIN(),
-        subject: `New order ${o.orderId} — ${formatINR(o.total)} from ${o.customerName}`,
-        html: orderHtml(o, true),
-      })
-    );
-  }
-  await Promise.allSettled(jobs);
+  const table = `<table style="width:100%;border-collapse:collapse;margin:16px 0">${orderRows(o.items)}
+      <tr><td style="padding:12px;font-weight:bold">Total paid</td><td style="padding:12px;text-align:right;font-weight:bold">${formatINR(o.total)}</td></tr>
+    </table>`;
+
+  const customer = shell(
+    "Thank you for your order",
+    `Order ${o.orderId}`,
+    `<p>Hi ${o.customerName}, your payment was received and your order is being prepared.</p>
+     ${table}
+     <p style="font-size:14px;color:#6b7a5e"><strong>Delivery address:</strong><br/>${o.address}</p>
+     ${button(`${siteUrl()}/dashboard`, "Track your order")}`
+  );
+
+  const admin = shell(
+    "New order received",
+    `Order ${o.orderId}`,
+    `<p><strong>Customer:</strong> ${o.customerName} (${o.customerEmail})</p>
+     ${table}
+     <p style="font-size:14px;color:#6b7a5e"><strong>Deliver to:</strong><br/>${o.address}</p>
+     ${button(`${siteUrl()}/admin/orders`, "Open admin orders")}`
+  );
+
+  await deliver([
+    { to: o.customerEmail, subject: `Order confirmed — ${formatINR(o.total)} (${o.orderId})`, html: customer },
+    { to: ADMIN(), subject: `New order ${o.orderId} — ${formatINR(o.total)} from ${o.customerName}`, html: admin },
+  ]);
 }
 
-export async function sendBookingEmails(b: {
+// Order payment failed / could not be verified → let the customer know
+// it didn't go through (and any deduction is auto-refunded), alert admin.
+export async function sendOrderFailedEmail(o: {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  total: number;
+}): Promise<void> {
+  const customer = shell(
+    "Your payment didn't go through",
+    `Order ${o.orderId}`,
+    `<p>Hi ${o.customerName || "there"}, we couldn't confirm your payment of <strong>${formatINR(o.total)}</strong>, so your order was not placed.</p>
+     <p>If any amount was deducted, it is automatically refunded by your bank within 5–7 working days. You're welcome to try again.</p>
+     ${button(`${siteUrl()}/cart`, "Return to your cart")}`,
+    "red"
+  );
+  const admin = shell(
+    "Payment failed",
+    `Order ${o.orderId}`,
+    `<p><strong>${o.customerName || "A customer"}</strong> (${o.customerEmail || "no email"}) had a payment of ${formatINR(o.total)} fail.</p>`,
+    "red"
+  );
+  await deliver([
+    { to: o.customerEmail, subject: `Payment failed — order ${o.orderId}`, html: customer },
+    { to: ADMIN(), subject: `Payment FAILED — order ${o.orderId} (${o.customerName})`, html: admin },
+  ]);
+}
+
+// Admin moved an order to SHIPPED / DELIVERED / CANCELLED → tell the customer.
+export async function sendOrderStatusEmail(o: {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  status: "SHIPPED" | "DELIVERED" | "CANCELLED";
+  address?: string;
+}): Promise<void> {
+  const copy: Record<string, { head: string; body: string; accent: "green" | "red" }> = {
+    SHIPPED: {
+      head: "Your order is on the way",
+      body: `Good news — your order has been shipped and is heading to you.${o.address ? `<br/><br/><strong>Delivery address:</strong><br/>${o.address}` : ""}`,
+      accent: "green",
+    },
+    DELIVERED: {
+      head: "Your order has been delivered",
+      body: "Your order has been marked as delivered. We hope you love it — reach out any time if anything isn't right.",
+      accent: "green",
+    },
+    CANCELLED: {
+      head: "Your order was cancelled",
+      body: "Your order has been cancelled. If a payment was made, any refund will reach you within 5–7 working days. Contact us if you have any questions.",
+      accent: "red",
+    },
+  };
+  const c = copy[o.status];
+  if (!c) return;
+  const html = shell(
+    c.head,
+    `Order ${o.orderId}`,
+    `<p>Hi ${o.customerName || "there"}, ${c.body}</p>${button(`${siteUrl()}/dashboard`, "View your orders")}`,
+    c.accent
+  );
+  await deliver([{ to: o.customerEmail, subject: `${c.head} — order ${o.orderId}`, html }]);
+}
+
+/* ------------------------------------------------------------------ */
+/* Consultation payments                                               */
+/* ------------------------------------------------------------------ */
+
+// Consultation fee paid (before the slot is picked) → receipt to
+// customer telling them to pick a time, plus an admin alert.
+export async function sendConsultPaymentReceipt(p: {
+  customerName: string;
+  customerEmail: string;
+  expertName: string;
+  amount: number;
+  reference: string;
+}): Promise<void> {
+  const customer = shell(
+    "Payment received",
+    `Consultation with ${p.expertName}`,
+    `<p>Hi ${p.customerName || "there"}, we've received your consultation fee of <strong>${formatINR(p.amount)}</strong>.</p>
+     <p>The last step is to choose a time that suits you.</p>
+     ${button(`${siteUrl()}/consult`, "Pick your slot")}
+     <p style="font-size:13px;color:#6b7a5e">Payment reference: ${p.reference}</p>`
+  );
+  const admin = shell(
+    "Consultation fee paid",
+    `${p.expertName}`,
+    `<p><strong>${p.customerName || "A customer"}</strong> (${p.customerEmail}) paid ${formatINR(p.amount)} for a consultation. Awaiting slot selection.</p>`
+  );
+  await deliver([
+    { to: p.customerEmail, subject: `Payment received — ${formatINR(p.amount)} consultation`, html: customer },
+    { to: ADMIN(), subject: `Consultation paid — ${formatINR(p.amount)} from ${p.customerName}`, html: admin },
+  ]);
+}
+
+// Consultation fee payment failed → customer + admin.
+export async function sendConsultPaymentFailedEmail(p: {
+  customerName: string;
+  customerEmail: string;
+  expertName: string;
+  amount: number;
+}): Promise<void> {
+  const customer = shell(
+    "Your payment didn't go through",
+    `Consultation with ${p.expertName}`,
+    `<p>Hi ${p.customerName || "there"}, we couldn't confirm your consultation payment of <strong>${formatINR(p.amount)}</strong>, so no booking was made.</p>
+     <p>If any amount was deducted, your bank refunds it automatically within 5–7 working days. You're welcome to try again.</p>
+     ${button(`${siteUrl()}/consult`, "Try booking again")}`,
+    "red"
+  );
+  const admin = shell(
+    "Consultation payment failed",
+    `${p.expertName}`,
+    `<p><strong>${p.customerName || "A customer"}</strong> (${p.customerEmail || "no email"}) had a consultation payment of ${formatINR(p.amount)} fail.</p>`,
+    "red"
+  );
+  await deliver([
+    { to: p.customerEmail, subject: `Payment failed — consultation`, html: customer },
+    { to: ADMIN(), subject: `Consultation payment FAILED — ${p.customerName}`, html: admin },
+  ]);
+}
+
+/* ------------------------------------------------------------------ */
+/* Bookings                                                            */
+/* ------------------------------------------------------------------ */
+
+interface BookingEmailData {
   attendeeName: string;
   attendeeEmail: string;
   expertName: string;
+  expertEmail?: string; // the consultant's own inbox
+  title: string;
+  startTime: string | Date;
+  meetUrl?: string;
+  amountPaid?: number;
+}
+
+// Slot confirmed → customer + admin + the consultant themselves.
+export async function sendBookingEmails(b: BookingEmailData): Promise<void> {
+  const when = formatDateTime(b.startTime);
+  const meet = b.meetUrl ? button(b.meetUrl, "Join the video consultation") : "";
+  const meetLine = b.meetUrl
+    ? `<p style="font-size:13px;color:#6b7a5e">Your private video link: <a href="${b.meetUrl}" style="color:#334720">${b.meetUrl}</a></p>`
+    : "";
+
+  const customer = shell(
+    "Consultation confirmed",
+    "",
+    `<p>Hi ${b.attendeeName || "there"}, your consultation is booked.</p>
+     <p><strong>${b.title}</strong>${b.expertName ? ` with ${b.expertName}` : ""}<br/>${when} (IST)</p>
+     ${meet}${meetLine}
+     <p style="font-size:14px;color:#6b7a5e">See all your bookings in <a href="${siteUrl()}/dashboard" style="color:#334720">your dashboard</a>.</p>`
+  );
+
+  const forExpert = shell(
+    "New consultation booked",
+    when + " (IST)",
+    `<p>Hi ${b.expertName || "there"}, a new consultation has been booked with you.</p>
+     <p><strong>Client:</strong> ${b.attendeeName || "—"}<br/>
+        <strong>Email:</strong> ${b.attendeeEmail || "—"}</p>
+     <p><strong>${b.title}</strong><br/>${when} (IST)</p>
+     ${meet}
+     ${button(`${siteUrl()}/studio`, "Open your consultant studio")}`
+  );
+
+  const admin = shell(
+    "New booking",
+    when + " (IST)",
+    `<p><strong>${b.attendeeName || "A customer"}</strong> (${b.attendeeEmail || "no email"}) booked <strong>${b.title}</strong>${b.expertName ? ` with ${b.expertName}` : ""}.</p>
+     ${b.amountPaid ? `<p>Amount paid: ${formatINR(b.amountPaid)}</p>` : ""}
+     ${button(`${siteUrl()}/admin/bookings`, "Open admin bookings")}`
+  );
+
+  await deliver([
+    { to: b.attendeeEmail, subject: `Booking confirmed — ${b.title} (${when})`, html: customer, replyTo: b.expertEmail },
+    { to: b.expertEmail, subject: `New consultation — ${b.attendeeName || "a client"} (${when})`, html: forExpert, replyTo: b.attendeeEmail },
+    { to: ADMIN(), subject: `New booking: ${b.attendeeName || "A customer"} — ${b.title} (${when})`, html: admin },
+  ]);
+}
+
+// Booking cancelled → customer + admin + consultant.
+export async function sendBookingCancelledEmail(b: {
+  attendeeName: string;
+  attendeeEmail: string;
+  expertName: string;
+  expertEmail?: string;
   title: string;
   startTime: string | Date;
 }): Promise<void> {
-  const resend = getResend();
-  if (!resend) return;
   const when = formatDateTime(b.startTime);
-  const html = `
-  <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#1e1e1e">
-    <div style="background:#334720;color:#fefaef;padding:24px;border-radius:12px 12px 0 0">
-      <h1 style="margin:0;font-size:22px">Consultation confirmed</h1>
-    </div>
-    <div style="border:1px solid #d5d8cf;border-top:none;padding:24px;border-radius:0 0 12px 12px">
-      <p>Hi ${b.attendeeName || "there"}, your consultation is booked.</p>
-      <p><strong>${b.title}</strong>${b.expertName ? ` with ${b.expertName}` : ""}<br/>${when}</p>
-      <p style="font-size:14px;color:#6b7a5e">Cal.com has also sent you a calendar invite with the meeting link. See all your bookings in <a href="${siteUrl()}/dashboard" style="color:#334720">your dashboard</a>.</p>
-    </div>
-  </div>`;
-  const jobs: Promise<unknown>[] = [];
-  if (b.attendeeEmail) {
-    jobs.push(
-      resend.emails.send({
-        from: FROM(),
-        to: b.attendeeEmail,
-        subject: `Booking confirmed — ${b.title} (${when})`,
-        html,
-      })
-    );
-  }
-  if (ADMIN()) {
-    jobs.push(
-      resend.emails.send({
-        from: FROM(),
-        to: ADMIN(),
-        subject: `New booking: ${b.attendeeName || "A customer"} — ${b.title} (${when})`,
-        html,
-      })
-    );
-  }
-  await Promise.allSettled(jobs);
+  const customer = shell(
+    "Your consultation was cancelled",
+    "",
+    `<p>Hi ${b.attendeeName || "there"}, your consultation${b.expertName ? ` with ${b.expertName}` : ""} on <strong>${when} (IST)</strong> has been cancelled.</p>
+     <p>If you paid for this consultation, any refund will reach you within 5–7 working days. You're welcome to book another time.</p>
+     ${button(`${siteUrl()}/consult`, "Book again")}`,
+    "red"
+  );
+  const forExpert = shell(
+    "A consultation was cancelled",
+    when + " (IST)",
+    `<p>Hi ${b.expertName || "there"}, the consultation with <strong>${b.attendeeName || "a client"}</strong> on ${when} (IST) has been cancelled. That slot is free again.</p>`,
+    "red"
+  );
+  const admin = shell(
+    "Booking cancelled",
+    when + " (IST)",
+    `<p><strong>${b.attendeeName || "A customer"}</strong> — ${b.title}${b.expertName ? ` with ${b.expertName}` : ""} on ${when} (IST) was cancelled.</p>`,
+    "red"
+  );
+  await deliver([
+    { to: b.attendeeEmail, subject: `Consultation cancelled — ${when}`, html: customer },
+    { to: b.expertEmail, subject: `Consultation cancelled — ${b.attendeeName || "a client"} (${when})`, html: forExpert },
+    { to: ADMIN(), subject: `Booking cancelled — ${b.attendeeName || "A customer"} (${when})`, html: admin },
+  ]);
 }
+
+// Expert (or admin) saved the post-consultation advice → nudge the customer.
+export async function sendPrescriptionReadyEmail(p: {
+  attendeeName: string;
+  attendeeEmail: string;
+  expertName: string;
+}): Promise<void> {
+  const html = shell(
+    "Your consultation notes are ready",
+    "",
+    `<p>Hi ${p.attendeeName || "there"}, ${p.expertName || "your consultant"} has shared advice and recommendations from your consultation.</p>
+     ${button(`${siteUrl()}/dashboard`, "View your notes")}`
+  );
+  await deliver([{ to: p.attendeeEmail, subject: `Your consultation notes are ready`, html }]);
+}
+
+/* ------------------------------------------------------------------ */
+/* Contact form                                                        */
+/* ------------------------------------------------------------------ */
 
 export async function sendContactEmail(c: {
   name: string;

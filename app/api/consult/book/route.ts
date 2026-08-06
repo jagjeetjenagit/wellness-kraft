@@ -3,6 +3,7 @@ import { getPrisma } from "@/lib/prisma";
 import { getSafeUser } from "@/lib/auth";
 import { generalConsultFee } from "@/lib/config";
 import { isValidSlot, meetUrlFor, configFromExpert, DEFAULT_SLOT_CONFIG } from "@/lib/slots";
+import { sendBookingEmails } from "@/lib/email";
 
 // Books a consultation slot natively (no external calendar). Validates the
 // slot, prevents double-booking, links the paid consultation, and returns a
@@ -26,12 +27,14 @@ export async function POST(req: NextRequest) {
   // Resolve fee + expert name + availability from the source of truth.
   let fee = generalConsultFee();
   let expertName = "General Consultation";
+  let expertEmail = "";
   let cfg = DEFAULT_SLOT_CONFIG;
   if (expertId) {
     const expert = await prisma.expert.findFirst({ where: { id: expertId, active: true } });
     if (!expert) return NextResponse.json({ error: "This expert is no longer available." }, { status: 404 });
     fee = expert.fee;
     expertName = expert.name;
+    expertEmail = expert.email;
     cfg = configFromExpert(expert);
   }
 
@@ -95,6 +98,19 @@ export async function POST(req: NextRequest) {
         .update({ where: { id: payment.id }, data: { bookingId: booking.id } })
         .catch(() => null);
     }
+
+    // Confirmation emails: customer + admin + the consultant. Never block
+    // the booking on an email problem.
+    sendBookingEmails({
+      attendeeName: booking.attendeeName,
+      attendeeEmail: booking.attendeeEmail,
+      expertName,
+      expertEmail,
+      title: booking.title,
+      startTime: booking.startTime,
+      meetUrl: meetUrlFor(booking.id),
+      amountPaid: booking.amountPaid,
+    }).catch((e) => console.error("booking email failed:", e));
 
     return NextResponse.json({ ok: true, meetUrl: meetUrlFor(booking.id), startTime: booking.startTime });
   } catch (err) {

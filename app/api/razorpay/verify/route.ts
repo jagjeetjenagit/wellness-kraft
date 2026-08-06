@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPaymentSignature } from "@/lib/razorpay";
 import { getPrisma } from "@/lib/prisma";
-import { sendOrderEmails } from "@/lib/email";
+import { sendOrderEmails, sendOrderFailedEmail } from "@/lib/email";
 
 // Step 2 of payment: Razorpay sends back a signature after the
 // customer pays. We verify it server-side with the secret key.
@@ -26,12 +26,20 @@ export async function POST(req: NextRequest) {
       razorpay_signature,
     });
     if (!valid) {
-      await prisma.order
+      const failed = await prisma.order
         .update({
           where: { razorpayOrderId: razorpay_order_id },
           data: { paymentStatus: "FAILED" },
         })
         .catch(() => null);
+      if (failed) {
+        sendOrderFailedEmail({
+          orderId: failed.id.slice(-8).toUpperCase(),
+          customerName: failed.shipName,
+          customerEmail: failed.shipEmail,
+          total: failed.total,
+        }).catch((e) => console.error("order failed email:", e));
+      }
       return NextResponse.json(
         { error: "Payment could not be verified. If money was deducted, it will be refunded automatically." },
         { status: 400 }

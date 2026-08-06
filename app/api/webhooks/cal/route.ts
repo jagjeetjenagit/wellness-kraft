@@ -121,6 +121,7 @@ export async function POST(req: NextRequest) {
           attendeeName: attendee.name || "",
           attendeeEmail: attendee.email || "",
           expertName: expert?.name || organizerName,
+          expertEmail: expert?.email || "",
           title: p.title || "Consultation",
           startTime: p.startTime,
         }).catch((e) => console.error("booking email failed:", e));
