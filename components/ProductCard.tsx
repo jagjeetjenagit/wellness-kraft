@@ -12,7 +12,7 @@ export default function ProductCard({ product }: { product: ProductT }) {
         <ProductImage
           name={product.name}
           image={product.images[0]}
-          className="h-48 w-full"
+          className="aspect-square w-full"
         />
         {product.consultRecommended && (
           <span className="badge absolute left-3 top-3 bg-olive text-white">
