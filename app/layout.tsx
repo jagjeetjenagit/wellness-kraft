@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
 import { CartProvider } from "@/components/cart/CartProvider";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { siteUrl } from "@/lib/config";
 
 // One clean professional sans for the whole site (Practo-style).
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Header />
             <main className="min-h-[70vh]">{children}</main>
             <Footer />
+            <WhatsAppButton />
           </CartProvider>
         </SessionProvider>
         <Analytics />

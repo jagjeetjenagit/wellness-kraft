@@ -33,3 +33,16 @@ export const generalConsultFee = () => {
 
 export const generalCalLink = () =>
   process.env.NEXT_PUBLIC_GENERAL_CAL_LINK || "";
+
+// WhatsApp support. Set NEXT_PUBLIC_WHATSAPP_NUMBER to a full international
+// number (digits only, e.g. "919876543210") to switch on the floating
+// support button. Missing/blank => the button simply doesn't render.
+export const whatsappNumber = () => {
+  const raw = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+  const digits = raw.replace(/[^\d]/g, "");
+  return digits.length >= 10 ? digits : "";
+};
+
+export const whatsappMessage = () =>
+  process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ||
+  "Hi Wellness Kraft, I'd like some help.";
