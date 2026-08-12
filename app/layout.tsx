@@ -8,6 +8,7 @@ import Analytics from "@/components/Analytics";
 import { CartProvider } from "@/components/cart/CartProvider";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { siteUrl } from "@/lib/config";
+import { getSiteSettings, keywordList } from "@/lib/settings";
 
 // One clean professional sans for the whole site (Practo-style).
 // Serif experiments (Playfair, Cormorant) read decorative next to the
@@ -28,22 +29,30 @@ export const viewport: Viewport = {
   themeColor: "#FEFAEF",
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl()),
-  title: {
-    default: "Wellness Kraft — Expert Consultations & Tested Wellness Products",
-    template: "%s | Wellness Kraft",
-  },
-  description:
-    "Book 1-on-1 consultations with verified health experts and shop medically-tested wellness products. Nutrition, Ayurveda, skin, sleep and more.",
-  openGraph: {
-    type: "website",
-    siteName: "Wellness Kraft",
-    title: "Wellness Kraft — Expert Consultations & Tested Wellness Products",
-    description:
-      "Book 1-on-1 consultations with verified health experts and shop medically-tested wellness products.",
-  },
-};
+// Site-wide <head> metadata. Reads the admin-managed SEO settings
+// (/admin/seo) and falls back to the built-in defaults when nothing is
+// saved or the database is unreachable. Page-specific titles/descriptions
+// (product, expert, etc.) still override these per page.
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings();
+  const keywords = keywordList(s.keywords);
+  return {
+    metadataBase: new URL(siteUrl()),
+    title: {
+      default: s.metaTitle,
+      template: "%s | Wellness Kraft",
+    },
+    description: s.metaDescription,
+    keywords: keywords.length ? keywords : undefined,
+    openGraph: {
+      type: "website",
+      siteName: "Wellness Kraft",
+      title: s.metaTitle,
+      description: s.metaDescription,
+      images: s.ogImage ? [s.ogImage] : undefined,
+    },
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // SessionProvider exposes the Google login state to client components

@@ -99,8 +99,9 @@ export async function POST(req: NextRequest) {
         .catch(() => null);
     }
 
-    // Confirmation emails: customer + admin + the consultant. Never block
-    // the booking on an email problem.
+    // Confirmation emails: customer + admin + the consultant. Shows only
+    // the time (a timer) — the join link is sent 10 min before, by the cron.
+    // Never block the booking on an email problem.
     sendBookingEmails({
       attendeeName: booking.attendeeName,
       attendeeEmail: booking.attendeeEmail,
@@ -108,7 +109,6 @@ export async function POST(req: NextRequest) {
       expertEmail,
       title: booking.title,
       startTime: booking.startTime,
-      meetUrl: meetUrlFor(booking.id),
       amountPaid: booking.amountPaid,
     }).catch((e) => console.error("booking email failed:", e));
 

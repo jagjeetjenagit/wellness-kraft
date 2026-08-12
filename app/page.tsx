@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import DemoBanner from "@/components/DemoBanner";
 import ExpertCard from "@/components/ExpertCard";
 import ProductCard from "@/components/ProductCard";
+import GraphicBlock from "@/components/GraphicBlock";
+import Testimonials from "@/components/Testimonials";
 import { CONDITIONS } from "@/lib/conditions";
-import { getFeaturedExperts, getFeaturedProducts } from "@/lib/data";
+import { getFeaturedExperts, getFeaturedProducts, getFeaturedTestimonials } from "@/lib/data";
 
 // Always fresh so experts/products added in /admin show up immediately.
 export const dynamic = "force-dynamic";
@@ -91,9 +93,10 @@ const TRUST = [
 ];
 
 export default async function HomePage() {
-  const [experts, products] = await Promise.all([
+  const [experts, products, testimonials] = await Promise.all([
     getFeaturedExperts(3),
     getFeaturedProducts(4),
+    getFeaturedTestimonials(6),
   ]);
 
   return (
@@ -106,30 +109,38 @@ export default async function HomePage() {
           className="pointer-events-none absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full bg-soft-cream blur-3xl"
           aria-hidden="true"
         />
-        <div className="container-x relative py-14 sm:py-28">
-          <div className="max-w-3xl">
-            <p className="eyebrow animate-rise-1">Consultations · Natural Products · Lifestyle Plans</p>
-            {/* Wordmark-style wide tracking lives in the uppercase eyebrow;
-                the serif headline itself stays tight for readability */}
-            <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.12] tracking-tight text-olive sm:text-6xl">
-              Real experts. Natural solutions. Lasting lifestyle change.
-            </h1>
-            <p className="mt-6 max-w-2xl animate-rise-3 text-lg leading-relaxed text-charcoal/75">
-              We help you fix the root cause of your fitness, nutrition, and
-              lifestyle problems — through expert consultation, natural and
-              harmless products, and guidance that actually sticks.
-            </p>
-            <div className="mt-9 flex animate-rise-4 flex-col gap-3 sm:flex-row">
-              <Link href="/experts" className="btn-primary !px-8 !py-4 !text-base">
-                Book a Consultation
-              </Link>
-              <Link href="#approach" className="btn-secondary !px-8 !py-4 !text-base">
-                Explore Our Approach
-              </Link>
-              <Link href="/shop" className="btn-secondary !px-8 !py-4 !text-base">
-                Shop Natural Products
-              </Link>
+        <div className="container-x relative py-14 sm:py-24">
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            <div className="max-w-xl">
+              <p className="eyebrow animate-rise-1">Consultations · Natural Products · Lifestyle Plans</p>
+              {/* Wordmark-style wide tracking lives in the uppercase eyebrow;
+                  the serif headline itself stays tight for readability */}
+              <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.12] tracking-tight text-olive sm:text-6xl">
+                Real experts. Natural solutions. Lasting lifestyle change.
+              </h1>
+              <p className="mt-6 animate-rise-3 text-lg leading-relaxed text-charcoal/75">
+                We help you fix the root cause of your fitness, nutrition, and
+                lifestyle problems — through expert consultation, natural and
+                harmless products, and guidance that actually sticks.
+              </p>
+              <div className="mt-9 flex animate-rise-4 flex-col gap-3 sm:flex-row">
+                <Link href="/experts" className="btn-primary !px-8 !py-4 !text-base">
+                  Book a Consultation
+                </Link>
+                <Link href="#approach" className="btn-secondary !px-8 !py-4 !text-base">
+                  Explore Our Approach
+                </Link>
+                <Link href="/shop" className="btn-secondary !px-8 !py-4 !text-base">
+                  Shop Natural Products
+                </Link>
+              </div>
             </div>
+            <GraphicBlock
+              src="/graphics/hero.jpg"
+              alt="Calm, natural wellness — Ayurvedic consultation and products"
+              label="Hero image"
+              className="animate-rise-3 aspect-[4/3] lg:aspect-[4/5]"
+            />
           </div>
         </div>
       </section>
@@ -137,15 +148,25 @@ export default async function HomePage() {
       {/* WHY WE'RE DIFFERENT */}
       <section id="approach" className="bg-soft-cream">
         <div className="container-x py-12 sm:py-20">
-          <p className="eyebrow">Why we&apos;re different</p>
-          <h2 className="section-title mt-2">Guidance first. Products second.</h2>
-          <p className="mt-4 max-w-3xl leading-relaxed text-charcoal/75">
-            Most wellness brands sell you a bottle and hope for the best. We
-            start with a real conversation — understanding your body, your
-            habits, and what&apos;s actually causing the problem. Every
-            recommendation, every product, every plan comes after that
-            understanding, not instead of it.
-          </p>
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            <div>
+              <p className="eyebrow">Why we&apos;re different</p>
+              <h2 className="section-title mt-2">Guidance first. Products second.</h2>
+              <p className="mt-4 leading-relaxed text-charcoal/75">
+                Most wellness brands sell you a bottle and hope for the best. We
+                start with a real conversation — understanding your body, your
+                habits, and what&apos;s actually causing the problem. Every
+                recommendation, every product, every plan comes after that
+                understanding, not instead of it.
+              </p>
+            </div>
+            <GraphicBlock
+              src="/graphics/approach.jpg"
+              alt="An expert listening and guiding during a wellness consultation"
+              label="Approach image"
+              className="aspect-[4/3]"
+            />
+          </div>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {PILLARS.map((p) => (
               <div key={p.title} className="card p-6">
@@ -253,27 +274,40 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS
-          Placeholder — swap the skeleton cards for real patient stories
-          (quote, name, condition/goal) once the client provides them. */}
-      <section className="bg-soft-cream">
-        <div className="container-x py-12 sm:py-20">
-          <p className="eyebrow">Testimonials</p>
-          <h2 className="section-title mt-2">Real stories, coming soon</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="card p-6" aria-hidden="true">
-                <div className="h-4 w-10 rounded bg-sage/20" />
-                <div className="mt-4 space-y-2">
-                  <div className="h-3 w-full rounded bg-sage/20" />
-                  <div className="h-3 w-11/12 rounded bg-sage/20" />
-                  <div className="h-3 w-4/5 rounded bg-sage/20" />
+      {/* TESTIMONIALS — real stories managed from /admin/testimonials.
+          Until the client adds any, we show the "coming soon" state. */}
+      {testimonials.length > 0 ? (
+        <Testimonials items={testimonials} />
+      ) : (
+        <section className="bg-soft-cream">
+          <div className="container-x py-12 sm:py-20">
+            <p className="eyebrow">Testimonials</p>
+            <h2 className="section-title mt-2">Real stories, coming soon</h2>
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="card p-6" aria-hidden="true">
+                  <div className="h-4 w-10 rounded bg-sage/20" />
+                  <div className="mt-4 space-y-2">
+                    <div className="h-3 w-full rounded bg-sage/20" />
+                    <div className="h-3 w-11/12 rounded bg-sage/20" />
+                    <div className="h-3 w-4/5 rounded bg-sage/20" />
+                  </div>
+                  <div className="mt-6 h-3 w-1/2 rounded bg-sage/30" />
                 </div>
-                <div className="mt-6 h-3 w-1/2 rounded bg-sage/30" />
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
+      )}
+
+      {/* LIFESTYLE BAND — full-width brand visual */}
+      <section className="container-x py-4 sm:py-8">
+        <GraphicBlock
+          src="/graphics/lifestyle-band.jpg"
+          alt="Natural ingredients and everyday wellness moments"
+          label="Wide lifestyle banner"
+          className="aspect-[16/9] sm:aspect-[21/9]"
+        />
       </section>
 
       {/* CLOSING CTA */}

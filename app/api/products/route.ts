@@ -13,7 +13,12 @@ function parseImages(input: unknown): string[] {
 export async function GET() {
   const { error, prisma } = await adminGuard();
   if (error) return error;
-  const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
+  const products = await prisma.product
+    .findMany({ orderBy: { createdAt: "desc" } })
+    .catch((e) => {
+      console.error("admin products query failed:", e);
+      return [];
+    });
   return NextResponse.json(products);
 }
 

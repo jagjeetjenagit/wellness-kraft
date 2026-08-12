@@ -7,10 +7,15 @@ import { slugify } from "@/lib/utils";
 export async function GET() {
   const { error, prisma } = await adminGuard();
   if (error) return error;
-  const experts = await prisma.expert.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { products: { select: { id: true } } },
-  });
+  const experts = await prisma.expert
+    .findMany({
+      orderBy: { createdAt: "desc" },
+      include: { products: { select: { id: true } } },
+    })
+    .catch((e) => {
+      console.error("admin experts query failed:", e);
+      return [];
+    });
   return NextResponse.json(experts);
 }
 

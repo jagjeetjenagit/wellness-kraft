@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPaymentSignature } from "@/lib/razorpay";
 import { getPrisma } from "@/lib/prisma";
-import { sendConsultPaymentReceipt, sendConsultPaymentFailedEmail } from "@/lib/email";
+import { sendConsultPaidAdminAlert, sendConsultPaymentFailedEmail } from "@/lib/email";
 
 // Step 2 of consultation payment: verify Razorpay's signature
 // server-side, then mark the ConsultPayment PAID. The booking widget
@@ -56,14 +56,14 @@ export async function POST(req: NextRequest) {
         where: { id: payment.id },
         data: { status: "PAID", razorpayPaymentId: razorpay_payment_id },
       });
-      // Receipt: confirm the fee and prompt them to pick a slot.
-      sendConsultPaymentReceipt({
+      // Notify admin now; the customer's "pick your slot" prompt is sent
+      // by the cron 5 min later, only if they still haven't booked.
+      sendConsultPaidAdminAlert({
         customerName: payment.customerName,
         customerEmail: payment.customerEmail,
         expertName: payment.expertName,
         amount: payment.amount,
-        reference: razorpay_payment_id,
-      }).catch((e) => console.error("consult receipt email:", e));
+      }).catch((e) => console.error("consult paid alert:", e));
     }
 
     return NextResponse.json({ success: true });

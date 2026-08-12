@@ -59,6 +59,30 @@ function button(href: string, label: string): string {
   return `<p style="margin:20px 0"><a href="${href}" style="background:#334720;color:#fefaef;text-decoration:none;padding:12px 20px;border-radius:8px;display:inline-block;font-size:15px">${label}</a></p>`;
 }
 
+// Human "starts in ~2 hours" text, computed at send time. Email can't run a
+// live countdown, so we show the remaining time as a static timer instead.
+function timeUntil(start: string | Date): string {
+  const ms = new Date(start).getTime() - Date.now();
+  if (ms <= 0) return "now";
+  const mins = Math.round(ms / 60000);
+  if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"}`;
+  const hours = Math.floor(mins / 60);
+  const remMin = mins % 60;
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"}${remMin ? ` ${remMin} min` : ""}`;
+  const days = Math.floor(hours / 24);
+  const remHr = hours % 24;
+  return `${days} day${days === 1 ? "" : "s"}${remHr ? ` ${remHr} hr` : ""}`;
+}
+
+// A prominent "when + starts in" block used by confirmation & reminders.
+function timerBlock(startTime: string | Date): string {
+  return `<div style="background:#f4f2e9;border:1px solid #d5d8cf;border-radius:10px;padding:16px;margin:16px 0;text-align:center">
+      <div style="font-size:13px;color:#6b7a5e;text-transform:uppercase;letter-spacing:.5px">Your consultation</div>
+      <div style="font-size:18px;margin:6px 0"><strong>${formatDateTime(startTime)} (IST)</strong></div>
+      <div style="font-size:14px;color:#334720">Starts in ${timeUntil(startTime)}</div>
+    </div>`;
+}
+
 /* ------------------------------------------------------------------ */
 /* Orders                                                              */
 /* ------------------------------------------------------------------ */
@@ -179,32 +203,39 @@ export async function sendOrderStatusEmail(o: {
 /* Consultation payments                                               */
 /* ------------------------------------------------------------------ */
 
-// Consultation fee paid (before the slot is picked) → receipt to
-// customer telling them to pick a time, plus an admin alert.
-export async function sendConsultPaymentReceipt(p: {
+// Consultation fee paid → immediate admin alert only. (The customer's
+// "pick your slot" prompt is sent by the cron 5 min later, and only if
+// they still haven't booked — so booking-then gets no redundant nudge.)
+export async function sendConsultPaidAdminAlert(p: {
   customerName: string;
   customerEmail: string;
   expertName: string;
   amount: number;
-  reference: string;
 }): Promise<void> {
-  const customer = shell(
-    "Payment received",
-    `Consultation with ${p.expertName}`,
-    `<p>Hi ${p.customerName || "there"}, we've received your consultation fee of <strong>${formatINR(p.amount)}</strong>.</p>
-     <p>The last step is to choose a time that suits you.</p>
-     ${button(`${siteUrl()}/consult`, "Pick your slot")}
-     <p style="font-size:13px;color:#6b7a5e">Payment reference: ${p.reference}</p>`
-  );
   const admin = shell(
     "Consultation fee paid",
     `${p.expertName}`,
     `<p><strong>${p.customerName || "A customer"}</strong> (${p.customerEmail}) paid ${formatINR(p.amount)} for a consultation. Awaiting slot selection.</p>`
   );
-  await deliver([
-    { to: p.customerEmail, subject: `Payment received — ${formatINR(p.amount)} consultation`, html: customer },
-    { to: ADMIN(), subject: `Consultation paid — ${formatINR(p.amount)} from ${p.customerName}`, html: admin },
-  ]);
+  await deliver([{ to: ADMIN(), subject: `Consultation paid — ${formatINR(p.amount)} from ${p.customerName}`, html: admin }]);
+}
+
+// "You've paid — now pick your slot." Sent by the cron 5 min after a paid
+// consultation still has no booking. Customer only.
+export async function sendPickSlotNudge(p: {
+  customerName: string;
+  customerEmail: string;
+  expertName: string;
+  amount: number;
+}): Promise<void> {
+  const customer = shell(
+    "One step left — pick your slot",
+    `Consultation with ${p.expertName}`,
+    `<p>Hi ${p.customerName || "there"}, we've received your consultation fee of <strong>${formatINR(p.amount)}</strong>, but you haven't chosen a time yet.</p>
+     <p>Pick a slot that suits you and your consultation will be confirmed instantly.</p>
+     ${button(`${siteUrl()}/consult`, "Pick your slot")}`
+  );
+  await deliver([{ to: p.customerEmail, subject: `Pick your consultation slot`, html: customer }]);
 }
 
 // Consultation fee payment failed → customer + admin.
@@ -245,24 +276,23 @@ interface BookingEmailData {
   expertEmail?: string; // the consultant's own inbox
   title: string;
   startTime: string | Date;
-  meetUrl?: string;
   amountPaid?: number;
 }
 
+const LINK_NOTE =
+  `<p style="font-size:14px;color:#6b7a5e">Your private video link will be emailed to you <strong>10 minutes before</strong> the consultation — no link is needed until then.</p>`;
+
 // Slot confirmed → customer + admin + the consultant themselves.
+// The confirmation shows only WHEN it is (a timer), never the join link.
 export async function sendBookingEmails(b: BookingEmailData): Promise<void> {
   const when = formatDateTime(b.startTime);
-  const meet = b.meetUrl ? button(b.meetUrl, "Join the video consultation") : "";
-  const meetLine = b.meetUrl
-    ? `<p style="font-size:13px;color:#6b7a5e">Your private video link: <a href="${b.meetUrl}" style="color:#334720">${b.meetUrl}</a></p>`
-    : "";
 
   const customer = shell(
     "Consultation confirmed",
     "",
-    `<p>Hi ${b.attendeeName || "there"}, your consultation is booked.</p>
-     <p><strong>${b.title}</strong>${b.expertName ? ` with ${b.expertName}` : ""}<br/>${when} (IST)</p>
-     ${meet}${meetLine}
+    `<p>Hi ${b.attendeeName || "there"}, your video consultation${b.expertName ? ` with ${b.expertName}` : ""} is booked.</p>
+     ${timerBlock(b.startTime)}
+     ${LINK_NOTE}
      <p style="font-size:14px;color:#6b7a5e">See all your bookings in <a href="${siteUrl()}/dashboard" style="color:#334720">your dashboard</a>.</p>`
   );
 
@@ -272,8 +302,8 @@ export async function sendBookingEmails(b: BookingEmailData): Promise<void> {
     `<p>Hi ${b.expertName || "there"}, a new consultation has been booked with you.</p>
      <p><strong>Client:</strong> ${b.attendeeName || "—"}<br/>
         <strong>Email:</strong> ${b.attendeeEmail || "—"}</p>
-     <p><strong>${b.title}</strong><br/>${when} (IST)</p>
-     ${meet}
+     ${timerBlock(b.startTime)}
+     ${LINK_NOTE}
      ${button(`${siteUrl()}/studio`, "Open your consultant studio")}`
   );
 
@@ -286,9 +316,51 @@ export async function sendBookingEmails(b: BookingEmailData): Promise<void> {
   );
 
   await deliver([
-    { to: b.attendeeEmail, subject: `Booking confirmed — ${b.title} (${when})`, html: customer, replyTo: b.expertEmail },
+    { to: b.attendeeEmail, subject: `Booking confirmed — ${when} (IST)`, html: customer, replyTo: b.expertEmail },
     { to: b.expertEmail, subject: `New consultation — ${b.attendeeName || "a client"} (${when})`, html: forExpert, replyTo: b.attendeeEmail },
     { to: ADMIN(), subject: `New booking: ${b.attendeeName || "A customer"} — ${b.title} (${when})`, html: admin },
+  ]);
+}
+
+// Reminder before a consultation → customer + consultant.
+// `stage` 30 = no link; `stage` 10 = includes the join link (released now).
+export async function sendReminderEmails(b: {
+  attendeeName: string;
+  attendeeEmail: string;
+  expertName: string;
+  expertEmail?: string;
+  startTime: string | Date;
+  meetUrl: string;
+  stage: 30 | 10;
+}): Promise<void> {
+  const when = formatDateTime(b.startTime);
+  const linkPart =
+    b.stage === 10
+      ? `${button(b.meetUrl, "Join the video consultation")}
+         <p style="font-size:13px;color:#6b7a5e">Or open this link: <a href="${b.meetUrl}" style="color:#334720">${b.meetUrl}</a></p>`
+      : `<p style="font-size:14px;color:#6b7a5e">Your join link will arrive in a follow-up email 10 minutes before the start.</p>`;
+
+  const head = b.stage === 10 ? "Your consultation starts soon — join link inside" : "Reminder: consultation in 30 minutes";
+
+  const customer = shell(
+    head,
+    "",
+    `<p>Hi ${b.attendeeName || "there"}, this is a reminder about your consultation${b.expertName ? ` with ${b.expertName}` : ""}.</p>
+     ${timerBlock(b.startTime)}
+     ${linkPart}`
+  );
+  const forExpert = shell(
+    b.stage === 10 ? "Consultation starting soon — join link inside" : "Reminder: consultation in 30 minutes",
+    "",
+    `<p>Hi ${b.expertName || "there"}, your consultation with <strong>${b.attendeeName || "a client"}</strong> is coming up.</p>
+     ${timerBlock(b.startTime)}
+     ${linkPart}`
+  );
+
+  const subj = b.stage === 10 ? `Join now — consultation at ${when}` : `Reminder — consultation at ${when} (in 30 min)`;
+  await deliver([
+    { to: b.attendeeEmail, subject: subj, html: customer, replyTo: b.expertEmail },
+    { to: b.expertEmail, subject: subj, html: forExpert, replyTo: b.attendeeEmail },
   ]);
 }
 

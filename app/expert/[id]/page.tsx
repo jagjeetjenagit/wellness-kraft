@@ -51,7 +51,7 @@ export default async function ExpertProfilePage({ params }: Props) {
           {/* Profile column */}
           <div>
             <div className="card overflow-hidden">
-              <ExpertPhoto name={expert.name} photo={expert.photo} className="h-72 w-full" />
+              <ExpertPhoto name={expert.name} photo={expert.photo} className="aspect-square w-full" />
               <div className="p-6">
                 <p className="text-xs font-bold uppercase tracking-wider text-olive">
                   {expert.specialty}

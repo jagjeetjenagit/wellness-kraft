@@ -1,6 +1,7 @@
 import { getPrisma } from "./prisma";
 import { SAMPLE_EXPERTS, SAMPLE_PRODUCTS, SAMPLE_RECOMMENDATIONS } from "./sample-data";
 import type { ExpertT, ProductT } from "./types";
+import type { Testimonial } from "@prisma/client";
 
 // All page data flows through here. If the database isn't connected
 // (or a query fails), we quietly fall back to the built-in sample
@@ -110,5 +111,26 @@ export async function getFeaturedExperts(limit = 3): Promise<ExpertT[]> {
 export async function getFeaturedProducts(limit = 4): Promise<ProductT[]> {
   const all = await getProducts();
   const featured = all.filter((p) => p.featured);
+  return (featured.length ? featured : all).slice(0, limit);
+}
+
+// Testimonials. No demo fallback — when there are none (or no DB), the home
+// page simply shows its "coming soon" state instead of fake reviews.
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const prisma = getPrisma();
+  if (!prisma) return [];
+  try {
+    return await prisma.testimonial.findMany({
+      where: { active: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    });
+  } catch {
+    return [];
+  }
+}
+
+export async function getFeaturedTestimonials(limit = 6): Promise<Testimonial[]> {
+  const all = await getTestimonials();
+  const featured = all.filter((t) => t.featured);
   return (featured.length ? featured : all).slice(0, limit);
 }

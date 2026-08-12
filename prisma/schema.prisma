@@ -114,7 +114,38 @@ model Booking {
   razorpayPaymentId String    @default("")
   prescription      String    @default("") @db.Text // expert's advice/prescription, shown in the customer dashboard
   prescribedProductIds String[] @default([]) // products the expert recommends (Buy buttons in the dashboard)
+  // Reminder emails already sent for this booking (so the cron never repeats one).
+  remind30Sent      Boolean   @default(false) // 30-minutes-before reminder (no link)
+  remind10Sent      Boolean   @default(false) // 10-minutes-before reminder (includes the join link)
   createdAt         DateTime  @default(now())
+}
+
+// Customer testimonials shown on the home page, managed from /admin.
+// Each can be a written quote and/or a portrait (9:16) video clip.
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String // customer's name (or initials)
+  location  String   @default("") // optional: city, or their goal/condition
+  quote     String   @db.Text // the written testimonial / caption
+  rating    Int      @default(5) // 1–5 stars
+  photo     String   @default("") // optional square headshot / video poster
+  videoUrl  String   @default("") // optional 9:16 testimonial video (mp4/webm URL)
+  featured  Boolean  @default(true) // show on the home page
+  active    Boolean  @default(true) // visible at all
+  sortOrder Int      @default(0) // lower shows first
+  createdAt DateTime @default(now())
+}
+
+// Site-wide SEO / metadata, editable by the admin. A single row (id = 1).
+// The public <head> reads this; when the row or DB is missing, the code
+// falls back to the built-in defaults so SEO always has sensible values.
+model SiteSetting {
+  id              Int      @id @default(1)
+  metaTitle       String   @default("") // browser tab + search result title (site default)
+  metaDescription String   @default("") @db.Text // search result snippet
+  keywords        String   @default("") @db.Text // comma-separated SEO keywords
+  ogImage         String   @default("") // social share image URL (Open Graph / Twitter)
+  updatedAt       DateTime @updatedAt
 }
 
 // Online payment collected for a consultation (before the Cal.com slot
@@ -132,5 +163,7 @@ model ConsultPayment {
   customerEmail     String   @default("")
   customerPhone     String   @default("")
   bookingId         String? // set once matched to a Booking
+  // "Pick your slot" nudge sent (5 min after payment, only if still unbooked).
+  slotNudgeSent     Boolean  @default(false)
   createdAt         DateTime @default(now())
 }
