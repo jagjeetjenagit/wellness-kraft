@@ -10,11 +10,17 @@ import Google from "next-auth/providers/google";
 // Reads these env vars automatically:
 //   AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET  — from Google Cloud Console
 //   AUTH_SECRET                         — any long random string
-//   AUTH_TRUST_HOST=true                — needed on Vercel / custom hosts
+//
+// trustHost is set in code so production doesn't fail with
+// "UntrustedHost" when AUTH_TRUST_HOST is missing (Vercel previews,
+// custom domains, any host behind a proxy). Set AUTH_URL to pin the
+// canonical address.
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [Google],
   pages: {
     signIn: "/sign-in",
+    error: "/sign-in",
   },
   callbacks: {
     // Persist the stable Google account id (sub) onto the token so it

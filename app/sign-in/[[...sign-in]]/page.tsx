@@ -8,7 +8,35 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function SignInPage() {
+// Auth.js sends failed sign-ins back here as ?error=<code>.
+// https://authjs.dev/reference/core/errors
+const ERROR_MESSAGES: Record<string, string> = {
+  Configuration:
+    "Google login is misconfigured on the server. Check AUTH_SECRET, AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET, and that this site's /api/auth/callback/google URL is listed under Authorized redirect URIs in Google Cloud Console.",
+  AccessDenied: "Access was denied. Please try again with a different Google account.",
+  Verification: "This sign-in link has expired. Please try again.",
+  OAuthSignin: "Couldn't start Google sign-in. Please try again.",
+  OAuthCallback: "Google sign-in didn't complete. Please try again.",
+  OAuthAccountNotLinked: "This email is already linked to a different sign-in method.",
+  Callback: "Google sign-in didn't complete. Please try again.",
+};
+
+export default function SignInPage({
+  searchParams,
+}: {
+  searchParams?: { error?: string | string[]; callbackUrl?: string | string[] };
+}) {
+  const errorCode = [searchParams?.error].flat()[0];
+  const errorMessage = errorCode
+    ? ERROR_MESSAGES[errorCode] || "Sign-in failed. Please try again."
+    : "";
+  const rawCallback = [searchParams?.callbackUrl].flat()[0] || "";
+  // Only follow same-site paths after login.
+  const callbackUrl =
+    rawCallback.startsWith("/") && !rawCallback.startsWith("//")
+      ? rawCallback
+      : "/dashboard";
+
   if (!hasAuth()) {
     return (
       <div className="container-x flex min-h-[60vh] items-center justify-center py-20">
@@ -43,8 +71,16 @@ export default function SignInPage() {
           Use your Google account to access your bookings, orders and
           consultations.
         </p>
+        {errorMessage && (
+          <p
+            role="alert"
+            className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-left text-sm text-red-800"
+          >
+            {errorMessage}
+          </p>
+        )}
         <div className="mt-6">
-          <GoogleAuthButton label="Continue with Google" />
+          <GoogleAuthButton label="Continue with Google" callbackUrl={callbackUrl} />
         </div>
         <p className="mt-6 text-xs text-charcoal/60">
           New here? Signing in with Google creates your account automatically.{" "}
