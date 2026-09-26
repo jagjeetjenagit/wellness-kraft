@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Wellness Kraft is built around expert consultation first — real Ayurvedic doctors, natural and harmless products, and practical guidance built around your life.",
+    "Wellness Kraft is built around natural and harmless products, health and fitness consultations, and practical guidance built around your life.",
 };
 
 const PRINCIPLES = [
@@ -40,7 +40,7 @@ export default function AboutPage() {
         <p className="mt-4 leading-relaxed text-charcoal/75">
           We do it differently. Our model is built around{" "}
           <strong className="text-charcoal">expert consultation first</strong> —
-          real Ayurvedic doctors who take the time to understand what&apos;s
+          health and fitness consultations that take the time to understand what&apos;s
           actually going on with you, not just what symptom you&apos;re trying
           to fix. From there, we support you with natural, harmless products
           and practical guidance — diet charts, workout schedules, and
@@ -69,7 +69,7 @@ export default function AboutPage() {
       </div>
 
       {/* OUR TEAM
-          TODO(client): add doctor bios, qualifications, and photos here
+          TODO(client): add team bios and photos here
           once finalised. */}
       <div className="mt-14">
         <h2 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
@@ -77,7 +77,7 @@ export default function AboutPage() {
         </h2>
         <div className="mt-6 rounded-2xl border border-dashed border-sage/40 bg-soft-cream p-8 text-center">
           <p className="text-sage">
-            Doctor bios, qualifications, and photos are on their way.
+            Team bios and photos are on their way.
           </p>
         </div>
       </div>

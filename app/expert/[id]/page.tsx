@@ -44,7 +44,7 @@ export default async function ExpertProfilePage({ params }: Props) {
       <DemoBanner />
       <div className="container-x py-12 sm:py-16">
         <Link href="/experts" className="text-sm font-semibold text-olive hover:underline">
-          ← All experts
+          ← All consultations
         </Link>
 
         <div className="mt-6 grid gap-10 lg:grid-cols-[340px,1fr]">
@@ -59,27 +59,33 @@ export default async function ExpertProfilePage({ params }: Props) {
                 <h1 className="mt-1 font-display text-2xl font-semibold text-charcoal">
                   {expert.name}
                 </h1>
-                <div className="mt-3">
-                  <Stars rating={expert.rating} count={expert.reviewCount} />
-                </div>
+                {expert.reviewCount > 0 && (
+                  <div className="mt-3">
+                    <Stars rating={expert.rating} count={expert.reviewCount} />
+                  </div>
+                )}
                 {expert.fee > 0 && (
                   <p className="mt-3 text-lg font-bold text-olive">
                     {formatINR(expert.fee)}{" "}
                     <span className="text-sm font-normal text-sage">per 1-on-1 session</span>
                   </p>
                 )}
-                <hr className="my-5 border-sage/30" />
-                <p className="text-sm font-bold uppercase tracking-wider text-sage/70">
-                  Credentials
-                </p>
-                <ul className="mt-3 space-y-2">
-                  {expert.credentials.map((c) => (
-                    <li key={c} className="flex items-start gap-2 text-sm text-charcoal/75">
-                      <span className="mt-0.5 text-olive" aria-hidden="true">✓</span>
-                      {c}
-                    </li>
-                  ))}
-                </ul>
+                {expert.credentials.length > 0 && (
+                  <>
+                    <hr className="my-5 border-sage/30" />
+                    <p className="text-sm font-bold uppercase tracking-wider text-sage/70">
+                      What&apos;s included
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {expert.credentials.map((c) => (
+                        <li key={c} className="flex items-start gap-2 text-sm text-charcoal/75">
+                          <span className="mt-0.5 text-olive" aria-hidden="true">✓</span>
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -87,7 +93,7 @@ export default async function ExpertProfilePage({ params }: Props) {
           {/* Bio + booking */}
           <div>
             <h2 className="font-display text-2xl font-semibold text-charcoal">
-              About {expert.name.split(" ")[0] === "Dr." ? expert.name : expert.name.split(" ")[0]}
+              About this consultation
             </h2>
             <p className="mt-4 whitespace-pre-line leading-relaxed text-charcoal/75">
               {expert.bio}
@@ -118,12 +124,12 @@ export default async function ExpertProfilePage({ params }: Props) {
         {/* Recommended products */}
         {products.length > 0 && (
           <section className="mt-16">
-            <p className="eyebrow">Recommended by {expert.name}</p>
-            <h2 className="section-title mt-2">Products this expert trusts</h2>
+            <p className="eyebrow">Recommended for {expert.name}</p>
+            <h2 className="section-title mt-2">Products we often recommend</h2>
             <p className="mt-2 max-w-2xl text-sm text-charcoal/75">
-              These are the tested products {expert.name} most often recommends
-              in consultations. Where a product is marked
-              &ldquo;consult recommended&rdquo;, we suggest speaking to an expert first.
+              These are the natural products we most often recommend in a{" "}
+              {expert.name.toLowerCase()}. Where a product is marked
+              &ldquo;consult recommended&rdquo;, we suggest booking a consultation first.
             </p>
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products.map((p) => (

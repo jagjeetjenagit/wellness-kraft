@@ -17,7 +17,7 @@ export function ExpertPhoto({
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={photo}
-        alt={`Photo of ${name}`}
+        alt={name}
         className={`object-cover ${className}`}
         loading="lazy"
       />
@@ -27,7 +27,7 @@ export function ExpertPhoto({
     <div
       className={`flex items-center justify-center bg-gradient-to-br from-olive to-olive ${className}`}
       role="img"
-      aria-label={`Placeholder portrait for ${name}`}
+      aria-label={`Placeholder image for ${name}`}
     >
       <span className="font-display text-3xl font-semibold text-white/90">
         {initials(name)}

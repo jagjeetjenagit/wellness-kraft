@@ -12,9 +12,9 @@ import { getFeaturedExperts, getFeaturedProducts, getFeaturedTestimonials } from
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Wellness Kraft — Real Experts. Natural Solutions. Lasting Lifestyle Change.",
+  title: "Wellness Kraft — Natural Products. Real Guidance. Lasting Lifestyle Change.",
   description:
-    "We help you fix the root cause of your fitness, nutrition, and lifestyle problems — through expert consultation, natural and harmless products, and guidance that actually sticks.",
+    "Natural, harmless wellness products — backed by health and fitness consultations and guidance that actually sticks.",
 };
 
 // TODO(client): replace with the real "people guided" number before launch.
@@ -22,12 +22,12 @@ const PLACEHOLDER_COUNT = "[X]";
 
 const PILLARS = [
   {
-    title: "Expert Consultation",
-    text: "Talk to qualified Ayurvedic doctors who look at your whole lifestyle, not just your symptoms.",
+    title: "Natural & Harmless Products",
+    text: "Every product we recommend is natural, tested, and free from harmful shortcuts.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
         <path
-          d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"
+          d="M12 21C7 17 4.5 13 6 8c4 .5 7 2 8.5 5M12 21c1-5 4-9 8-11-1 6-3.5 9.5-8 11Z"
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"
@@ -37,12 +37,12 @@ const PILLARS = [
     ),
   },
   {
-    title: "Natural & Harmless Products",
-    text: "Every product we recommend is natural, tested, and free from harmful shortcuts.",
+    title: "Health & Fitness Consultations",
+    text: "Not sure what you need? A 1-on-1 health or fitness consultation looks at your whole lifestyle, not just your symptoms.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
         <path
-          d="M12 21C7 17 4.5 13 6 8c4 .5 7 2 8.5 5M12 21c1-5 4-9 8-11-1 6-3.5 9.5-8 11Z"
+          d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"
@@ -72,7 +72,7 @@ const STEPS = [
   {
     n: "1",
     title: "Consult",
-    text: "Book a session with an expert who understands your situation.",
+    text: "Book a Health or Fitness Consultation built around your situation.",
   },
   {
     n: "2",
@@ -87,15 +87,15 @@ const STEPS = [
 ];
 
 const TRUST = [
-  "Consultations led by registered Ayurvedic doctors",
+  "Health & fitness consultations, 1-on-1 online",
   "FSSAI-compliant, natural product sourcing",
   `${PLACEHOLDER_COUNT}+ people guided through lasting lifestyle change`,
 ];
 
 export default async function HomePage() {
   const [experts, products, testimonials] = await Promise.all([
-    getFeaturedExperts(3),
-    getFeaturedProducts(4),
+    getFeaturedExperts(2),
+    getFeaturedProducts(8),
     getFeaturedTestimonials(6),
   ]);
 
@@ -112,26 +112,23 @@ export default async function HomePage() {
         <div className="container-x relative py-14 sm:py-24">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div className="max-w-xl">
-              <p className="eyebrow animate-rise-1">Consultations · Natural Products · Lifestyle Plans</p>
+              <p className="eyebrow animate-rise-1">Natural Products · Consultations · Lifestyle Plans</p>
               {/* Wordmark-style wide tracking lives in the uppercase eyebrow;
                   the serif headline itself stays tight for readability */}
               <h1 className="mt-4 animate-rise-2 font-display text-4xl font-semibold leading-[1.12] tracking-tight text-olive sm:text-6xl">
-                Real experts. Natural solutions. Lasting lifestyle change.
+                Natural products. Real guidance. Lasting lifestyle change.
               </h1>
               <p className="mt-6 animate-rise-3 text-lg leading-relaxed text-charcoal/75">
-                We help you fix the root cause of your fitness, nutrition, and
-                lifestyle problems — through expert consultation, natural and
-                harmless products, and guidance that actually sticks.
+                Natural, harmless products for your fitness, nutrition and
+                lifestyle goals — backed by health and fitness consultations
+                and guidance that actually sticks.
               </p>
               <div className="mt-9 flex animate-rise-4 flex-col gap-3 sm:flex-row">
-                <Link href="/experts" className="btn-primary !px-8 !py-4 !text-base">
-                  Book a Consultation
-                </Link>
-                <Link href="#approach" className="btn-secondary !px-8 !py-4 !text-base">
-                  Explore Our Approach
-                </Link>
-                <Link href="/shop" className="btn-secondary !px-8 !py-4 !text-base">
+                <Link href="/shop" className="btn-primary !px-8 !py-4 !text-base">
                   Shop Natural Products
+                </Link>
+                <Link href="/experts" className="btn-secondary !px-8 !py-4 !text-base">
+                  Book a Consultation
                 </Link>
               </div>
             </div>
@@ -145,19 +142,37 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* FEATURED PRODUCTS — the lead section: this is a product-first site */}
+      {products.length > 0 && (
+        <section className="container-x py-12 sm:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">Natural products</p>
+              <h2 className="section-title mt-2">Tested, natural, expert-picked</h2>
+            </div>
+            <Link href="/shop" className="btn-secondary">Shop all products</Link>
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* WHY WE'RE DIFFERENT */}
       <section id="approach" className="bg-soft-cream">
         <div className="container-x py-12 sm:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
             <div>
               <p className="eyebrow">Why we&apos;re different</p>
-              <h2 className="section-title mt-2">Guidance first. Products second.</h2>
+              <h2 className="section-title mt-2">Natural products, real guidance.</h2>
               <p className="mt-4 leading-relaxed text-charcoal/75">
-                Most wellness brands sell you a bottle and hope for the best. We
-                start with a real conversation — understanding your body, your
-                habits, and what&apos;s actually causing the problem. Every
-                recommendation, every product, every plan comes after that
-                understanding, not instead of it.
+                Most wellness brands sell you a bottle and hope for the best.
+                Every product we carry is natural, tested and free from harmful
+                shortcuts — and if you&apos;re not sure what you need, a Health
+                or Fitness Consultation helps you find the right plan before
+                you buy.
               </p>
             </div>
             <GraphicBlock
@@ -204,8 +219,28 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* CONSULTATIONS */}
+      {experts.length > 0 && (
+        <section className="bg-soft-cream">
+          <div className="container-x py-12 sm:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">Consultations</p>
+              <h2 className="section-title mt-2">Health or fitness — get a plan that fits you</h2>
+            </div>
+            <Link href="/experts" className="btn-secondary">View consultations</Link>
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2">
+            {experts.map((e) => (
+              <ExpertCard key={e.id} expert={e} />
+            ))}
+          </div>
+          </div>
+        </section>
+      )}
+
       {/* HOW IT WORKS */}
-      <section className="bg-soft-cream">
+      <section>
         <div className="container-x py-12 sm:py-20">
           <p className="eyebrow">How it works</p>
           <h2 className="section-title mt-2">Your path to lasting change</h2>
@@ -223,44 +258,6 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* MEET OUR EXPERTS */}
-      {experts.length > 0 && (
-        <section className="container-x py-12 sm:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="eyebrow">Meet our experts</p>
-              <h2 className="section-title mt-2">Qualified people, real guidance</h2>
-            </div>
-            <Link href="/experts" className="btn-secondary">See all experts</Link>
-          </div>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {experts.map((e) => (
-              <ExpertCard key={e.id} expert={e} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* FEATURED PRODUCTS */}
-      {products.length > 0 && (
-        <section className="bg-soft-cream">
-          <div className="container-x py-12 sm:py-20">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="eyebrow">Natural products</p>
-                <h2 className="section-title mt-2">Tested, natural, expert-picked</h2>
-              </div>
-              <Link href="/shop" className="btn-secondary">Shop all products</Link>
-            </div>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* TRUST STRIP */}
       <section className="container-x py-10 sm:py-14">
@@ -314,18 +311,26 @@ export default async function HomePage() {
       <section className="container-x py-12 sm:py-16">
         <div className="overflow-hidden rounded-3xl bg-olive px-5 py-10 text-center text-cream sm:px-12 sm:py-14">
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">
-            Your lifestyle change starts with one conversation.
+            Your lifestyle change starts today.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-cream/75">
-            No pressure, no gimmicks — just real guidance from people who
-            understand what you&apos;re going through.
+            No pressure, no gimmicks — natural products and real guidance
+            for what you&apos;re going through.
           </p>
-          <Link
-            href="/experts"
-            className="btn mt-8 bg-cream text-olive hover:-translate-y-0.5 hover:shadow-lift"
-          >
-            Book Your Consultation
-          </Link>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              href="/shop"
+              className="btn bg-cream text-olive hover:-translate-y-0.5 hover:shadow-lift"
+            >
+              Shop Natural Products
+            </Link>
+            <Link
+              href="/experts"
+              className="btn border border-cream/60 text-cream hover:-translate-y-0.5 hover:bg-cream/10"
+            >
+              Book a Consultation
+            </Link>
+          </div>
         </div>
       </section>
     </>

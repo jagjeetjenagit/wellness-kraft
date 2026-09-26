@@ -10,13 +10,13 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "General Consultation",
   description:
-    "Not sure which expert you need? Book a general consultation — we'll understand your goals and point you to the right doctor, nutritionist or fitness trainer.",
+    "Not sure which expert you need? Book a general consultation — we'll understand your goals and point you in the right direction.",
 };
 
 const COVERS = [
   "A conversation about your goals, habits and health history",
   "First-step guidance you can act on immediately",
-  "A recommendation for which specialist (if any) to see next",
+  "A recommendation on whether a Health or Fitness Consultation suits you best",
   "Honest advice on whether you need products at all",
 ];
 
@@ -29,7 +29,7 @@ export default async function GeneralConsultPage() {
   return (
     <div className="container-x py-12 sm:py-16">
       <Link href="/experts" className="text-sm font-semibold text-olive hover:underline">
-        ← All experts
+        ← All consultations
       </Link>
       <div className="mt-6 grid gap-10 lg:grid-cols-[380px,1fr]">
         <div>
@@ -41,8 +41,7 @@ export default async function GeneralConsultPage() {
             </p>
           )}
           <p className="mt-4 leading-relaxed text-charcoal/75">
-            Not sure whether you need a doctor, a nutritionist or a fitness
-            trainer? Start with a general consultation — one conversation to
+            Not sure whether you need a health or a fitness plan? Start with a general consultation — one conversation to
             understand what&apos;s going on, and where to go next.
           </p>
           <ul className="mt-6 space-y-3">

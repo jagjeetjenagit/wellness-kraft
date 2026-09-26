@@ -5,9 +5,9 @@ import { getPrisma } from "@/lib/prisma";
 // defaults used until the admin saves their own (and whenever the database
 // is unreachable) — so the site always ships sensible <head> metadata.
 export const SEO_DEFAULTS = {
-  metaTitle: "Wellness Kraft — Expert Consultations & Tested Wellness Products",
+  metaTitle: "Wellness Kraft — Natural Wellness Products & Health Consultations",
   metaDescription:
-    "Book 1-on-1 consultations with verified health experts and shop medically-tested wellness products. Nutrition, Ayurveda, skin, sleep and more.",
+    "Shop natural, tested wellness products and book 1-on-1 Health or Fitness Consultations for a personalised diet, workout and lifestyle plan.",
   keywords: "",
   ogImage: "",
 };

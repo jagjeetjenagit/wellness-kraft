@@ -20,7 +20,7 @@ export function generateMetadata({ params }: Props): Metadata {
   if (!condition) return { title: "Condition not found" };
   return {
     title: `${condition.name} — Guidance & Support`,
-    description: `Expert-led lifestyle guidance and natural product support for ${condition.name.toLowerCase()}. Book a consultation with a registered Ayurvedic doctor.`,
+    description: `Expert-led lifestyle guidance and natural product support for ${condition.name.toLowerCase()}. Book a Health or Fitness Consultation.`,
   };
 }
 
@@ -40,15 +40,14 @@ export default function ConditionPage({ params }: Props) {
             copy — what the consultation covers, typical guidance, and
             lifestyle support offered. Support/guidance language only. */}
         <p className="mt-6 text-lg leading-relaxed text-charcoal/75">
-          Our experts guide people through {condition.name.toLowerCase()} with
+          We guide people through {condition.name.toLowerCase()} with
           personalised lifestyle plans — diet, movement, and natural product
           support built around your daily life. It starts with a real
           conversation about what&apos;s going on with you.
         </p>
         <p className="mt-4 leading-relaxed text-charcoal/75">
-          Consultations are led by registered Ayurvedic doctors. Our guidance
-          supports your general wellness alongside — never instead of — the
-          advice of your treating physician.
+          Our guidance supports your general wellness alongside — never
+          instead of — the advice of your own doctor.
         </p>
       </div>
 
