@@ -10,14 +10,14 @@ export default function Footer() {
               the dark footer needs the reversed cream logo once provided). */}
           <Logo variant="stacked" className="w-36" />
           <p className="mt-3 text-sm leading-relaxed text-white/70">
-            Natural, tested wellness products. Health and fitness
-            consultations. Honest guidance for everyday life.
+            Verified experts. Medically-tested wellness products. Honest
+            guidance for everyday health.
           </p>
         </div>
         <div>
           <p className="text-sm font-bold uppercase tracking-wider text-white/50">Explore</p>
           <ul className="mt-3 space-y-2 text-sm">
-            <li><Link href="/experts" className="text-white/80 hover:text-white">Consultations</Link></li>
+            <li><Link href="/experts" className="text-white/80 hover:text-white">Find an Expert</Link></li>
             <li><Link href="/shop" className="text-white/80 hover:text-white">Shop Products</Link></li>
             <li><Link href="/about" className="text-white/80 hover:text-white">About Us</Link></li>
             <li><Link href="/contact" className="text-white/80 hover:text-white">Contact</Link></li>
@@ -34,7 +34,7 @@ export default function Footer() {
         <div>
           <p className="text-sm font-bold uppercase tracking-wider text-white/50">Trust</p>
           <ul className="mt-3 space-y-2 text-sm text-white/80">
-            <li>✓ Natural, harmless ingredients</li>
+            <li>✓ Verified expert credentials</li>
             <li>✓ Batch-tested products</li>
             <li>✓ Secure payments via Razorpay</li>
             <li>✓ Data kept private</li>

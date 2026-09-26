@@ -4,15 +4,15 @@
 //  2. If no database is connected yet, the site shows this same
 //     data in "demo mode" so the pages are never blank.
 
-// There are no individual doctors — just two consultation types. Each one
-// is an "expert" record so it gets its own booking page, calendar and fee.
-// The photo is the consultation banner, uploaded from /admin/experts.
+// No individual doctors — the two "experts" are consultation types, added
+// the same way as any expert, with a banner image instead of a face
+// (public/graphics/*-consultation.jpg).
 export const SAMPLE_EXPERTS = [
   {
     slug: "health-consultation",
     name: "Health Consultation",
     specialty: "Health",
-    photo: "",
+    photo: "/graphics/health-consultation.jpg",
     bio: "A 1-on-1 session about your overall health — digestion, energy, sleep, stress, weight and everyday habits. We look at your routine and history together and give you a practical plan: what to eat, what to change, and which natural products (if any) will genuinely help.",
     credentials: ["Personalised diet & lifestyle plan", "Natural product guidance", "Follow-up support"],
     rating: 5,
@@ -25,7 +25,7 @@ export const SAMPLE_EXPERTS = [
     slug: "fitness-consultation",
     name: "Fitness Consultation",
     specialty: "Fitness",
-    photo: "",
+    photo: "/graphics/fitness-consultation.jpg",
     bio: "A 1-on-1 session about your fitness goals — fat loss, strength, stamina or simply getting started. We assess where you are today and build a realistic workout and nutrition plan around your schedule, with supplement advice only where it actually helps.",
     credentials: ["Personalised workout plan", "Nutrition & supplement guidance", "Follow-up support"],
     rating: 5,

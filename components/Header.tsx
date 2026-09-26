@@ -8,8 +8,8 @@ import Logo from "./Logo";
 import { useCart } from "./cart/CartProvider";
 
 const NAV = [
+  { href: "/experts", label: "Experts" },
   { href: "/shop", label: "Shop" },
-  { href: "/experts", label: "Consultation" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

@@ -20,11 +20,9 @@ export default function ExpertCard({ expert }: { expert: ExpertT }) {
           <h3 className="mt-1 font-display text-xl font-semibold text-charcoal group-hover:text-olive">
             {expert.name}
           </h3>
-          {expert.reviewCount > 0 && (
-            <div className="mt-2">
-              <Stars rating={expert.rating} count={expert.reviewCount} />
-            </div>
-          )}
+          <div className="mt-2">
+            <Stars rating={expert.rating} count={expert.reviewCount} />
+          </div>
           <p className="mt-3 line-clamp-2 text-sm text-charcoal/75">{expert.bio}</p>
           <div className="mt-auto flex items-center justify-between pt-4">
             {expert.fee > 0 ? (
