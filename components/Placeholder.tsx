@@ -1,4 +1,4 @@
-import { initials } from "@/lib/utils";
+import ConsultBanner from "./ConsultBanner";
 
 // Branded placeholders shown until the client uploads real photos.
 // They look intentional, not broken.
@@ -23,17 +23,8 @@ export function ExpertPhoto({
       />
     );
   }
-  return (
-    <div
-      className={`flex items-center justify-center bg-gradient-to-br from-olive to-olive ${className}`}
-      role="img"
-      aria-label={`Placeholder image for ${name}`}
-    >
-      <span className="font-display text-3xl font-semibold text-white/90">
-        {initials(name)}
-      </span>
-    </div>
-  );
+  // No photo uploaded: show the code-drawn consultation banner.
+  return <ConsultBanner name={name} className={className} />;
 }
 
 export function ProductImage({
