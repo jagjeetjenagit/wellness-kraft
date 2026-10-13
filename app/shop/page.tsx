@@ -12,8 +12,13 @@ export const metadata: Metadata = {
     "Medically-tested supplements, Ayurvedic formulations, skincare and teas. Batch-tested for purity, honestly labelled, delivered across India.",
 };
 
-export default async function ShopPage() {
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams?: { category?: string | string[] };
+}) {
   const products = await getProducts();
+  const category = [searchParams?.category].flat()[0] || "All";
 
   return (
     <>
@@ -31,7 +36,7 @@ export default async function ShopPage() {
           if you&apos;re unsure.
         </p>
         <div className="mt-10">
-          <ShopGrid products={products} />
+          <ShopGrid products={products} initialCategory={category} />
         </div>
       </div>
     </>

@@ -4,8 +4,16 @@ import { useMemo, useState } from "react";
 import type { ProductT } from "@/lib/types";
 import ProductCard from "./ProductCard";
 
-export default function ShopGrid({ products }: { products: ProductT[] }) {
-  const [category, setCategory] = useState("All");
+export default function ShopGrid({
+  products,
+  initialCategory = "All",
+}: {
+  products: ProductT[];
+  initialCategory?: string;
+}) {
+  const [category, setCategory] = useState(
+    products.some((p) => p.category === initialCategory) ? initialCategory : "All"
+  );
   const [query, setQuery] = useState("");
 
   const categories = useMemo(

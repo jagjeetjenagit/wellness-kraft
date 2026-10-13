@@ -8,8 +8,8 @@ import Logo from "./Logo";
 import { useCart } from "./cart/CartProvider";
 
 const NAV = [
-  { href: "/experts", label: "Experts" },
   { href: "/shop", label: "Shop" },
+  { href: "/experts", label: "Consultations" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
@@ -66,8 +66,8 @@ export default function Header() {
               </span>
             )}
           </Link>
-          <Link href="/experts" className="btn-primary hidden !px-5 !py-2.5 lg:inline-flex">
-            Book a Consultation
+          <Link href="/shop" className="btn-primary hidden !px-5 !py-2.5 lg:inline-flex">
+            Shop Now
           </Link>
           <button
             className="rounded-lg p-2.5 text-sage md:hidden"
@@ -114,11 +114,11 @@ export default function Header() {
               My bookings &amp; orders
             </Link>
             <Link
-              href="/experts"
+              href="/shop"
               onClick={() => setOpen(false)}
               className="btn-primary mt-2 w-full"
             >
-              Book a Consultation
+              Shop Now
             </Link>
           </div>
         </nav>
