@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPrisma } from "@/lib/prisma";
 import { getSafeUser } from "@/lib/auth";
-import { generalConsultFee } from "@/lib/config";
+import { effectiveFee, generalConsultFee } from "@/lib/config";
 import { isValidSlot, meetUrlFor, configFromExpert, DEFAULT_SLOT_CONFIG } from "@/lib/slots";
 import { sendBookingEmails } from "@/lib/email";
 
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   if (expertId) {
     const expert = await prisma.expert.findFirst({ where: { id: expertId, active: true } });
     if (!expert) return NextResponse.json({ error: "This expert is no longer available." }, { status: 404 });
-    fee = expert.fee;
+    fee = effectiveFee(expert.fee);
     expertName = expert.name;
     expertEmail = expert.email;
     cfg = configFromExpert(expert);

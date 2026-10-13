@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getRazorpay } from "@/lib/razorpay";
 import { getPrisma } from "@/lib/prisma";
 import { getSafeUser, ensureDbUser } from "@/lib/auth";
+import { effectivePrice } from "@/lib/config";
 
 // Step 1 of payment: validate the cart against real database prices,
 // create a Razorpay order (server-side, using the secret), and save
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
           { status: 409 }
         );
       }
-      orderItems.push({ productId: product.id, name: product.name, price: product.price, quantity: qty });
+      orderItems.push({ productId: product.id, name: product.name, price: effectivePrice(product.price), quantity: qty });
     }
 
     const total = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRazorpay } from "@/lib/razorpay";
 import { getPrisma } from "@/lib/prisma";
-import { generalConsultFee } from "@/lib/config";
+import { effectiveFee, generalConsultFee } from "@/lib/config";
 
 // Step 1 of consultation payment: look up the real fee server-side
 // (expert's fee from the database, or the general-consultation fee),
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       if (!expert) {
         return NextResponse.json({ error: "This expert is no longer available." }, { status: 404 });
       }
-      fee = expert.fee;
+      fee = effectiveFee(expert.fee);
       expertName = expert.name;
       expertId = expert.id;
     }

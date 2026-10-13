@@ -2,6 +2,15 @@ import { getPrisma } from "./prisma";
 import { SAMPLE_EXPERTS, SAMPLE_PRODUCTS, SAMPLE_RECOMMENDATIONS } from "./sample-data";
 import type { ExpertT, ProductT } from "./types";
 import type { Testimonial } from "@prisma/client";
+import { effectiveFee, effectivePrice } from "./config";
+
+// Apply the TEST_PRICE switch (lib/config.ts) to what visitors see.
+function priced<T extends { price: number }>(p: T): T {
+  return { ...p, price: effectivePrice(p.price) };
+}
+function feed<T extends { fee: number }>(e: T): T {
+  return { ...e, fee: effectiveFee(e.fee) };
+}
 
 // All page data flows through here. If the database isn't connected
 // (or a query fails), we quietly fall back to the built-in sample
@@ -23,7 +32,7 @@ export function isDemoMode(): boolean {
   return !process.env.DATABASE_URL;
 }
 
-export async function getExperts(): Promise<ExpertT[]> {
+async function loadExperts(): Promise<ExpertT[]> {
   const prisma = getPrisma();
   if (!prisma) return demoExperts;
   try {
@@ -37,7 +46,7 @@ export async function getExperts(): Promise<ExpertT[]> {
   }
 }
 
-export async function getExpert(idOrSlug: string): Promise<ExpertT | null> {
+async function loadExpert(idOrSlug: string): Promise<ExpertT | null> {
   const prisma = getPrisma();
   if (!prisma) {
     return demoExperts.find((e) => e.id === idOrSlug || e.slug === idOrSlug) || null;
@@ -54,7 +63,7 @@ export async function getExpert(idOrSlug: string): Promise<ExpertT | null> {
   }
 }
 
-export async function getExpertProducts(expert: ExpertT): Promise<ProductT[]> {
+async function loadExpertProducts(expert: ExpertT): Promise<ProductT[]> {
   const prisma = getPrisma();
   if (!prisma) {
     const slugs = SAMPLE_RECOMMENDATIONS[expert.slug] || [];
@@ -73,7 +82,7 @@ export async function getExpertProducts(expert: ExpertT): Promise<ProductT[]> {
   }
 }
 
-export async function getProducts(): Promise<ProductT[]> {
+async function loadProducts(): Promise<ProductT[]> {
   const prisma = getPrisma();
   if (!prisma) return demoProducts;
   try {
@@ -86,7 +95,7 @@ export async function getProducts(): Promise<ProductT[]> {
   }
 }
 
-export async function getProduct(idOrSlug: string): Promise<ProductT | null> {
+async function loadProduct(idOrSlug: string): Promise<ProductT | null> {
   const prisma = getPrisma();
   if (!prisma) {
     return demoProducts.find((p) => p.id === idOrSlug || p.slug === idOrSlug) || null;
@@ -100,6 +109,28 @@ export async function getProduct(idOrSlug: string): Promise<ProductT | null> {
     // the DB is unreachable/unmigrated; the shop list falls back too.
     return demoProducts.find((p) => p.id === idOrSlug || p.slug === idOrSlug) || null;
   }
+}
+
+export async function getExperts(): Promise<ExpertT[]> {
+  return (await loadExperts()).map(feed);
+}
+
+export async function getExpert(idOrSlug: string): Promise<ExpertT | null> {
+  const e = await loadExpert(idOrSlug);
+  return e && feed(e);
+}
+
+export async function getExpertProducts(expert: ExpertT): Promise<ProductT[]> {
+  return (await loadExpertProducts(expert)).map(priced);
+}
+
+export async function getProducts(): Promise<ProductT[]> {
+  return (await loadProducts()).map(priced);
+}
+
+export async function getProduct(idOrSlug: string): Promise<ProductT | null> {
+  const p = await loadProduct(idOrSlug);
+  return p && priced(p);
 }
 
 export async function getFeaturedExperts(limit = 3): Promise<ExpertT[]> {

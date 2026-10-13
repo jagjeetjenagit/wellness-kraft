@@ -6,6 +6,11 @@ Save each file with the EXACT name shown below (all lowercase, .jpg):
   approach.jpg        — image next to "Why we're different"
   lifestyle-band.jpg  — wide banner near the bottom of the homepage
 
+Consultation banners (used as the photo of the two consultation entries):
+
+  health-consultation.jpg   — photo: Pexels #8844563 (free to use)
+  fitness-consultation.jpg  — photo: Pexels #39219660 (free to use)
+
 Until a file is added, the website shows a tidy labelled placeholder in its
 place, so nothing ever looks broken.
 

@@ -179,6 +179,12 @@ So you can **drag-and-drop and crop** product/expert photos in the admin
 > dashboard to **Live Mode**, generate LIVE keys, and replace the two values
 > in `.env` (and on Vercel — see Part 3). That's all.
 
+> **Testing live payments cheaply:** add `TEST_PRICE="20"` on Vercel and
+> redeploy. Every product and paid consultation is then shown and charged at
+> ₹20 (real prices in /admin stay as they are). Delete `TEST_PRICE` and
+> redeploy to go back to real prices. Refund test payments from the Razorpay
+> dashboard.
+
 ### 4) Email confirmations — Resend (free) — ~3 min
 
 Sends order confirmations to customers and "new order" alerts to you.

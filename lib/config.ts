@@ -26,7 +26,24 @@ export const siteUrl = () =>
 // General (not expert-specific) consultation — fee in rupees and the
 // Cal.com link for the shared/general calendar. Both can be overridden
 // from the environment without code changes.
+// Testing switch: set TEST_PRICE=20 (in .env / Vercel) and every product and
+// every paid consultation is shown AND charged at that price. Delete the
+// variable and redeploy to go back to the real prices — the prices saved in
+// the database (and shown in /admin) are never changed.
+export const testPrice = () => {
+  const n = Number(process.env.TEST_PRICE);
+  return Number.isInteger(n) && n > 0 ? n : 0;
+};
+
+// The price a customer actually pays for a product.
+export const effectivePrice = (price: number) => testPrice() || price;
+
+// The fee a customer actually pays for a consultation. A fee of 0 means
+// "no online payment" and stays 0 even in test mode.
+export const effectiveFee = (fee: number) => (fee > 0 ? testPrice() || fee : fee);
+
 export const generalConsultFee = () => {
+  if (testPrice()) return testPrice();
   const n = Number(process.env.NEXT_PUBLIC_GENERAL_CONSULT_FEE);
   return Number.isFinite(n) && n >= 0 ? Math.round(n) : 499;
 };
