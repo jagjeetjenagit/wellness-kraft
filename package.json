@@ -12,7 +12,8 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:setup": "prisma db push",
-    "db:seed-samples": "prisma db seed"
+    "db:seed-samples": "prisma db seed",
+    "products:import": "tsx prisma/import-products.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

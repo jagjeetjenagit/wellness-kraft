@@ -56,9 +56,9 @@ export default async function HomePage() {
     getFeaturedTestimonials(6),
   ]);
 
-  // Hero showcases real products; falls back to the hero photo if none
-  // have images yet.
-  const heroProducts = featured.filter((p) => p.images[0]).slice(0, 3);
+  // Hero showcases up to 4 real products; falls back to the hero photo if
+  // none have images yet.
+  const heroProducts = featured.filter((p) => p.images[0]).slice(0, 4);
   const categories = Array.from(new Set(allProducts.map((p) => p.category))).filter(Boolean);
   const startingPrice = allProducts.length
     ? Math.min(...allProducts.map((p) => p.price))
@@ -104,18 +104,16 @@ export default async function HomePage() {
 
             {heroProducts.length > 0 ? (
               <div className="animate-rise-3 grid grid-cols-2 gap-4">
-                {heroProducts.map((p, i) => (
+                {heroProducts.map((p) => (
                   <Link
                     key={p.id}
                     href={`/product/${p.slug}`}
-                    className={`card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lift ${
-                      i === 0 ? "col-span-2 sm:col-span-1 sm:row-span-2" : ""
-                    }`}
+                    className="card group overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lift"
                   >
                     <ProductImage
                       name={p.name}
                       image={p.images[0]}
-                      className={`w-full ${i === 0 ? "aspect-square sm:h-full" : "aspect-square"}`}
+                      className="aspect-square w-full"
                     />
                     <div className="flex items-center justify-between gap-2 p-3">
                       <span className="truncate text-sm font-semibold text-charcoal group-hover:text-olive">
